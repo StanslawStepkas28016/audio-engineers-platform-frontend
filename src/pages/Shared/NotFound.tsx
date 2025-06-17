@@ -1,9 +1,9 @@
-import {GuestNavbar} from "@/components/ui/guest-navbar.tsx";
+import {Navbar} from "@/components/ui/navbar.tsx";
 
 export const NotFound = () => {
     return (
         <div>
-            <GuestNavbar/>
+            <Navbar/>
             <div className="flex items-center min-h-screen px-4 py-12 sm:px-6 md:px-8 lg:px-12 xl:px-16">
                 <div className="w-full space-y-6 text-center">
                     <div className="space-y-3">
