@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL_DEV,
+    baseURL: import.meta.env.VITE_BACKEND,
     withCredentials: true,
-    headers: {
-        "Accept-Language": localStorage.getItem("lang") || "en-US",
-    },
+    // headers: {
+    //     "Accept-Language": localStorage.getItem("lang") || "en-US",
+    // },
 });
