@@ -1,13 +1,12 @@
 import {
-    IconDotsVertical,
+    IconDotsVertical, IconHelpCircle,
     IconLogout,
-    IconUserCircle,
 } from "@tabler/icons-react"
 
 import {
     Avatar,
     AvatarFallback,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar.tsx"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,13 +15,13 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu.tsx"
 import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar.tsx"
 import {userStore} from "@/lib/userStore.ts";
 
 export function FooterNavLoggedUser({
@@ -86,8 +85,8 @@ export function FooterNavLoggedUser({
                         <DropdownMenuSeparator/>
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <IconUserCircle/>
-                                Account
+                                <IconHelpCircle/>
+                                Need help?
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator/>
