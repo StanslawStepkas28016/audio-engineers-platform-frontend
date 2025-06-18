@@ -1,5 +1,5 @@
 import * as React from "react"
-import {BookOpen, MessageCircleDashed} from "lucide-react"
+import {BookOpen, MessageCircleDashed, Settings} from "lucide-react"
 
 import {EngineersSidebarContent} from "@/components/engineers-sidebar-content.tsx"
 import {FooterNavLoggedUser} from "@/components/footer-nav-logged-user.tsx"
@@ -22,6 +22,7 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
         },
         options: [
             {
+                labelTitle: "See and manage your adverts",
                 title: "Adverts",
                 url: "#",
                 icon: BookOpen,
@@ -29,7 +30,11 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 items: [
                     {
                         title: "See all adverts",
-                        url: "#",
+                        url: "/",
+                    },
+                    {
+                        title: "See your advert",
+                        url: "/my-advert",
                     },
                     {
                         title: "Add your advert",
@@ -37,15 +42,16 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                     },
                     {
                         title: "Edit your advert",
-                        url: "#",
+                        url: "/edit-advert",
                     },
                     {
                         title: "Delete your advert",
-                        url: "#",
+                        url: "/delete-advert",
                     },
                 ],
             },
             {
+                labelTitle: "Message your clients",
                 title: "Messages",
                 url: "#",
                 icon: MessageCircleDashed,
@@ -63,6 +69,23 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                     {
                         title: "John Doe",
                         url: "#",
+                    },
+                ],
+            },
+            {
+                labelTitle: "Manage your account",
+                title: "Account settings",
+                url: "#",
+                icon: Settings,
+                isActive: true,
+                items: [
+                    {
+                        title: "Change your data",
+                        url: "/change-data",
+                    },
+                    {
+                        title: "Change your password",
+                        url: "/change-password",
                     },
                 ],
             },
