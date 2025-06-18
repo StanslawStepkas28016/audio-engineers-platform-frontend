@@ -1,7 +1,7 @@
-export const AudioEngineerSeeYourAdvert = () => {
+export const AudioEngineerChangePassword = () => {
     return (
         <div className="flex flex-col items-center justify-center">
-            // TODO: Implement your advert viewing
+            // TODO: Implement password change form
         </div>
     );
 }

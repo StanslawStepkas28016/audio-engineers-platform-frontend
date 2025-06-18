@@ -1,4 +1,5 @@
-export const AudioEngineerAdverts = () => {
+
+export const AudioEngineerSeeAllAdverts = () => {
     return (
         <div className="flex flex-col items-center justify-center">
             // TODO: Implement adverts listing

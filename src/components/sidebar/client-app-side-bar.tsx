@@ -1,18 +1,18 @@
 import * as React from "react"
 import {BookOpen, MessageCircleDashed, Settings} from "lucide-react"
 
-import {EngineersSidebarContent} from "@/components/engineers-sidebar-content.tsx"
-import {FooterNavLoggedUser} from "@/components/footer-nav-logged-user.tsx"
+import {SidebarContentMapper} from "@/components/sidebar/sidebar-content-mapper.tsx"
+import {FooterNavLoggedUser} from "@/components/sidebar/footer-nav-logged-user.tsx"
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar.tsx"
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {userStore} from "@/lib/userStore.ts";
 
-export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
+export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
     const {userData} = userStore();
 
     const data = {
@@ -22,7 +22,7 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
         },
         options: [
             {
-                labelTitle: "See and manage your adverts",
+                labelTitle: "See engineers adverts",
                 title: "Adverts",
                 url: "#",
                 icon: BookOpen,
@@ -32,26 +32,10 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                         title: "See all adverts",
                         url: "/",
                     },
-                    {
-                        title: "See your advert",
-                        url: "/my-advert",
-                    },
-                    {
-                        title: "Add your advert",
-                        url: "/add-advert",
-                    },
-                    {
-                        title: "Edit your advert",
-                        url: "/edit-advert",
-                    },
-                    {
-                        title: "Delete your advert",
-                        url: "/delete-advert",
-                    },
                 ],
             },
             {
-                labelTitle: "Message your clients",
+                labelTitle: "Message your engineers",
                 title: "Messages",
                 url: "#",
                 icon: MessageCircleDashed,
@@ -59,15 +43,15 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 // TODO: To be fetched from the server
                 items: [
                     {
-                        title: "Jan Kowalski",
+                        title: "Marcin Kowalski",
                         url: "#",
                     },
                     {
-                        title: "Anna Niewiadomska",
+                        title: "Jan Nowak",
                         url: "#",
                     },
                     {
-                        title: "John Doe",
+                        title: "Marcin Krasucki",
                         url: "#",
                     },
                 ],
@@ -98,7 +82,8 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 <Navbar/>
             </SidebarHeader>
             <SidebarContent>
-                <EngineersSidebarContent items={data.options}/>
+                {/* For all users, displayed data only based on the provided items */}
+                <SidebarContentMapper items={data.options}/>
             </SidebarContent>
             <SidebarFooter>
                 <FooterNavLoggedUser user={data.user}/>

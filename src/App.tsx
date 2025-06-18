@@ -8,9 +8,14 @@ import React, {useEffect} from "react";
 import {userStore} from "@/lib/userStore.ts";
 import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
-import {AudioEngineerAdverts} from "@/pages/AudioEngineer/AudioEngineerAdverts.tsx";
+import {AudioEngineerSeeAllAdverts} from "@/pages/AudioEngineer/AudioEngineerSeeAllAdverts.tsx";
 import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
 import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
+import {AudioEngineerChangeData} from "@/pages/AudioEngineer/AudioEngineerChangeData.tsx";
+import {AudioEngineerChangePassword} from "@/pages/AudioEngineer/AudioEngineerChangePassword.tsx";
+import {ClientHomepage} from "@/pages/Client/ClientHomepage.tsx";
+import {ClientAdverts} from "@/pages/Client/ClientAdverts.tsx";
+import {AppRoles} from "@/pages/Shared/enums/app-roles.tsx";
 // import {AppRoles} from "@/shared/app-roles.tsx";
 
 
@@ -35,7 +40,7 @@ const RedirectAuthenticatedUser = ({children}: { children: React.ReactElement })
 };
 
 function App() {
-    const {isCheckingAuth, checkAuth} = userStore();
+    const {isCheckingAuth, checkAuth, userData} = userStore();
 
     useEffect(() => {
         checkAuth();
@@ -48,6 +53,7 @@ function App() {
     return (
         <Router>
             <Routes>
+                {/* Guest routes */}
                 <Route path="*" element={
                     <NotFoundPage/>
                 }/>
@@ -72,54 +78,32 @@ function App() {
                     </RedirectAuthenticatedUser>
                 }/>
 
-                {/* Audio engineer routes */}
-                <Route
-                    element={
+                {userData.roleName === AppRoles.AudioEngineer && (
+                    <Route element={
                         <ProtectedRoute>
                             <AudioEngineerHomepage/>
                         </ProtectedRoute>
-                    }
-                >
-                    {/* See all adverts */}
-                    <Route index element={
+                    }>
+                        <Route index element={<AudioEngineerSeeAllAdverts/>}/>
+                        <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
+                        <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
+                        <Route path="edit-advert" element={<AudioEngineerSeeYourAdvert/>}/>
+                        <Route path="delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
+                        <Route path="change-data" element={<AudioEngineerChangeData/>}/>
+                        <Route path="change-password" element={<AudioEngineerChangePassword/>}/>
+                    </Route>
+                )}
+
+                {/* Client routes */}
+                {userData.roleName === AppRoles.Client && (
+                    <Route element={
                         <ProtectedRoute>
-                            <AudioEngineerAdverts/>
+                            <ClientHomepage/>
                         </ProtectedRoute>
-                    }/>
-
-                    {/* See your advert */}
-                    <Route path="/my-advert" element={
-                        <ProtectedRoute>
-                            <AudioEngineerSeeYourAdvert/>
-                        </ProtectedRoute>
-                    }/>
-
-                    {/* Adding advert component */}
-                    <Route path="/add-advert" element={
-                        <ProtectedRoute>
-                            <AudioEngineerAddAdvert/>
-                        </ProtectedRoute>
-                    }
-                    />
-
-                    {/* Editing your advert */}
-                    <Route path="/edit-advert" element={
-                        <ProtectedRoute>
-                            <AudioEngineerSeeYourAdvert/>
-                        </ProtectedRoute>
-                    }/>
-
-                    {/* Deleting your advert */}
-                    <Route path="/delete-advert" element={
-                        <ProtectedRoute>
-                            <AudioEngineerDeleteAdvert/>
-                        </ProtectedRoute>
-                    }/>
-
-                </Route>
-
-                {/*Client routes*/}
-                // TODO: Add client routes
+                    }>
+                        <Route index element={<ClientAdverts/>}/>
+                    </Route>
+                )}
 
                 {/*Admin routes*/}
                 // TODO: Add admin routes
