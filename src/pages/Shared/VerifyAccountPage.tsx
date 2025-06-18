@@ -12,7 +12,7 @@ export type VerifyAccountFormData = {
     verificationCode: string;
 }
 
-export const VerifyAccount = () => {
+export const VerifyAccountPage = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
@@ -48,8 +48,15 @@ export const VerifyAccount = () => {
             <main className="flex-1 flex w-full items-center justify-center p-6 md:p-10">
                 <div className="w-full max-w-sm">
                     <form className="flex flex-col gap-6 items-center" onSubmit={handleVerifyAccount}>
-                        <img src="src/assets/184_-_3_-_Coding_on_screen.jpg" alt="asdasd"
-                             className="object-cover dark:brightness-[0.2] dark:grayscale -mt-30 -mb-10 "></img>
+
+                        <div className="hidden lg:flex h-full justify-end items-center overflow-hidden -mt-30 -mb-10">
+                            <img
+                                src="/src/assets/coding.jpg"
+                                alt="decoration"
+                                className="object-contain filter dark:invert"
+                            />
+                        </div>
+
                         <InputOTP
                             required
                             minLength={6}
@@ -82,7 +89,7 @@ export const VerifyAccount = () => {
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4"/>
                                 <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>z
+                                <AlertDescription>
                                     {error}
                                 </AlertDescription>
                             </Alert>

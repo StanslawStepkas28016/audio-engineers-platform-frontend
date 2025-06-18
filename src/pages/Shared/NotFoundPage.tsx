@@ -1,6 +1,6 @@
 import {Navbar} from "@/components/ui/navbar.tsx";
 
-export const NotFound = () => {
+export const NotFoundPage = () => {
     return (
         <div>
             <Navbar/>

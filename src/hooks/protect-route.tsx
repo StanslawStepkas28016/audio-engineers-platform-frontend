@@ -1,7 +1,7 @@
 import {Outlet} from "react-router-dom";
 import {userStore} from "@/lib/userStore";
-import {Loading} from "@/pages/Shared/Loading.tsx";
-import {Login} from "@/pages/Shared/Login.tsx";
+import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoginPage} from "@/pages/Shared/LoginPage.tsx";
 
 interface ProtectedRouteProps {
     requiredRole?: string;
@@ -10,14 +10,14 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({
                                    requiredRole,
                                }: ProtectedRouteProps) {
-    const {isLoggedIn, isCheckingAuth, userData} = userStore();
+    const {isAuthenticated, isCheckingAuth, userData} = userStore();
 
     if (isCheckingAuth) {
-        return <Loading/>;
+        return <LoadingPage/>;
     }
 
-    if (!isLoggedIn || (requiredRole && userData.roleName !== requiredRole)) {
-        return <Login/>;
+    if (!isAuthenticated || (requiredRole && userData.roleName !== requiredRole)) {
+        return <LoginPage/>;
     }
     return <Outlet/>;
 }
