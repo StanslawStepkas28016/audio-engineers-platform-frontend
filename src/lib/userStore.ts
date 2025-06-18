@@ -6,7 +6,7 @@ export type UserAuthState = {
     isAuthenticated: boolean;
     isCheckingAuth: boolean;
     error: string;
-    userData?: {
+    userData: {
         idUser: string;
         firstName: string;
         lastName: string;
