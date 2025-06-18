@@ -1,9 +1,11 @@
 import {create} from "zustand/react";
 import {axiosInstance} from "@/lib/axios.ts";
+import {isAxiosError} from "axios";
 
 export type UserAuthState = {
-    isLoggedIn: boolean;
+    isAuthenticated: boolean;
     isCheckingAuth: boolean;
+    error: string;
     userData?: {
         idUser: string;
         firstName: string;
@@ -13,14 +15,15 @@ export type UserAuthState = {
         roleName: string;
         idRole: string;
     },
-    login: () => void;
     checkAuth: () => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
-export const userStore = create<UserAuthState>((set, get) => ({
-    isLoggedIn: false,
+export const userStore = create<UserAuthState>((set) => ({
+    isAuthenticated: false,
     isCheckingAuth: true,
+    error: "",
     userData: {
         idUser: "",
         firstName: "",
@@ -31,10 +34,22 @@ export const userStore = create<UserAuthState>((set, get) => ({
         idRole: ""
     },
 
-    login: () => {
-        set({
-            isLoggedIn: true,
-        });
+    login: async (email, password) => {
+        try {
+            const res = await axiosInstance.post("auth/login",
+                {
+                    email: email,
+                    password: password
+                }
+            );
+
+            set({isAuthenticated: true, userData: res.data, error: ""});
+        } catch (e) {
+            if (isAxiosError(e) && e.response) {
+                const exceptionMessage = e.response.data.ExceptionMessage;
+                set({isAuthenticated: false, error: exceptionMessage});
+            }
+        }
     },
 
     /*
@@ -61,7 +76,7 @@ export const userStore = create<UserAuthState>((set, get) => ({
                     } catch (refreshError) {
                         // If the refresh token request fails, we need to log the user out
                         console.log(refreshError);
-                        set({isLoggedIn: false, isCheckingAuth: false});
+                        set({isAuthenticated: false});
                     }
                 }
             }
@@ -69,12 +84,15 @@ export const userStore = create<UserAuthState>((set, get) => ({
             return await Promise.reject(e);
         });
 
+        // Set the retry flag to prevent infinite loops
+        set({isCheckingAuth: true});
+
         try {
             const resp = await axiosInstance.get("auth/check-auth");
             // console.log(resp.data);
-            set({isLoggedIn: true, userData: resp.data});
+            set({isAuthenticated: true, userData: resp.data});
         } catch (e) {
-            set({isLoggedIn: false});
+            set({isAuthenticated: false});
             console.log(e);
         } finally {
             set({isCheckingAuth: false});
@@ -91,7 +109,7 @@ export const userStore = create<UserAuthState>((set, get) => ({
     logout: async () => {
         try {
             await axiosInstance.post("auth/logout");
-            set({isLoggedIn: false, isCheckingAuth: false});
+            set({isAuthenticated: false, isCheckingAuth: false});
         } catch (e) {
             console.log(e)
             alert("An error occurred while logging out!");

@@ -1,43 +1,28 @@
-import {axiosInstance} from "@/lib/axios.ts";
 import {FormEvent, useState} from "react";
-import {isAxiosError} from "axios";
 import {Navbar} from "@/components/ui/navbar.tsx";
-import {userStore} from "@/lib/userStore.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
+import {userStore} from "@/lib/userStore.ts";
+import {Link, useNavigate} from "react-router-dom";
 
-export const Login = () => {
+export const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [success, setSuccess] = useState("");
-    const [error, setError] = useState("");
-    const {login, checkAuth} = userStore();
+    const {login, error} = userStore();
+    const navigate = useNavigate();
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
-        try {
-            await axiosInstance.post("auth/login",
-                {
-                    email: email,
-                    password: password
-                }
-            );
+        await login(email, password);
+        if (!error) {
             setSuccess("Successfully logged in!");
-            login();
-            await checkAuth();
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                const exceptionMessage = e.response.data.ExceptionMessage;
-                setError(exceptionMessage);
-                console.log(error);
-            } else {
-                console.log(e);
-            }
         }
+        navigate("/", {replace: true});
     }
 
     return (
@@ -95,9 +80,10 @@ export const Login = () => {
                                     </div>
                                     <div className="mt-4 text-center text-sm">
                                         Don't have an account? {" "}
-                                        <a href="/register" className="underline underline-offset-4">
+                                        <Link to="/register"
+                                              className="underline underline-offset-4">
                                             Sign up
-                                        </a>
+                                        </Link>
                                     </div>
                                 </form>
                             </CardContent>
