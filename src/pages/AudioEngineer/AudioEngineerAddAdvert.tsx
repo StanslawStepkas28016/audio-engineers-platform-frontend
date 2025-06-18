@@ -90,8 +90,6 @@ export const AudioEngineerAddAdvert = () => {
         setError("");
         setSuccess("");
 
-        console.log(formData.getValues("categoryName"));
-
         try {
             // Payload preparation
             const payload = new FormData();
