@@ -7,7 +7,7 @@ import {isAxiosError} from "axios";
 import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 
-export type Advert = {
+export type AdvertData = {
     idUser: string,
     idAdvert: string,
     title: string,
@@ -24,13 +24,12 @@ export type Advert = {
 
 export const AudioEngineerSeeYourAdvert = () => {
     const [error, setError] = useState("");
-    const [advertData, setAdvertData] = useState<Advert | null>(null);
+    const [advertData, setAdvertData] = useState<AdvertData | null>(null);
     const {userData} = userStore();
-
 
     const fetchUserAdvert = async () => {
         try {
-            const response = await axiosInstance.get("/advert", {params: {idAdvert: "2ca3a896-590b-4de3-8d09-f227ab5da836"}});
+            const response = await axiosInstance.get("advert", {params: {idUser: userData.idUser}});
             setAdvertData(response.data);
         } catch (e) {
             if (isAxiosError(e) && e.response) {
@@ -83,9 +82,12 @@ export const AudioEngineerSeeYourAdvert = () => {
 
                             <h1 className="text-3xl font-bold mt-10 mb-10">Want to collaborate?</h1>
                             <div className="flex flex-row gap-4 items-center justify-center">
-                                <Instagram size={50} strokeWidth={2}/>
-                                <Facebook size={50} strokeWidth={2}/>
-                                <Linkedin size={50} strokeWidth={2}/>
+                                <a href="https://www.instagram.com" target="_blank"><Instagram size={50}
+                                                                                               strokeWidth={2}/></a>
+                                <a href="https://www.instagram.com" target="_blank"><Facebook size={50}
+                                                                                              strokeWidth={2}/></a>
+                                <a href="https://www.instagram.com" target="_blank"><Linkedin size={50}
+                                                                                              strokeWidth={2}/></a>
                             </div>
 
                             <h1 className="text-3xl font-bold mt-10">See my reviews!</h1>
