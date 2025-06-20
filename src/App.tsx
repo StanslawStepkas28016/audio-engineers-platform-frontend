@@ -16,6 +16,8 @@ import {AudioEngineerChangePassword} from "@/pages/AudioEngineer/AudioEngineerCh
 import {ClientHomepage} from "@/pages/Client/ClientHomepage.tsx";
 import {ClientAdverts} from "@/pages/Client/ClientAdverts.tsx";
 import {AppRoles} from "@/pages/Shared/enums/app-roles.tsx";
+import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
+import {GuestHomepage} from "@/pages/Guest/GuestHomepage.tsx";
 
 
 const ProtectedRoute = ({children}: { children: React.ReactElement }) => {
@@ -57,6 +59,8 @@ function App() {
                     <NotFoundPage/>
                 }/>
 
+                <Route path="/" element={<GuestHomepage/>}/>
+
                 <Route path="/login" element={
                     <RedirectAuthenticatedUser>
                         <LoginPage/>
@@ -86,7 +90,7 @@ function App() {
                         <Route index element={<AudioEngineerSeeAllAdverts/>}/>
                         <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
                         <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
-                        <Route path="edit-advert" element={<AudioEngineerSeeYourAdvert/>}/>
+                        <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>
                         <Route path="delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
                         <Route path="change-data" element={<AudioEngineerChangeData/>}/>
                         <Route path="change-password" element={<AudioEngineerChangePassword/>}/>

@@ -65,14 +65,17 @@ export const userStore = create<UserAuthState>((set) => ({
         * */
         const refreshInterceptor = axiosInstance.interceptors.response.use(function (response) {
             return response;
-        }, async function (e) {
+        }, async function (error) {
+            // Get the original request that caused the error
+            const originalRequest = error.config;
             // If the check-auth request fails with a 401 error, refresh the token
-            if (e.response.status === 401 && e.config.url !== "auth/refresh-token") {
+            if (error.response.status === 401 && error.config.url !== "auth/refresh-token") {
                 // Make sure we don't retry the request if it has already been "retried"
-                if (!e.config._retry) {
+                if (!error.config._retry) {
                     try {
                         // Try refreshing the token
                         await axiosInstance.post("auth/refresh-token");
+                        return axiosInstance(originalRequest);
                     } catch (refreshError) {
                         // If the refresh token request fails, we need to log the user out
                         console.log(refreshError);
@@ -81,7 +84,7 @@ export const userStore = create<UserAuthState>((set) => ({
                 }
             }
 
-            return await Promise.reject(e);
+            return await Promise.reject(error);
         });
 
         // Set the retry flag to prevent infinite loops

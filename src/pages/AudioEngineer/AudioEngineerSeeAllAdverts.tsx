@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
+import {AlertCircle, WalletIcon} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {transformDate} from "@/lib/utils.ts";
+import {Button} from "@/components/ui/button.tsx";
 
 export type SingleAdvertOverviewData = {
     title: string,
@@ -14,7 +15,7 @@ export type SingleAdvertOverviewData = {
     userFirstName: string,
     userLastName: string,
     dateCreated: Date,
-    coverImageKey: string,
+    // coverImageKey: string,
     coverImageUrl: string,
 }
 
@@ -66,25 +67,35 @@ export const AudioEngineerSeeAllAdverts = () => {
             {advertData?.items?.map((advert: SingleAdvertOverviewData) => (
                 <div key={advert.title}>
                     <Card className="my-10">
-                        <CardHeader className="">
-                            <div className="flex justify-between">
-                                <CardTitle className="text-4xl">{advert.title}</CardTitle>
-                            </div>
-                            <div className="flex justify-between text-4l text-muted-foreground">
-                                <span>{advert.userFirstName} {advert.userLastName} | {transformDate(advert.dateCreated)}</span>
-                            </div>
-                            {/*<img
-                            src={advert.coverImageUrl}
-                            alt="decoration"
-                            className="object-contain filter dark:invert"
-                        />*/}
+                        <CardHeader>
+                            <CardTitle className="text-4xl">{advert.title}</CardTitle>
                         </CardHeader>
-                        <CardContent className="text-1l">
-                            <p className="text-justify">
-                                My experience working with this guy was great! I really liked how passionate he was
-                                about making minor adjustments to a song he mixed for me :)
-                            </p>
+
+                        <CardContent className="grid gap-3 md:grid-cols-2">
+                            <div>
+                                <p
+                                    className="text-4l text-muted-foreground">{advert.userFirstName} {advert.userLastName} | {transformDate(advert.dateCreated)}
+                                </p>
+
+                                <Card className="p-10 mt-5">
+                                    <div className="flex justify-between">
+                                        <h1>
+                                            Prices from:
+                                            <p className="text-5xl">{advert.price} PLN</p>
+                                        </h1>
+                                        <WalletIcon className="ml-5" absoluteStrokeWidth={true} size={90}></WalletIcon>
+                                    </div>
+                                </Card>
+
+                            </div>
+
+                            <img
+                                src={advert.coverImageUrl}
+                                alt="decoration"
+                                className=""
+                            />
                         </CardContent>
+                        <Button className="">See more</Button>
                     </Card>
                 </div>
             ))}
