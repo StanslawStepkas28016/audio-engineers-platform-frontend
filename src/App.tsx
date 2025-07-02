@@ -15,7 +15,7 @@ import {AudioEngineerChangeData} from "@/pages/AudioEngineer/AudioEngineerChange
 import {AudioEngineerChangePassword} from "@/pages/AudioEngineer/AudioEngineerChangePassword.tsx";
 import {ClientHomepage} from "@/pages/Client/ClientHomepage.tsx";
 import {ClientAdverts} from "@/pages/Client/ClientAdverts.tsx";
-import {AppRoles} from "@/pages/Shared/enums/app-roles.tsx";
+import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
 import {GuestHomepage} from "@/pages/Guest/GuestHomepage.tsx";
 

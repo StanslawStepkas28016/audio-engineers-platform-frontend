@@ -17,9 +17,12 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import {Input} from "@/components/ui/input.tsx";
+import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
 
 export type SingleAdvertOverviewData = {
+    idAdvert: string,
     title: string,
+    idUser: string,
     price: string,
     categoryName: string,
     userFirstName: string,
@@ -44,16 +47,23 @@ export const AudioEngineerSeeAllAdverts = () => {
     const [advertData, setAdvertData] = useState<AdvertsData | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const [seeMoreSelected, setSeeMoreSelected] = useState("");
 
     const fetchAdverts = async () => {
         setError("");
         setLoading(true);
         try {
             const response = await axiosInstance.get("advert/get-all", {
-                params: {sortOrder: "price_desc", page: currentPage, pageSize: 2},
+                params: {sortOrder: "price_desc", page: currentPage, pageSize: 2, searchTerm: searchTerm},
             });
             setAdvertData(response.data);
+
+            if (response.data.items.length === 0) {
+                setError("No adverts found for the given search term.");
+            }
+
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
@@ -70,15 +80,26 @@ export const AudioEngineerSeeAllAdverts = () => {
     }
 
     useEffect(() => {
-        fetchAdverts()
+        fetchAdverts();
     }, [currentPage])
 
     if (loading) {
         return <LoadingPage/>;
     }
 
+    if (seeMoreSelected) {
+        return (
+            <div className="display flex flex-col items-center justify-center mb-10">
+                <Button onClick={() => setSeeMoreSelected("")} className="">
+                    ← Back to list
+                </Button>
+                <SeeAdvert idUser={seeMoreSelected}/>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="container mx-auto px-4 flex flex-col items-center justify-center">
             <h1 className="text-3xl font-bold mt-5">Find the best audio engineers!</h1>
 
             <div className="relative flex items-center w-1/2 mt-10">
@@ -89,22 +110,35 @@ export const AudioEngineerSeeAllAdverts = () => {
                     type="text"
                     placeholder="Search for specifing engineer"
                     className=" pl-8"
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <Button
                     className="ml-2"
-                    disabled={loading || !searchQuery}
                     onClick={() => {
-                        console.log(searchQuery)
+                        if (searchTerm == null || searchTerm.trim() === '') {
+                            setError("Please enter a valid search query!");
+                        } else {
+                            setError("");
+                            setCurrentPage(1); // Reset to first page on new search
+                            fetchAdverts();
+                        }
                     }}
                 >
                     Search
                 </Button>
             </div>
 
+            {error && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
+                <AlertCircle className="h-4 w-4"/>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    {error}
+                </AlertDescription>
+            </Alert>)}
+
             {advertData?.items?.map((advert: SingleAdvertOverviewData) => (
                 <div key={advert.title}>
-                    <Card className="w-full max-w-md my-10">
+                    <Card className="w-full max-w-3xl my-10">
                         <CardHeader>
                             <CardTitle className="text-4xl">{advert.title}</CardTitle>
                         </CardHeader>
@@ -121,7 +155,7 @@ export const AudioEngineerSeeAllAdverts = () => {
                                             Prices from:
                                             <p className="text-5xl">{advert.price} PLN</p>
                                         </h1>
-                                        <WalletIcon className="ml-5" absoluteStrokeWidth={true} size={90}></WalletIcon>
+                                        <WalletIcon absoluteStrokeWidth={true} size={75} className="m-1"></WalletIcon>
                                     </div>
                                 </Card>
 
@@ -131,7 +165,16 @@ export const AudioEngineerSeeAllAdverts = () => {
                                 <img src={advert.coverImageUrl} className="w-full h-full object-cover" alt="img"/>
                             </div>
                         </CardContent>
-                        <Button className="">See more</Button>
+                        <div className="flex align-middle justify-center">
+                            <Button
+                                className="w-full max-w-2xl"
+                                onClick={() => {
+                                    setSeeMoreSelected(advert.idUser);
+                                }}
+                            >
+                                See more
+                            </Button>
+                        </div>
                     </Card>
                 </div>
             ))}
@@ -175,16 +218,6 @@ export const AudioEngineerSeeAllAdverts = () => {
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
-
-            {error && (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        {error}
-                    </AlertDescription>
-                </Alert>
-            )}
         </div>
     );
 }

@@ -23,7 +23,7 @@ import {Input} from "@/components/ui/input"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {FileInput, FileUploader, FileUploaderContent, FileUploaderItem} from "@/components/ui/file-upload-custom.tsx";
 import {AlertCircle, CloudUpload, Paperclip, Terminal} from "lucide-react";
-import {AdvertCategories} from "@/pages/Shared/enums/advert-categories.tsx";
+import {AdvertCategories} from "@/enums/advert-categories.tsx";
 import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
