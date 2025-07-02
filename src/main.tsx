@@ -5,9 +5,9 @@ import {ThemeProvider} from "@/components/theme-provider.tsx";
 import {StrictMode} from "react";
 
 createRoot(document.getElementById('root')!).render(
-    // <StrictMode>
+    <StrictMode>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
             <App/>
         </ThemeProvider>
-    // </StrictMode>,
+    </StrictMode>,
 )

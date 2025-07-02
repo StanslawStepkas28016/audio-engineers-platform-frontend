@@ -81,6 +81,7 @@ function App() {
                     </RedirectAuthenticatedUser>
                 }/>
 
+                {/* Audio engineer routes */}
                 {userData.roleName === AppRoles.AudioEngineer && (
                     <Route element={
                         <ProtectedRoute>
