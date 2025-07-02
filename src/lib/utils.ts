@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function transformDate(date: Date): string {
     const strings = date.toString().split("T");
-    const datePart = strings[0].split("-").join(".");
+    const datePart = strings[0].split("-").join(".").split(".").reverse().join(".");
     const timePart = strings[1].split(":");
     return datePart + " | " + timePart[0] + ":" + timePart[1];
 }
