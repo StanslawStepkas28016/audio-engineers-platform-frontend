@@ -7,7 +7,7 @@ import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
-import {AppRoles} from "@/pages/Shared/enums/app-roles.tsx";
+import {AppRoles} from "@/enums/app-roles.tsx";
 import {PhoneInput} from "@/components/ui/phone-input.tsx";
 import {
     Form,
