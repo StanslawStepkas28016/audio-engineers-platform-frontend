@@ -8,7 +8,7 @@ import React, {useEffect} from "react";
 import {userStore} from "@/lib/userStore.ts";
 import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
-import {AudioEngineerSeeAllAdverts} from "@/pages/AudioEngineer/AudioEngineerSeeAllAdverts.tsx";
+import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
 import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
 import {AudioEngineerChangeData} from "@/pages/AudioEngineer/AudioEngineerChangeData.tsx";
@@ -88,7 +88,7 @@ function App() {
                             <AudioEngineerHomepage/>
                         </ProtectedRoute>
                     }>
-                        <Route index element={<AudioEngineerSeeAllAdverts/>}/>
+                        <Route index element={<SeeAllAdverts/>}/>
                         <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
                         <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
                         <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>

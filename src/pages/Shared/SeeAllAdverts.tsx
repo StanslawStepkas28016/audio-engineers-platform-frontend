@@ -5,7 +5,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {transformDate} from "@/lib/utils.ts";
+import {transformDate} from "@/hooks/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {
     Pagination,
@@ -15,7 +15,7 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination.tsx"
 import {Input} from "@/components/ui/input.tsx";
 import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
 
@@ -41,7 +41,7 @@ export type AdvertsData = {
     hasPreviousPage: boolean;
 };
 
-export const AudioEngineerSeeAllAdverts = () => {
+export const SeeAllAdverts = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [advertData, setAdvertData] = useState<AdvertsData | null>(null);

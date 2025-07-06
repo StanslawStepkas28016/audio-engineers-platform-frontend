@@ -1,6 +1,6 @@
 import * as React from "react";
 import {cva, type VariantProps} from "class-variance-authority";
-import {cn} from "@/lib/utils.ts";
+import {cn} from "@/hooks/utils.ts";
 import {Avatar, AvatarImage, AvatarFallback} from "@/components/chat/avatar.tsx";
 import MessageLoading from "./message-loading.tsx";
 import {Button, ButtonProps} from "./button.tsx";
