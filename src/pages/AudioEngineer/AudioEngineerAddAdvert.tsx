@@ -103,7 +103,7 @@ export const AudioEngineerAddAdvert = () => {
 
             // Sending the request
             const response = await axiosInstance.post(
-                "advert/create",
+                "advert",
                 payload,
                 {
                     headers: {
@@ -133,7 +133,7 @@ export const AudioEngineerAddAdvert = () => {
             </div>
             <Form {...formData}>
                 <form onSubmit={formData.handleSubmit(handleAddAdvert)}
-                      className="space-y-8 mx-auto py-10">
+                      className="w-full max-w-2xl mx-auto space-y-8 flex flex-col p-10">
                     <FormField
                         control={formData.control}
                         name="title"

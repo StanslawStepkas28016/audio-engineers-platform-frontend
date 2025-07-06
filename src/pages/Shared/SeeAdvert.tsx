@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
 import {isAxiosError} from "axios";
-import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
+import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 
 export type AdvertData = {
@@ -27,7 +27,7 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
 
     const fetchUserAdvert = async () => {
         try {
-            const response = await axiosInstance.get("advert", {params: {idUser: idUser}});
+            const response = await axiosInstance.get(`/advert/by-id-user/${idUser}`);
             setAdvertData(response.data);
         } catch (e) {
             if (isAxiosError(e) && e.response) {
@@ -92,6 +92,7 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
 
                             <h1 className="text-3xl font-bold mt-10">See my reviews!</h1>
 
+                            {/* Reviews */}
                             <Card className="my-10">
                                 <CardHeader className="">
                                     <div className="flex justify-between">

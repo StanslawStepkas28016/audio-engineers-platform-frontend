@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { X, MessageCircle } from "lucide-react";
-import { cn } from "@/lib/utils.ts";
+import { cn } from "@/hooks/utils.ts";
 import { Button } from "@/components/chat/button.tsx";
 
 export type ChatPosition = "bottom-right" | "bottom-left";
