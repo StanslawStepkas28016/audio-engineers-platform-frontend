@@ -99,8 +99,8 @@ export const SeeAllAdverts = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 flex flex-col items-center justify-center">
-            <h1 className="text-3xl font-bold mt-5">Find the best audio engineers!</h1>
+        <div className="container mx-auto flex flex-col items-center justify-center p-10">
+            <h1 className="text-3xl font-bold">Find the best audio engineers!</h1>
 
             <div className="relative flex items-center w-1/2 mt-10">
                 <SearchIcon
