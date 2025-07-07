@@ -19,7 +19,6 @@ import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
 import {GuestHomepage} from "@/pages/Guest/GuestHomepage.tsx";
 
-
 const ProtectedRoute = ({children}: { children: React.ReactElement }) => {
     const {isAuthenticated} = userStore();
 

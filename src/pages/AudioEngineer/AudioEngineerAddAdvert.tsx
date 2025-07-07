@@ -126,14 +126,15 @@ export const AudioEngineerAddAdvert = () => {
     }
 
     return (
-
-        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-            <div className="text-center mt-5 -mb-10">
-                <h1 className="text-3xl font-bold">Fill in your advert information!</h1>
+        <div className="flex flex-col p-10">
+            <div className="text-center">
+                <h1 className="text-3xl font-bold mb-10">
+                    Fill in your advert information!
+                </h1>
             </div>
             <Form {...formData}>
                 <form onSubmit={formData.handleSubmit(handleAddAdvert)}
-                      className="w-full max-w-2xl mx-auto space-y-8 flex flex-col p-10">
+                      className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                     <FormField
                         control={formData.control}
                         name="title"
