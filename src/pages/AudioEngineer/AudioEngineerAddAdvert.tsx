@@ -74,7 +74,7 @@ export const AudioEngineerAddAdvert = () => {
             .string(),
     });
 
-    const formData = useForm<z.infer<typeof formValidationSchema>>({
+    const form = useForm<z.infer<typeof formValidationSchema>>({
         resolver: zodResolver(formValidationSchema),
         defaultValues: {
             title: "",
@@ -94,12 +94,12 @@ export const AudioEngineerAddAdvert = () => {
             // Payload preparation
             const payload = new FormData();
             payload.append("idUser", String(userData?.idUser));
-            payload.append("title", formData.getValues("title"));
-            payload.append("description", formData.getValues("description"));
-            payload.append("portfolioUrl", formData.getValues("portfolioUrl"));
-            payload.append("price", String(formData.getValues("price")));
-            payload.append("categoryName", formData.getValues("categoryName"));
-            payload.append("coverImageFile", formData.getValues("coverImageFile"));
+            payload.append("title", form.getValues("title"));
+            payload.append("description", form.getValues("description"));
+            payload.append("portfolioUrl", form.getValues("portfolioUrl"));
+            payload.append("price", String(form.getValues("price")));
+            payload.append("categoryName", form.getValues("categoryName"));
+            payload.append("coverImageFile", form.getValues("coverImageFile"));
 
             // Sending the request
             const response = await axiosInstance.post(
@@ -132,11 +132,11 @@ export const AudioEngineerAddAdvert = () => {
                     Fill in your advert information!
                 </h1>
             </div>
-            <Form {...formData}>
-                <form onSubmit={formData.handleSubmit(handleAddAdvert)}
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleAddAdvert)}
                       className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="title"
                         render={({field}) => (
                             <FormItem>
@@ -155,7 +155,7 @@ export const AudioEngineerAddAdvert = () => {
                     />
 
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="description"
                         render={({field}) => (
                             <FormItem>
@@ -173,14 +173,14 @@ export const AudioEngineerAddAdvert = () => {
                     />
 
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="coverImageFile"
                         render={({field}) => (
                             <FormItem>
                                 <FormLabel>Select a cover image file</FormLabel>
                                 <FormControl>
                                     <Controller
-                                        control={formData.control}
+                                        control={form.control}
                                         name="coverImageFile"
                                         defaultValue={undefined}
                                         render={({field: {value, onChange}}) => (
@@ -228,7 +228,7 @@ export const AudioEngineerAddAdvert = () => {
                         )}
                     />
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="portfolioUrl"
                         render={({field}) => (
                             <FormItem>
@@ -248,7 +248,7 @@ export const AudioEngineerAddAdvert = () => {
                     />
 
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="price"
                         render={({field}) => (
                             <FormItem>
@@ -268,7 +268,7 @@ export const AudioEngineerAddAdvert = () => {
                     />
 
                     <FormField
-                        control={formData.control}
+                        control={form.control}
                         name="categoryName"
                         render={({field}) => (
                             <FormItem className="space-y-3">

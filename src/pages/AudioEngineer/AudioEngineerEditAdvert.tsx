@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {AdvertData} from "@/pages/Shared/SeeAdvert.tsx";
@@ -52,61 +52,38 @@ export const AudioEngineerEditAdvert = () => {
             .max(1500, {message: "Price can’t exceed 1500"}),
     });
 
-    const formData = useForm<z.infer<typeof formValidationSchema>>({
+    const form = useForm<z.infer<typeof formValidationSchema>>({
         resolver: zodResolver(formValidationSchema),
-        defaultValues: {
-            title: advertData?.title,
-            description: advertData?.description,
-            portfolioUrl: advertData?.portfolioUrl,
-            price: Number(advertData?.price) || 0,
-        },
-    });
-    const fetchUserAdvert = async () => {
-        try {
-            setIsLoading(true);
-            const response = await axiosInstance.get(`/advert/by-id-user/${userData.idUser}`);
-            setAdvertData(response.data);
-            setIsLoading(false);
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                if (e.response.status === 500) {
-                    setNoAdvertPostedError(e.response.data.ExceptionMessage);
-                } else {
-                    setEditingError(e.response.data.ExceptionMessage);
+        defaultValues: async () => await axiosInstance.get(`/advert/by-id-user/${userData.idUser}`)
+            .then(response => {
+                setAdvertData(response.data);
+                return response.data
+            })
+            .catch(e => {
+                    if (isAxiosError(e) && e.response) setNoAdvertPostedError(e.response.data.ExceptionMessage)
                 }
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            )
+            .finally(() => setIsLoading(false))
+    });
 
     const sendAdvertUpdate = async () => {
-        await axiosInstance.patch(`/advert/${advertData?.idAdvert}`, formData.getValues());
+        await axiosInstance.patch(`/advert/${advertData?.idAdvert}`, form.getValues());
     }
 
     const handleSubmit = async () => {
-        if (!formData.formState.isDirty) {
+        setEditingError("");
+        setSuccess("");
+
+        if (!form.formState.dirtyFields) {
             setEditingError("You must change at least one field to update your advert.");
             return;
         }
+
         await sendAdvertUpdate();
         setEditingError("");
         setSuccess("Successfully updated your advert!");
         setTimeout(() => navigate("/"), 1000);
     }
-
-    useEffect(() => {
-        fetchUserAdvert();
-    }, [])
-
-    useEffect(() => {
-        formData.reset({
-            title: advertData?.title,
-            description: advertData?.description,
-            portfolioUrl: advertData?.portfolioUrl,
-            price: Number(advertData?.price),
-        });
-    }, [advertData]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -126,11 +103,11 @@ export const AudioEngineerEditAdvert = () => {
                     </AlertDescription>
                 </Alert>
             ) : (
-                <Form {...formData}>
-                    <form onSubmit={formData.handleSubmit(handleSubmit)}
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)}
                           className="flex flex-col w-full max-w-2xl mx-auto space-y-8">
                         <FormField
-                            control={formData.control}
+                            control={form.control}
                             name="title"
                             render={({field}) => (
                                 <FormItem>
@@ -147,7 +124,7 @@ export const AudioEngineerEditAdvert = () => {
                         />
 
                         <FormField
-                            control={formData.control}
+                            control={form.control}
                             name="description"
                             render={({field}) => (
                                 <FormItem>
@@ -164,7 +141,7 @@ export const AudioEngineerEditAdvert = () => {
                         />
 
                         <FormField
-                            control={formData.control}
+                            control={form.control}
                             name="portfolioUrl"
                             render={({field}) => (
                                 <FormItem>
@@ -184,7 +161,7 @@ export const AudioEngineerEditAdvert = () => {
                         />
 
                         <FormField
-                            control={formData.control}
+                            control={form.control}
                             name="price"
                             render={({field}) => (
                                 <FormItem>
