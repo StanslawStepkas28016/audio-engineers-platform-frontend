@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {FormEvent, useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, SearchIcon, WalletIcon} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/pagination.tsx"
 import {Input} from "@/components/ui/input.tsx";
 import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 export type SingleAdvertOverviewData = {
     idAdvert: string,
@@ -42,28 +43,31 @@ export type AdvertsData = {
 };
 
 export const SeeAllAdverts = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [advertData, setAdvertData] = useState<AdvertsData | null>(null);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState("");
+    const currentPage = searchParams.get("page") ? Number(searchParams.get("page")!) : 1;
+    const currentSearchTerm = searchParams.get("searchTerm") ? searchParams.get("searchTerm") : "";
 
-    const [seeMoreSelected, setSeeMoreSelected] = useState("");
+    const [currentInputSearchTerm, setCurrentInputSearchTerm] = useState("");
 
     const fetchAdverts = async () => {
         setError("");
         setLoading(true);
         try {
             const response = await axiosInstance.get("advert/get-all", {
-                params: {sortOrder: "price_desc", page: currentPage, pageSize: 2, searchTerm: searchTerm},
+                params: {sortOrder: "price_desc", page: currentPage, pageSize: 3, searchTerm: currentSearchTerm},
             });
+
             setAdvertData(response.data);
 
             if (response.data.items.length === 0) {
                 setError("No adverts found for the given search term.");
             }
-
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
@@ -75,34 +79,37 @@ export const SeeAllAdverts = () => {
         }
     };
 
+    const handleSearch = (e: FormEvent) => {
+        e.preventDefault();
+
+        const term = currentInputSearchTerm.trim();
+
+        if (!term) {
+            setError("Please enter a valid search query!");
+            return;
+        }
+
+        setError("");
+        setSearchParams({searchTerm: term, page: "1"});
+    }
+
     const calculateTotalPages = () => {
         return advertData ? Math.ceil(advertData?.totalCount / advertData?.pageSize) : 0;
     }
 
     useEffect(() => {
         fetchAdverts();
-    }, [currentPage])
+    }, [currentPage, currentSearchTerm])
 
     if (loading) {
         return <LoadingPage/>;
-    }
-
-    if (seeMoreSelected) {
-        return (
-            <div className="display flex flex-col items-center justify-center mb-10">
-                <Button onClick={() => setSeeMoreSelected("")} className="">
-                    ← Back to list
-                </Button>
-                <SeeAdvert idUser={seeMoreSelected}/>
-            </div>
-        );
     }
 
     return (
         <div className="container mx-auto flex flex-col items-center justify-center p-10">
             <h1 className="text-3xl font-bold">Find the best audio engineers!</h1>
 
-            <div className="relative flex items-center w-1/2 mt-10">
+            <form className="relative flex items-center w-1/2 mt-10" onSubmit={handleSearch}>
                 <SearchIcon
                     className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform"
                 />
@@ -110,23 +117,14 @@ export const SeeAllAdverts = () => {
                     type="text"
                     placeholder="Search for specifing engineer"
                     className=" pl-8"
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setCurrentInputSearchTerm(e.target.value)}
                 />
                 <Button
                     className="ml-2"
-                    onClick={() => {
-                        if (searchTerm == null || searchTerm.trim() === '') {
-                            setError("Please enter a valid search query!");
-                        } else {
-                            setError("");
-                            setCurrentPage(1); // Reset to first page on new search
-                            fetchAdverts();
-                        }
-                    }}
                 >
                     Search
                 </Button>
-            </div>
+            </form>
 
             {error && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
                 <AlertCircle className="h-4 w-4"/>
@@ -136,48 +134,51 @@ export const SeeAllAdverts = () => {
                 </AlertDescription>
             </Alert>)}
 
-            {advertData?.items?.map((advert: SingleAdvertOverviewData) => (
-                <div key={advert.title}>
-                    <Card className="w-full max-w-3xl my-10">
-                        <CardHeader>
-                            <CardTitle className="text-4xl">{advert.title}</CardTitle>
-                        </CardHeader>
+            <div className="mt-10">
+                {advertData?.items?.map((advert: SingleAdvertOverviewData) => (
+                    <div key={advert.title}>
+                        <Card className="w-full max-w-3xl mb-8">
+                            <CardHeader>
+                                <CardTitle className="text-4xl">{advert.title}</CardTitle>
+                            </CardHeader>
 
-                        <CardContent className="grid gap-3 md:grid-cols-2">
-                            <div>
-                                <p
-                                    className="text-4l text-muted-foreground">{advert.userFirstName} {advert.userLastName} | {transformDate(advert.dateCreated)}
-                                </p>
+                            <CardContent className="grid gap-3 md:grid-cols-2">
+                                <div>
+                                    <p
+                                        className="text-4l text-muted-foreground">{advert.userFirstName} {advert.userLastName} | {transformDate(advert.dateCreated)}
+                                    </p>
 
-                                <Card className="p-10 mt-5">
-                                    <div className="flex justify-between">
-                                        <h1>
-                                            Prices from:
-                                            <p className="text-5xl">{advert.price} PLN</p>
-                                        </h1>
-                                        <WalletIcon absoluteStrokeWidth={true} size={75} className="m-1"></WalletIcon>
-                                    </div>
-                                </Card>
+                                    <Card className="p-10 mt-5">
+                                        <div className="flex justify-between">
+                                            <h1>
+                                                Prices from:
+                                                <p className="text-5xl">{advert.price} PLN</p>
+                                            </h1>
+                                            <WalletIcon absoluteStrokeWidth={true} size={75}
+                                                        className="m-1"></WalletIcon>
+                                        </div>
+                                    </Card>
 
+                                </div>
+
+                                <div className="w-full h-64 md:h-80 overflow-hidden rounded-lg">
+                                    <img src={advert.coverImageUrl} className="w-full h-full object-cover" alt="img"/>
+                                </div>
+                            </CardContent>
+                            <div className="flex align-middle justify-center">
+                                <Button
+                                    className="w-full max-w-2xl"
+                                    onClick={() => {
+                                        // navigate to the advert details page
+                                    }}
+                                >
+                                    See more
+                                </Button>
                             </div>
-
-                            <div className="w-full h-64 md:h-80 overflow-hidden rounded-lg">
-                                <img src={advert.coverImageUrl} className="w-full h-full object-cover" alt="img"/>
-                            </div>
-                        </CardContent>
-                        <div className="flex align-middle justify-center">
-                            <Button
-                                className="w-full max-w-2xl"
-                                onClick={() => {
-                                    setSeeMoreSelected(advert.idUser);
-                                }}
-                            >
-                                See more
-                            </Button>
-                        </div>
-                    </Card>
-                </div>
-            ))}
+                        </Card>
+                    </div>
+                ))}
+            </div>
 
             <Pagination>
                 <PaginationContent>
@@ -185,7 +186,10 @@ export const SeeAllAdverts = () => {
                         <PaginationPrevious
                             onClick={() => {
                                 if (advertData?.hasPreviousPage) {
-                                    setCurrentPage(currentPage - 1);
+                                    setSearchParams({
+                                        searchTerm: currentInputSearchTerm || "",
+                                        page: (currentPage - 1).toString()
+                                    });
                                 }
                             }}
                         />
@@ -196,7 +200,14 @@ export const SeeAllAdverts = () => {
                                 (_, index) => (
                                     <PaginationLink
                                         key={index}
-                                        onClick={() => setCurrentPage(index + 1)}
+                                        onClick={
+                                            () => setSearchParams(
+                                                {
+                                                    searchTerm: currentInputSearchTerm || "",
+                                                    page: (index + 1).toString()
+                                                }
+                                            )
+                                        }
                                         isActive={currentPage == index + 1}
                                     >
                                         {index + 1}
@@ -211,7 +222,12 @@ export const SeeAllAdverts = () => {
                         <PaginationNext
                             onClick={() => {
                                 if (advertData?.hasNextPage) {
-                                    setCurrentPage(currentPage + 1);
+                                    setSearchParams(
+                                        {
+                                            searchTerm: currentInputSearchTerm ? currentInputSearchTerm : "",
+                                            page: (currentPage + 1).toString()
+                                        }
+                                    );
                                 }
                             }}
                         />

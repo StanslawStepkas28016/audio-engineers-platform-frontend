@@ -57,7 +57,7 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
         return <LoadingPage/>;
     }
     return (
-        <div className="flex flex-col items-center justify-center text-center p-10">
+        <div className="flex flex-col items-center p-10">
             {noAdvertPostedError ? (
                 <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4"/>
@@ -68,7 +68,7 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
                 </Alert>
             ) : (
                 advertData && (
-                    <div>
+                    <div className="justify-center text-center">
                         <h1 className="text-3xl font-bold">{advertData.title}</h1>
 
                         <p className="leading-7 [&:not(:first-child)]:mt-6">
@@ -130,7 +130,7 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
                             </CardContent>
                         </Card>
 
-                        <Card className="my-10">
+                        <Card className="mt-10 -mb-15">
                             <CardHeader className="">
                                 <div className="flex justify-between">
                                     <CardTitle className="text-1xl">Anna Doe</CardTitle>

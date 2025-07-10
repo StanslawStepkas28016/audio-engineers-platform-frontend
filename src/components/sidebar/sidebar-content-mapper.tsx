@@ -59,6 +59,7 @@ export function SidebarContentMapper({
                                     <SidebarMenuSub>
                                         {item.items?.map((subItem) => {
                                             const isActive = subItem.url === pathname
+
                                             return (
                                                 <SidebarMenuSubItem key={subItem.title} data-selected={isActive}>
                                                     <SidebarMenuSubButton asChild>
