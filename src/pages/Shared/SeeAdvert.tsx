@@ -6,6 +6,8 @@ import {isAxiosError} from "axios";
 import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {useParams} from "react-router-dom";
+import {formatDistanceToNow} from "date-fns";
 
 export type AdvertData = {
     idUser: string,
@@ -22,17 +24,66 @@ export type AdvertData = {
     dateModified: Date,
 }
 
-export const SeeAdvert = ({idUser}: { idUser: string }) => {
+export type SingleReviewData = {
+    idAdvert: string,
+    clientFirstName: string,
+    clientLastName: string,
+    content: string,
+    satisfactionLevel: number,
+    dateCreated: Date,
+    calculatedMonthsAgo: number,
+}
+
+export type AdvertReviewsData = {
+    items: SingleReviewData[];
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
+
+export const SeeAdvert = () => {
+    const {idAdvert} = useParams<{ idAdvert: string }>();
+
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [noAdvertPostedError, setNoAdvertPostedError] = useState("");
     const [advertData, setAdvertData] = useState<AdvertData | null>(null);
+    const [advertReviews, setAdvertReviews] = useState<AdvertReviewsData | null>(null);
+
 
     const fetchUserAdvert = async () => {
         try {
             setIsLoading(true);
-            const response = await axiosInstance.get(`/advert/by-id-user/${idUser}`);
+            const response = await axiosInstance.get(`/advert/${idAdvert}`);
             setAdvertData(response.data);
+        } catch (e) {
+            if (isAxiosError(e) && e.response) {
+                if (e.response.status === 500) {
+                    setNoAdvertPostedError(e.response.data.ExceptionMessage);
+                    console.log(e)
+                } else {
+                    setError(e.response.data.ExceptionMessage);
+                }
+            } else {
+                console.log(e)
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchAdvertReviews = async () => {
+        try {
+            const response = await axiosInstance.get(`/advert/reviews`, {
+                params: {
+                    idAdvert: idAdvert,
+                    page: 1,
+                    pageSize: 4
+                }
+            });
+            setAdvertReviews(response.data);
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 if (e.response.status === 500) {
@@ -51,7 +102,8 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
 
     useEffect(() => {
         fetchUserAdvert();
-    }, [])
+        fetchAdvertReviews();
+    }, [idAdvert])
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -98,7 +150,6 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
                             height="400"
                         />
 
-
                         <h1 className="text-3xl font-bold mt-10 mb-10">Want to collaborate?</h1>
                         <div className="flex flex-row gap-4 items-center justify-center">
                             <a href="https://www.instagram.com" target="_blank"><Instagram size={50}
@@ -109,44 +160,32 @@ export const SeeAdvert = ({idUser}: { idUser: string }) => {
                                                                                           strokeWidth={2}/></a>
                         </div>
 
-                        <h1 className="text-3xl font-bold mt-10">See my reviews!</h1>
+                        <h1 className="text-3xl font-bold m-10">See my reviews!</h1>
 
-                        {/* Reviews */}
-                        <Card className="my-10">
-                            <CardHeader className="">
-                                <div className="flex justify-between">
-                                    <CardTitle className="text-1xl">William Smith</CardTitle>
+                        {
+                            advertReviews?.items?.map((reviewData: SingleReviewData) => (
+                                <div key={reviewData.idAdvert} className="my-5">
+                                    <Card>
+                                        <CardHeader className="">
+                                            <div className="flex justify-between">
+                                                <CardTitle
+                                                    className="text-1xl">{reviewData.clientFirstName} {reviewData.clientLastName}</CardTitle>
+                                            </div>
+                                            <div className="flex justify-between text-sm text-muted-foreground">
+                                                <span>Client</span>
+                                                <span>{formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}</span>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent className="pt-2">
+                                            <p className="text-justify">
+                                                {reviewData.content}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
                                 </div>
-                                <div className="flex justify-between text-sm text-muted-foreground">
-                                    <span>Client</span>
-                                    <span>8 months ago</span>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="pt-2">
-                                <p className="text-justify">
-                                    My experience working with this guy was great! I really liked how passionate he was
-                                    about making minor adjustments to a song he mixed for me :)
-                                </p>
-                            </CardContent>
-                        </Card>
+                            ))
+                        }
 
-                        <Card className="mt-10 -mb-15">
-                            <CardHeader className="">
-                                <div className="flex justify-between">
-                                    <CardTitle className="text-1xl">Anna Doe</CardTitle>
-                                </div>
-                                <div className="flex justify-between text-sm text-muted-foreground">
-                                    <span>Client</span>
-                                    <span>12 months ago</span>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="pt-2">
-                                <p className="text-justify">
-                                    My experience working with this guy was great! I really liked how passionate he was
-                                    about making minor adjustments to a song he mixed for me :)
-                                </p>
-                            </CardContent>
-                        </Card>
                     </div>)
             )}
             {error &&

@@ -17,20 +17,20 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination.tsx"
 import {Input} from "@/components/ui/input.tsx";
-import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
 
 export type SingleAdvertOverviewData = {
     idAdvert: string,
     title: string,
     idUser: string,
-    price: string,
-    categoryName: string,
     userFirstName: string,
     userLastName: string,
     dateCreated: Date,
-    // coverImageKey: string,
+    price: string,
+    categoryName: string,
+    coverImageKey: string,
     coverImageUrl: string,
+    description: string,
 }
 
 export type AdvertsData = {
@@ -141,7 +141,6 @@ export const SeeAllAdverts = () => {
                             <CardHeader>
                                 <CardTitle className="text-4xl">{advert.title}</CardTitle>
                             </CardHeader>
-
                             <CardContent className="grid gap-3 md:grid-cols-2">
                                 <div>
                                     <p
@@ -161,7 +160,7 @@ export const SeeAllAdverts = () => {
 
                                 </div>
 
-                                <div className="w-full h-64 md:h-80 overflow-hidden rounded-lg">
+                                <div className="w-full h-64 md:h-80 overflow-hidden rounded-.lg">
                                     <img src={advert.coverImageUrl} className="w-full h-full object-cover" alt="img"/>
                                 </div>
                             </CardContent>
@@ -169,7 +168,7 @@ export const SeeAllAdverts = () => {
                                 <Button
                                     className="w-full max-w-2xl"
                                     onClick={() => {
-                                        // navigate to the advert details page
+                                        navigate(`/see-advert/${advert.idAdvert}`);
                                     }}
                                 >
                                     See more

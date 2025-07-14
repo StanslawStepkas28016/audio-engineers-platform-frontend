@@ -4,7 +4,7 @@ import {SidebarSiteContentHeader} from "@/components/sidebar/sidebar-site-conten
 import {Outlet} from "react-router-dom";
 import {ClientAppSideBar} from "@/components/sidebar/client-app-side-bar.tsx";
 
-export const ClientHomepage = () => {
+export const ClientOutletPlaceholder = () => {
     return (
         <SidebarProvider
             style={

@@ -1,6 +1,6 @@
-import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import {LoginPage} from "@/pages/Shared/LoginPage.tsx";
-import {AudioEngineerHomepage} from "@/pages/AudioEngineer/AudioEngineerHomepage.tsx";
+import {AudioEngineerOutletPlaceholder} from "@/pages/AudioEngineer/AudioEngineerOutletPlaceholder.tsx";
 import {NotFoundPage} from "@/pages/Shared/NotFoundPage.tsx";
 import {RegisterPage} from "@/pages/Shared/RegisterPage.tsx";
 import {VerifyAccountPage} from "@/pages/Shared/VerifyAccountPage.tsx";
@@ -13,11 +13,13 @@ import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSee
 import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
 import {AudioEngineerChangeData} from "@/pages/AudioEngineer/AudioEngineerChangeData.tsx";
 import {AudioEngineerChangePassword} from "@/pages/AudioEngineer/AudioEngineerChangePassword.tsx";
-import {ClientHomepage} from "@/pages/Client/ClientHomepage.tsx";
-import {ClientAdverts} from "@/pages/Client/ClientAdverts.tsx";
+import {ClientOutletPlaceholder} from "@/pages/Client/ClientOutletPlaceholder.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
 import {GuestHomepage} from "@/pages/Guest/GuestHomepage.tsx";
+import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
+import {ClientChangeData} from "@/pages/Client/ClientChangeData.tsx";
+import {ClientChangePassword} from "@/pages/Client/ClientChangePassword.tsx";
 
 const ProtectedRoute = ({children}: { children: React.ReactElement }) => {
     const {isAuthenticated} = userStore();
@@ -84,10 +86,11 @@ function App() {
                 {userData.roleName === AppRoles.AudioEngineer && (
                     <Route element={
                         <ProtectedRoute>
-                            <AudioEngineerHomepage/>
+                            <AudioEngineerOutletPlaceholder/>
                         </ProtectedRoute>
                     }>
                         <Route index element={<SeeAllAdverts/>}/>
+                        <Route path="see-advert/:idAdvert" element={<SeeAdvert/>}/>
                         <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
                         <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
                         <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>
@@ -101,10 +104,13 @@ function App() {
                 {userData.roleName === AppRoles.Client && (
                     <Route element={
                         <ProtectedRoute>
-                            <ClientHomepage/>
+                            <ClientOutletPlaceholder/>
                         </ProtectedRoute>
                     }>
-                        <Route index element={<ClientAdverts/>}/>
+                        <Route index element={<SeeAllAdverts/>}/>
+                        <Route path="see-advert/:idAdvert" element={<SeeAdvert/>}/>
+                        <Route path="change-data" element={<ClientChangeData/>}/>
+                        <Route path="change-password" element={<ClientChangePassword/>}/>
                     </Route>
                 )}
 

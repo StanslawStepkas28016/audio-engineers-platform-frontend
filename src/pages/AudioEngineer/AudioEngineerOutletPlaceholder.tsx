@@ -4,7 +4,7 @@ import React from "react";
 import {SidebarSiteContentHeader} from "@/components/sidebar/sidebar-site-content-header.tsx";
 import {Outlet} from "react-router-dom";
 
-export const AudioEngineerHomepage = () => {
+export const AudioEngineerOutletPlaceholder = () => {
     return (
         <SidebarProvider
             style={
