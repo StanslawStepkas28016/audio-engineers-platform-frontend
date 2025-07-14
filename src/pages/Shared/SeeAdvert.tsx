@@ -8,6 +8,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
 import {useParams} from "react-router-dom";
 import {formatDistanceToNow} from "date-fns";
+import {AppRoles} from "@/enums/app-roles.tsx";
 
 export type AdvertData = {
     idUser: string,
@@ -163,27 +164,32 @@ export const SeeAdvert = () => {
                         <h1 className="text-3xl font-bold m-10">See my reviews!</h1>
 
                         {
-                            advertReviews?.items?.map((reviewData: SingleReviewData) => (
-                                <div key={reviewData.idAdvert} className="my-5">
-                                    <Card>
-                                        <CardHeader className="">
-                                            <div className="flex justify-between">
-                                                <CardTitle
-                                                    className="text-1xl">{reviewData.clientFirstName} {reviewData.clientLastName}</CardTitle>
-                                            </div>
-                                            <div className="flex justify-between text-sm text-muted-foreground">
-                                                <span>Client</span>
-                                                <span>{formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}</span>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent className="pt-2">
-                                            <p className="text-justify">
-                                                {reviewData.content}
-                                            </p>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            ))
+                            (advertReviews?.items && advertReviews.items.length > 0) ?
+                                advertReviews.items?.map((reviewData: SingleReviewData) => (
+                                    <div key={reviewData.idAdvert} className="my-5">
+                                        <Card>
+                                            <CardHeader className="">
+                                                <div className="flex justify-between">
+                                                    <CardTitle
+                                                        className="text-1xl">{reviewData.clientFirstName} {reviewData.clientLastName}</CardTitle>
+                                                </div>
+                                                <div className="flex justify-between text-sm text-muted-foreground">
+                                                    <span>Client</span>
+                                                    <span>{formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}</span>
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="pt-2">
+                                                <p className="text-justify">
+                                                    {reviewData.content}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                )) : (
+                                    <div>
+                                        <p>This {AppRoles.AudioEngineer} does not have any reviews yet!</p>
+                                    </div>
+                                )
                         }
 
                     </div>)
