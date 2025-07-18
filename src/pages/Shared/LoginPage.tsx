@@ -1,28 +1,51 @@
-import {FormEvent, useState} from "react";
+import {useEffect, useState} from "react";
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle, Terminal} from "lucide-react";
+import {AlertCircle, CloudUpload, Paperclip, Terminal} from "lucide-react";
 import {userStore} from "@/lib/userStore.ts";
 import {Link, useNavigate} from "react-router-dom";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {
+    Controller,
+    useForm
+} from "react-hook-form"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "@/components/ui/form.tsx";
 
 export const LoginPage = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [success, setSuccess] = useState("");
-    const {login, error} = userStore();
     const navigate = useNavigate();
+    const {login, error} = userStore();
 
-    const handleLogin = async (e: FormEvent) => {
-        e.preventDefault();
-        await login(email, password);
-        if (!error) {
-            setSuccess("Successfully logged in!");
+    const formValidationSchema = z.object({
+        email: z.string().email("Invalid email address"),
+        password: z.string().min(2, "Password must be at least 6 characters long")
+    });
+
+    const form = useForm<z.infer<typeof formValidationSchema>>({
+        resolver: zodResolver(formValidationSchema),
+        defaultValues: {
+            email: "",
+            password: ""
         }
-        navigate("/", {replace: true});
+    });
+
+    const handleLogin = async () => {
+        await login(
+            form.getValues().email
+            , form.getValues().password
+        );
     }
 
     return (
@@ -37,47 +60,54 @@ export const LoginPage = () => {
                                     again!</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleLogin}>
-                                    <div className="flex flex-col gap-6">
-                                        <div className="grid gap-3">
-                                            <Label htmlFor="email">Email</Label>
-                                            <Input
-                                                id="email"
-                                                type="email"
-                                                placeholder="email@soundbest.pl"
-                                                required
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="grid gap-3">
-                                            <div className="flex items-center">
-                                                <Label htmlFor="password">Password</Label>
-                                                <a
-                                                    href="#"
-                                                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                                                >
-                                                    Forgot your password?
-                                                </a>
-                                            </div>
-                                            <Input
-                                                id="password"
-                                                type="password"
-                                                placeholder="*******"
-                                                required
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-3">
-                                            <Button
-                                                type="submit"
-                                                className="w-full"
-                                            >
-                                                Login
-                                            </Button>
-                                        </div>
-                                    </div>
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(handleLogin)}
+                                          className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
+                                        <FormField
+                                            control={form.control}
+                                            name="email"
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>E-mail</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="me@soundbest.pl"
+                                                            type="text"
+                                                            {...field} />
+                                                    </FormControl>
+                                                    <FormDescription>The mail you provided during singing
+                                                        up.</FormDescription>
+                                                    <FormMessage/>
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="password"
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>Password</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="*********"
+                                                            type="password"
+                                                            {...field} />
+                                                    </FormControl>
+                                                    <FormDescription>Forgot your password? {" "}
+                                                        <Link to="/forgot-password"
+                                                              className="underline underline-offset-4">
+                                                            Reset it!
+                                                        </Link>
+                                                    </FormDescription>
+
+                                                    <FormMessage/>
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <Button type="submit"> Submit</Button>
+                                    </form>
                                     <div className="mt-4 text-center text-sm">
                                         Don't have an account? {" "}
                                         <Link to="/register"
@@ -85,7 +115,7 @@ export const LoginPage = () => {
                                             Sign up
                                         </Link>
                                     </div>
-                                </form>
+                                </Form>
                             </CardContent>
                         </Card>
                         {error && (
@@ -110,5 +140,6 @@ export const LoginPage = () => {
                 </div>
             </main>
         </div>
-    );
+    )
+        ;
 }

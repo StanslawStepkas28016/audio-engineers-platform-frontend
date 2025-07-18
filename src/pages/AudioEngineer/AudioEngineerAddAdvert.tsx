@@ -144,7 +144,6 @@ export const AudioEngineerAddAdvert = () => {
                                 <FormControl>
                                     <Input
                                         placeholder="e.g. I will mix your song for cheap!"
-
                                         type="text"
                                         {...field} />
                                 </FormControl>
@@ -236,12 +235,10 @@ export const AudioEngineerAddAdvert = () => {
                                 <FormControl>
                                     <Input
                                         placeholder="e.g. https://open.spotify.com/playlist/1LBgAu0kv1q7CVzLFRjaUs?si=87c71b8d80d644bc"
-
                                         type="text"
                                         {...field} />
                                 </FormControl>
-                                <FormDescription>This is a link to your spotify/apple music
-                                    playlist</FormDescription>
+                                <FormDescription>This is a link to your spotify/apple music playlist</FormDescription>
                                 <FormMessage/>
                             </FormItem>
                         )}
@@ -260,8 +257,7 @@ export const AudioEngineerAddAdvert = () => {
                                         step="1"
                                         {...field} />
                                 </FormControl>
-                                <FormDescription>This will be shown as your advert
-                                    price</FormDescription>
+                                <FormDescription>This will be shown as your advert price</FormDescription>
                                 <FormMessage/>
                             </FormItem>
                         )}

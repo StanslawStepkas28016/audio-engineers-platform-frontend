@@ -8,7 +8,22 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
 import {useParams} from "react-router-dom";
 import {formatDistanceToNow} from "date-fns";
+import * as z from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "@/components/ui/form.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
+import Rating from "@/components/ui/rating.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
+import {userStore} from "@/lib/userStore.ts";
 
 export type AdvertData = {
     idUser: string,
@@ -46,13 +61,13 @@ export type AdvertReviewsData = {
 
 export const SeeAdvert = () => {
     const {idAdvert} = useParams<{ idAdvert: string }>();
+    const {userData} = userStore();
 
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [noAdvertPostedError, setNoAdvertPostedError] = useState("");
     const [advertData, setAdvertData] = useState<AdvertData | null>(null);
     const [advertReviews, setAdvertReviews] = useState<AdvertReviewsData | null>(null);
-
 
     const fetchUserAdvert = async () => {
         try {
@@ -77,6 +92,7 @@ export const SeeAdvert = () => {
 
     const fetchAdvertReviews = async () => {
         try {
+            setIsLoading(true);
             const response = await axiosInstance.get(`/advert/reviews`, {
                 params: {
                     idAdvert: idAdvert,
@@ -101,10 +117,57 @@ export const SeeAdvert = () => {
         }
     };
 
+    const formValidationSchema = z.object({
+        content: z
+            .string()
+            .min(35, {message: "Content must be at least 35 characters"})
+            .max(1500, {message: "Content must be less than 1500 characters"}),
+        satisfactionLevel: z
+            .number()
+            .min(1, {message: "SatisfactionLevel must be at least 1"})
+            .max(5, {message: "SatisfactionLevel must be at most 5"}),
+    });
+
+    const form = useForm<z.infer<typeof formValidationSchema>>({
+        resolver: zodResolver(formValidationSchema),
+        defaultValues: {
+            content: "",
+            satisfactionLevel: 3,
+        },
+    });
+
+    const handleAddReview = async () => {
+        setError("");
+
+        try {
+            setIsLoading(true);
+
+            const response = await axiosInstance.post(`/advert/review`, {
+                idAdvert: idAdvert,
+                content: form.getValues().content,
+                satisfactionLevel: form.getValues().satisfactionLevel,
+            });
+
+            console.log(response.data);
+        } catch (e) {
+            if (isAxiosError(e) && e.response) {
+                setError(e.response.data.ExceptionMessage);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+
+        form.reset();
+    }
+
     useEffect(() => {
         fetchUserAdvert();
         fetchAdvertReviews();
-    }, [idAdvert])
+    }, [idAdvert]);
+
+    useEffect(() => {
+        fetchAdvertReviews();
+    }, [form.formState.isSubmitSuccessful]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -152,6 +215,7 @@ export const SeeAdvert = () => {
                         />
 
                         <h1 className="text-3xl font-bold mt-10 mb-10">Want to collaborate?</h1>
+
                         <div className="flex flex-row gap-4 items-center justify-center">
                             <a href="https://www.instagram.com" target="_blank"><Instagram size={50}
                                                                                            strokeWidth={2}/></a>
@@ -163,22 +227,24 @@ export const SeeAdvert = () => {
 
                         <h1 className="text-3xl font-bold m-10">See my reviews!</h1>
 
+
+                        {/* Displaying all reviews */}
                         {
                             (advertReviews?.items && advertReviews.items.length > 0) ?
                                 advertReviews.items?.map((reviewData: SingleReviewData) => (
                                     <div key={reviewData.idAdvert} className="my-5">
                                         <Card>
-                                            <CardHeader className="">
+                                            <CardHeader>
                                                 <div className="flex justify-between">
-                                                    <CardTitle
-                                                        className="text-1xl">{reviewData.clientFirstName} {reviewData.clientLastName}</CardTitle>
+                                                    <span>{reviewData.clientFirstName} {reviewData.clientLastName}</span>
+                                                    <span><Rating value={reviewData.satisfactionLevel}/></span>
                                                 </div>
                                                 <div className="flex justify-between text-sm text-muted-foreground">
-                                                    <span>Client</span>
+                                                    <span>{AppRoles.Client}</span>
                                                     <span>{formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}</span>
                                                 </div>
                                             </CardHeader>
-                                            <CardContent className="pt-2">
+                                            <CardContent>
                                                 <p className="text-justify">
                                                     {reviewData.content}
                                                 </p>
@@ -187,11 +253,63 @@ export const SeeAdvert = () => {
                                     </div>
                                 )) : (
                                     <div>
-                                        <p>This {AppRoles.AudioEngineer} does not have any reviews yet!</p>
+                                        <p>No reviews yet, be the first one to post!</p>
                                     </div>
                                 )
                         }
 
+                        {/* Form for adding a review */}
+                        {
+
+                            userData.roleName == AppRoles.Client &&
+                            (<div className="mt-10 ">
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(handleAddReview)}>
+                                            <FormLabel className="mb-3">Share your own experience with this engineer!
+                                            </FormLabel>
+
+                                            <FormField
+                                                control={form.control}
+                                                name="satisfactionLevel"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Rating
+                                                                value={field.value}
+                                                                onValueChange={field.onChange}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage className="mt-5"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <div className="mt-3"/>
+
+                                            <FormField
+                                                control={form.control}
+                                                name="content"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <AutosizeTextarea
+                                                                placeholder="e.g Working with this engineer was great.."
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage className="mt-5"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <Button type="submit" className="w-full max-w-1xl mt-5">
+                                                Submit
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                </div>
+                            )
+                        }
                     </div>)
             )}
             {error &&
