@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter as Router, Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {LoginPage} from "@/pages/Shared/LoginPage.tsx";
 import {AudioEngineerOutletPlaceholder} from "@/pages/AudioEngineer/AudioEngineerOutletPlaceholder.tsx";
 import {NotFoundPage} from "@/pages/Shared/NotFoundPage.tsx";
@@ -41,6 +41,16 @@ const RedirectAuthenticatedUser = ({children}: { children: React.ReactElement })
     return children;
 };
 
+function ScrollToTop() {
+    const {pathname} = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+}
+
 function App() {
     const {isCheckingAuth, checkAuth, userData} = userStore();
 
@@ -48,12 +58,14 @@ function App() {
         checkAuth();
     }, [checkAuth]);
 
+
     if (isCheckingAuth) {
         return <LoadingPage/>;
     }
 
     return (
         <Router>
+            <ScrollToTop/>
             <Routes>
                 {/* Guest routes */}
                 <Route path="*" element={

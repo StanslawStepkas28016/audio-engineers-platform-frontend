@@ -237,7 +237,8 @@ export const SeeAdvert = () => {
                                             <CardHeader>
                                                 <div className="flex justify-between">
                                                     <span>{reviewData.clientFirstName} {reviewData.clientLastName}</span>
-                                                    <span><Rating value={reviewData.satisfactionLevel}/></span>
+                                                    <span><Rating value={reviewData.satisfactionLevel}
+                                                                  changeable={false}/></span>
                                                 </div>
                                                 <div className="flex justify-between text-sm text-muted-foreground">
                                                     <span>{AppRoles.Client}</span>
@@ -260,55 +261,53 @@ export const SeeAdvert = () => {
 
                         {/* Form for adding a review */}
                         {
-
                             userData.roleName == AppRoles.Client &&
                             (<div className="mt-10 ">
-                                    <Form {...form}>
-                                        <form onSubmit={form.handleSubmit(handleAddReview)}>
-                                            <FormLabel className="mb-3">Share your own experience with this engineer!
-                                            </FormLabel>
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(handleAddReview)}>
+                                        <FormLabel className="mb-3">Share your own experience with this engineer!
+                                        </FormLabel>
 
-                                            <FormField
-                                                control={form.control}
-                                                name="satisfactionLevel"
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Rating
-                                                                value={field.value}
-                                                                onValueChange={field.onChange}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className="mt-5"/>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                        <FormField
+                                            control={form.control}
+                                            name="satisfactionLevel"
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Rating
+                                                            value={field.value}
+                                                            changeable={true}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage className="mt-5"/>
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                            <div className="mt-3"/>
+                                        <div className="mt-3"/>
 
-                                            <FormField
-                                                control={form.control}
-                                                name="content"
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <AutosizeTextarea
-                                                                placeholder="e.g Working with this engineer was great.."
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage className="mt-5"/>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                        <FormField
+                                            control={form.control}
+                                            name="content"
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <AutosizeTextarea
+                                                            placeholder="e.g Working with this engineer was great.."
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage className="mt-5"/>
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                            <Button type="submit" className="w-full max-w-1xl mt-5">
-                                                Submit
-                                            </Button>
-                                        </form>
-                                    </Form>
-                                </div>
-                            )
+                                        <Button type="submit" className="w-full max-w-1xl mt-5">
+                                            Submit
+                                        </Button>
+                                    </form>
+                                </Form>
+                            </div>)
                         }
                     </div>)
             )}

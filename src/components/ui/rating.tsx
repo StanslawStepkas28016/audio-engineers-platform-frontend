@@ -1,7 +1,7 @@
 import {SVGProps, useState} from 'react';
 import {JSX} from 'react/jsx-runtime';
 
-export default function Rating({value, onValueChange}: { value: number, onValueChange?: (value: number) => void }) {
+export default function Rating({value, changeable}: { value: number, changeable: boolean }) {
     const [rating, setRating] = useState(value);
 
     const handleRatingChange = (newRating: number) => {
@@ -14,7 +14,11 @@ export default function Rating({value, onValueChange}: { value: number, onValueC
                 <StarIcon
                     key={star}
                     className={`w-6 h-6 ${star <= rating ? 'fill-primary' : 'fill-muted stroke-muted-foreground'}`}
-                    onClick={() => handleRatingChange(star)}
+                    onClick={() => {
+                        if (changeable) {
+                            handleRatingChange(star);
+                        }
+                    }}
                 />
             ))}
         </div>

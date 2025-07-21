@@ -1,16 +1,14 @@
-import {useEffect, useState} from "react";
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle, CloudUpload, Paperclip, Terminal} from "lucide-react";
+import {AlertCircle} from "lucide-react";
 import {userStore} from "@/lib/userStore.ts";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {
-    Controller,
     useForm
 } from "react-hook-form"
 import {
@@ -24,8 +22,7 @@ import {
 } from "@/components/ui/form.tsx";
 
 export const LoginPage = () => {
-    const [success, setSuccess] = useState("");
-    const navigate = useNavigate();
+    // const [success, setSuccess] = useState("");
     const {login, error} = userStore();
 
     const formValidationSchema = z.object({
@@ -127,7 +124,7 @@ export const LoginPage = () => {
                                 </AlertDescription>
                             </Alert>
                         )}
-                        {success && (
+                      {/*  {success && (
                             <Alert>
                                 <Terminal className="h-4 w-4"/>
                                 <AlertTitle>Heads up!</AlertTitle>
@@ -135,7 +132,7 @@ export const LoginPage = () => {
                                     {success}
                                 </AlertDescription>
                             </Alert>
-                        )}
+                        )}*/}
                     </div>
                 </div>
             </main>
