@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/form.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
-import Rating from "@/components/ui/rating.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {userStore} from "@/lib/userStore.ts";
+import {Rating} from "@/components/ui/rating.tsx";
 
 export type AdvertData = {
     idUser: string,
@@ -139,6 +139,8 @@ export const SeeAdvert = () => {
     const handleAddReview = async () => {
         setError("");
 
+        console.log(form.getValues().satisfactionLevel);
+
         try {
             setIsLoading(true);
 
@@ -173,80 +175,104 @@ export const SeeAdvert = () => {
         return <LoadingPage/>;
     }
     return (
-        <div className="flex flex-col items-center p-10">
+        <div className="flex flex-col items-center ">
             {noAdvertPostedError ? (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        {noAdvertPostedError}
-                    </AlertDescription>
-                </Alert>
+                <div className="w-full p-5">
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {noAdvertPostedError}
+                        </AlertDescription>
+                    </Alert>
+                </div>
             ) : (
                 advertData && (
                     <div className="justify-center text-center">
-                        <h1 className="text-3xl font-bold">{advertData.title}</h1>
+                        <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 font-bold">
+                            {advertData.title}
+                        </h1>
 
-                        <p className="leading-7 [&:not(:first-child)]:mt-6">
+                        <p className="mt-5">
                             {advertData.userFirstName} {advertData.userLastName} | {transformDate(advertData.dateCreated)}
                         </p>
 
-                        <p className="leading-7 [&:not(:first-child)]:mt-6 text-justify">{advertData.description}</p>
+                        <p className="text-base/7 text-justify p-5">
+                            {advertData.description}
+                        </p>
 
-                        <Card className="mt-10">
-                            <CardHeader>
-                                <CardTitle className="text-3xl font-bold">Prices starting from:</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex flex-row gap-4 items-center justify-center">
-                                    <HandCoins size={100} strokeWidth={1}/>
-                                    <p className="text-2xl ">{advertData.price} <b>PLN</b></p>
-                                </div>
-                                <p className="mt-5">
-                                    This is a price for per one <b>{advertData.categoryName}</b> inquiry!
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        <iframe
-                            src={transformPlaylistUrlToEmbedUrl(advertData.portfolioUrl)}
-                            className="mt-10 w-full"
-                            height="400"
-                        />
-
-                        <h1 className="text-3xl font-bold mt-10 mb-10">Want to collaborate?</h1>
-
-                        <div className="flex flex-row gap-4 items-center justify-center">
-                            <a href="https://www.instagram.com" target="_blank"><Instagram size={50}
-                                                                                           strokeWidth={2}/></a>
-                            <a href="https://www.instagram.com" target="_blank"><Facebook size={50}
-                                                                                          strokeWidth={2}/></a>
-                            <a href="https://www.instagram.com" target="_blank"><Linkedin size={50}
-                                                                                          strokeWidth={2}/></a>
+                        <div className="p-5">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-bold">Prices starting from:</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex flex-row gap-4 items-center justify-center">
+                                        <HandCoins size={100} strokeWidth={1}/>
+                                        <p className="text-2xl ">{advertData.price} <b>PLN</b></p>
+                                    </div>
+                                    <p className="mt-5">
+                                        This is a price for per one <b>{advertData.categoryName}</b> inquiry!
+                                    </p>
+                                </CardContent>
+                            </Card>
                         </div>
 
-                        <h1 className="text-3xl font-bold m-10">See my reviews!</h1>
+                        <div className="flex justify-center align-middle">
+                            <iframe
+                                src={transformPlaylistUrlToEmbedUrl(advertData.portfolioUrl)}
+                                className="w-full p-5"
+                                height="400"
+                            />
+                        </div>
 
+                        <h1 className="text-xl md:text-2xl lg:text-3xl m-10 font-bold">
+                            Want to collaborate?
+                        </h1>
+
+                        <div className="flex flex-row gap-4 items-center justify-center">
+                            <a href="https://www.instagram.com" target="_blank">
+                                <Instagram size={50} strokeWidth={2}/>
+                            </a>
+                            <a href="https://www.instagram.com" target="_blank">
+                                <Facebook size={50} strokeWidth={2}/>
+                            </a>
+                            <a href="https://www.instagram.com" target="_blank">
+                                <Linkedin size={50} strokeWidth={2}/>
+                            </a>
+                        </div>
+
+                        <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 mb-5 font-bold">
+                            See my reviews!
+                        </h1>
 
                         {/* Displaying all reviews */}
                         {
                             (advertReviews?.items && advertReviews.items.length > 0) ?
                                 advertReviews.items?.map((reviewData: SingleReviewData) => (
-                                    <div key={reviewData.idAdvert} className="my-5">
-                                        <Card>
+                                    <div key={reviewData.idAdvert} className="p-5 flex justify-center">
+                                        <Card className="w-xs md:w-full">
                                             <CardHeader>
                                                 <div className="flex justify-between">
-                                                    <span>{reviewData.clientFirstName} {reviewData.clientLastName}</span>
-                                                    <span><Rating value={reviewData.satisfactionLevel}
-                                                                  changeable={false}/></span>
+                                                    <span>
+                                                        {reviewData.clientFirstName} {reviewData.clientLastName}
+                                                    </span>
+                                                    <span>
+                                                        <Rating value={reviewData.satisfactionLevel}
+                                                                changeable={false}/>
+                                                    </span>
                                                 </div>
                                                 <div className="flex justify-between text-sm text-muted-foreground">
-                                                    <span>{AppRoles.Client}</span>
-                                                    <span>{formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}</span>
+                                                    <span>
+                                                        {AppRoles.Client}
+                                                    </span>
+                                                    <span>
+                                                        {formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}
+                                                    </span>
                                                 </div>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-justify">
+                                                <p className="text-base text-justify wrap-break-word">
                                                     {reviewData.content}
                                                 </p>
                                             </CardContent>
@@ -262,9 +288,9 @@ export const SeeAdvert = () => {
                         {/* Form for adding a review */}
                         {
                             userData.roleName == AppRoles.Client &&
-                            (<div className="mt-10 ">
+                            (<div className="flex justify-center p-10">
                                 <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(handleAddReview)}>
+                                    <form onSubmit={form.handleSubmit(handleAddReview)} className="w-xs md:w-full ">
                                         <FormLabel className="mb-3">Share your own experience with this engineer!
                                         </FormLabel>
 
@@ -312,13 +338,16 @@ export const SeeAdvert = () => {
                     </div>)
             )}
             {error &&
-                <Alert variant="destructive" className="mt-5">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        {error}
-                    </AlertDescription>
-                </Alert>
+                <div className="w-full p-5">
+                    <Alert variant="destructive" className="mt-5">
+
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {error}
+                        </AlertDescription>
+                    </Alert>
+                </div>
             }
         </div>
     );

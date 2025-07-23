@@ -99,6 +99,7 @@ export const SeeAllAdverts = () => {
 
     useEffect(() => {
         fetchAdverts();
+        window.scrollTo(0, 0);
     }, [currentPage, currentSearchTerm])
 
     if (loading) {
@@ -107,16 +108,18 @@ export const SeeAllAdverts = () => {
 
     return (
         <div className="container mx-auto flex flex-col items-center justify-center p-10">
-            <h1 className="text-3xl font-bold">Find the best audio engineers!</h1>
+            <h1 className="text-3xl font-bold text-center">
+                Find the best audio engineers!
+            </h1>
 
-            <form className="relative flex items-center w-1/2 mt-10" onSubmit={handleSearch}>
+            <form className="relative flex items-center mt-10" onSubmit={handleSearch}>
                 <SearchIcon
                     className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform"
                 />
                 <Input
                     type="text"
                     placeholder="Search for specifing engineer"
-                    className=" pl-8"
+                    className="pl-8 w-3xs md:w-xl"
                     onChange={e => setCurrentInputSearchTerm(e.target.value)}
                 />
                 <Button
@@ -161,12 +164,13 @@ export const SeeAllAdverts = () => {
                                 </div>
 
                                 <div className="w-full h-64 md:h-80 overflow-hidden rounded-.lg">
-                                    <img src={advert.coverImageUrl} className="w-full h-full object-cover" alt="img"/>
+                                    <img src={advert.coverImageUrl} className="w-full h-full object-cover rounded-xl"
+                                         alt="img"/>
                                 </div>
                             </CardContent>
                             <div className="flex align-middle justify-center">
                                 <Button
-                                    className="w-full max-w-2xl"
+                                    className="w-2xs md:w-2xl"
                                     onClick={() => {
                                         navigate(`/see-advert/${advert.idAdvert}`);
                                     }}

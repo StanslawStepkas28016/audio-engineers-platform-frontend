@@ -43,6 +43,8 @@ export const userStore = create<UserAuthState>((set) => ({
                 }
             );
 
+            console.log(res);
+
             set({isAuthenticated: true, userData: res.data, error: ""});
         } catch (e) {
             if (isAxiosError(e) && e.response) {

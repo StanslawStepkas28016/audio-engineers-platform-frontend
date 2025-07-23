@@ -66,7 +66,9 @@ export const AudioEngineerDeleteAdvert = () => {
 
     return (
         <div className="flex flex-col items-center justify-center p-10">
-            <h1 className="text-3xl font-bold mb-10">You are about to remove your advert!</h1>
+            <h1 className="text-3xl font-bold mb-10">
+                You are about to remove your advert!
+            </h1>
             {noAdvertPostedError ? (
                 <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4"/>
@@ -83,7 +85,6 @@ export const AudioEngineerDeleteAdvert = () => {
                         width={200} height={200}
                         className="object-contain filter dark:invert mb-10"
                     />
-
                     <div className="mb-10">
                         <p className="text-center">
                             By deleting your advert, you will no longer be able to receive requests from clients.
@@ -93,7 +94,6 @@ export const AudioEngineerDeleteAdvert = () => {
                             it.
                         </p>
                     </div>
-
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button>
@@ -115,7 +115,6 @@ export const AudioEngineerDeleteAdvert = () => {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-
                     {error && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4"/>

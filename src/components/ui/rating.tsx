@@ -1,7 +1,7 @@
-import {SVGProps, useState} from 'react';
+import {forwardRef, SVGProps, useState} from 'react';
 import {JSX} from 'react/jsx-runtime';
 
-export default function Rating({value, changeable}: { value: number, changeable: boolean }) {
+export const Rating = forwardRef(({value, changeable}: { value: number, changeable: boolean }) => {
     const [rating, setRating] = useState(value);
 
     const handleRatingChange = (newRating: number) => {
@@ -23,9 +23,9 @@ export default function Rating({value, changeable}: { value: number, changeable:
             ))}
         </div>
     );
-}
+});
 
-function StarIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+const StarIcon = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => {
     return (
         <svg
             {...props}
