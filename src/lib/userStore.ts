@@ -20,6 +20,16 @@ export type UserAuthState = {
     logout: () => Promise<void>;
 }
 
+const emptyUser = {
+    idUser: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    roleName: "",
+    idRole: ""
+}
+
 export const userStore = create<UserAuthState>((set) => ({
     isAuthenticated: false,
     isCheckingAuth: true,
@@ -45,11 +55,19 @@ export const userStore = create<UserAuthState>((set) => ({
 
             console.log(res);
 
-            set({isAuthenticated: true, userData: res.data, error: ""});
+            set({
+                isAuthenticated: true,
+                userData: res.data,
+                error: ""
+            });
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 const exceptionMessage = e.response.data.ExceptionMessage;
-                set({isAuthenticated: false, error: exceptionMessage});
+                set({
+                    isAuthenticated: false,
+                    error: exceptionMessage,
+                    userData: emptyUser
+                });
             }
         }
     },
@@ -81,7 +99,10 @@ export const userStore = create<UserAuthState>((set) => ({
                     } catch (refreshError) {
                         // If the refresh token request fails, we need to log the user out
                         console.log(refreshError);
-                        set({isAuthenticated: false});
+                        set({
+                            isAuthenticated: false,
+                            userData: emptyUser
+                        });
                     }
                 }
             }
@@ -94,13 +115,20 @@ export const userStore = create<UserAuthState>((set) => ({
 
         try {
             const resp = await axiosInstance.get("auth/check-auth");
-            // console.log(resp.data);
-            set({isAuthenticated: true, userData: resp.data});
+            set({
+                isAuthenticated: true,
+                userData: resp.data
+            });
         } catch (e) {
-            set({isAuthenticated: false});
             console.log(e);
+            set({
+                isAuthenticated: false,
+                userData: emptyUser
+            });
         } finally {
-            set({isCheckingAuth: false});
+            set({
+                isCheckingAuth: false
+            });
         }
 
         // Eject the response interceptor after performing the refresh token logic
@@ -114,7 +142,11 @@ export const userStore = create<UserAuthState>((set) => ({
     logout: async () => {
         try {
             await axiosInstance.post("auth/logout");
-            set({isAuthenticated: false, isCheckingAuth: false});
+            set({
+                isAuthenticated: false,
+                isCheckingAuth: false,
+                userData: emptyUser
+            });
         } catch (e) {
             console.log(e)
             alert("An error occurred while logging out!");

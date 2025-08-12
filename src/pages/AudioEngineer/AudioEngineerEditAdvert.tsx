@@ -90,7 +90,7 @@ export const AudioEngineerEditAdvert = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-10">
+        <div className="flex flex-col h-full justify-center items-center p-10">
             <h1 className="text-3xl font-bold mb-10 text-center">
                 Please enter new information
             </h1>

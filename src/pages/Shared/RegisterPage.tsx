@@ -38,7 +38,7 @@ export const RegisterPage = () => {
         roleName: z.string()
     });
 
-    const formData = useForm<z.infer<typeof formValidationSchema>>({
+    const form = useForm<z.infer<typeof formValidationSchema>>({
         resolver: zodResolver(formValidationSchema),
         defaultValues: {
             email: "",
@@ -54,7 +54,7 @@ export const RegisterPage = () => {
         setError("");
         setSuccess("");
         try {
-            await axiosInstance.post("auth/register", formData.getValues());
+            await axiosInstance.post("auth/register", form.getValues());
             setSuccess("Successfully registered!");
             setTimeout(() => navigate("/verify-account"), 1000);
         } catch (e) {
@@ -74,15 +74,15 @@ export const RegisterPage = () => {
                 <div className="flex flex-col gap-4 p-6 md:p-10">
                     <div className="flex flex-1 items-center justify-center">
                         <div className="p-5 md:p-0">
-                            <Form {...formData}>
+                            <Form {...form}>
                                 <form className="space-y-8"
-                                      onSubmit={formData.handleSubmit(handleRegister)}>
+                                      onSubmit={form.handleSubmit(handleRegister)}>
                                     <h1 className="text-2xl md:text-2xl lg:text-3xl mt-10 font-bold text-center">
                                         Provide us your information!
                                     </h1>
 
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="email"
                                         render={({field}) => (
                                             <FormItem>
@@ -100,7 +100,7 @@ export const RegisterPage = () => {
                                         )}
                                     />
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="firstName"
                                         render={({field}) => (
                                             <FormItem>
@@ -118,7 +118,7 @@ export const RegisterPage = () => {
                                         )}
                                     />
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="lastName"
                                         render={({field}) => (
                                             <FormItem>
@@ -136,7 +136,7 @@ export const RegisterPage = () => {
                                         )}
                                     />
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="phoneNumber"
                                         render={({field}) => (
                                             <FormItem>
@@ -154,7 +154,7 @@ export const RegisterPage = () => {
                                         )}
                                     />
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="password"
                                         render={({field}) => (
                                             <FormItem>
@@ -172,7 +172,7 @@ export const RegisterPage = () => {
                                         )}
                                     />
                                     <FormField
-                                        control={formData.control}
+                                        control={form.control}
                                         name="roleName"
                                         render={({field}) => (
                                             <FormItem className="space-y-3">

@@ -1,10 +1,10 @@
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar.tsx";
-import {AudioEngineerAppSideBar} from "@/components/sidebar/audio-engineer-app-side-bar.tsx";
 import React from "react";
 import {SidebarSiteContentHeader} from "@/components/sidebar/sidebar-site-content-header.tsx";
 import {Outlet} from "react-router-dom";
+import {GuestAppSideBar} from "@/components/sidebar/guest-app-side-bar.tsx";
 
-export const AudioEngineerOutletPlaceholder = () => {
+export const GuestOutletWithSidebar = () => {
     return (
         <SidebarProvider
             style={
@@ -14,7 +14,7 @@ export const AudioEngineerOutletPlaceholder = () => {
                 } as React.CSSProperties
             }
         >
-            <AudioEngineerAppSideBar variant="inset"/>
+            <GuestAppSideBar variant="inset"/>
             <SidebarInset>
                 <SidebarSiteContentHeader/>
                 <div className="flex flex-1 flex-col">
@@ -22,5 +22,5 @@ export const AudioEngineerOutletPlaceholder = () => {
                 </div>
             </SidebarInset>
         </SidebarProvider>
-    )
+    );
 }

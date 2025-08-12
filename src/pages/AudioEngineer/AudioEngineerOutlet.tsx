@@ -1,10 +1,10 @@
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar.tsx";
+import {AudioEngineerAppSideBar} from "@/components/sidebar/audio-engineer-app-side-bar.tsx";
 import React from "react";
 import {SidebarSiteContentHeader} from "@/components/sidebar/sidebar-site-content-header.tsx";
 import {Outlet} from "react-router-dom";
-import {ClientAppSideBar} from "@/components/sidebar/client-app-side-bar.tsx";
 
-export const ClientOutletPlaceholder = () => {
+export const AudioEngineerOutlet = () => {
     return (
         <SidebarProvider
             style={
@@ -14,13 +14,13 @@ export const ClientOutletPlaceholder = () => {
                 } as React.CSSProperties
             }
         >
-            <ClientAppSideBar variant="inset"/>
+            <AudioEngineerAppSideBar variant="inset"/>
             <SidebarInset>
                 <SidebarSiteContentHeader/>
                 <div className="flex flex-1 flex-col">
-                        <Outlet/>
+                    <Outlet/>
                 </div>
             </SidebarInset>
         </SidebarProvider>
-    );
-};
+    )
+}

@@ -1,10 +1,14 @@
-import {forwardRef, SVGProps, useState} from 'react';
+import {SVGProps, useState} from 'react';
 import {JSX} from 'react/jsx-runtime';
 
-export const Rating = forwardRef(({value, changeable}: { value: number, changeable: boolean }) => {
+export const Rating = (({value, changeable, onChange}: {
+    value: number,
+    changeable: boolean,
+    onChange: (n: number) => void
+}) => {
     const [rating, setRating] = useState(value);
 
-    const handleRatingChange = (newRating: number) => {
+    const handleSetRating = (newRating: number) => {
         setRating(newRating);
     };
 
@@ -16,7 +20,8 @@ export const Rating = forwardRef(({value, changeable}: { value: number, changeab
                     className={`w-6 h-6 ${star <= rating ? 'fill-primary' : 'fill-muted stroke-muted-foreground'}`}
                     onClick={() => {
                         if (changeable) {
-                            handleRatingChange(star);
+                            handleSetRating(value);
+                            onChange?.(star);
                         }
                     }}
                 />

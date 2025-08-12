@@ -139,8 +139,6 @@ export const SeeAdvert = () => {
     const handleAddReview = async () => {
         setError("");
 
-        console.log(form.getValues().satisfactionLevel);
-
         try {
             setIsLoading(true);
 
@@ -151,6 +149,10 @@ export const SeeAdvert = () => {
             });
 
             console.log(response.data);
+
+            fetchAdvertReviews();
+
+            form.reset();
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
@@ -158,8 +160,6 @@ export const SeeAdvert = () => {
         } finally {
             setIsLoading(false);
         }
-
-        form.reset();
     }
 
     useEffect(() => {
@@ -167,9 +167,6 @@ export const SeeAdvert = () => {
         fetchAdvertReviews();
     }, [idAdvert]);
 
-    useEffect(() => {
-        fetchAdvertReviews();
-    }, [form.formState.isSubmitSuccessful]);
 
     if (isLoading) {
         return <LoadingPage/>;
@@ -259,7 +256,8 @@ export const SeeAdvert = () => {
                                                     </span>
                                                     <span>
                                                         <Rating value={reviewData.satisfactionLevel}
-                                                                changeable={false}/>
+                                                                changeable={false}
+                                                                onChange={()=>{return;}}/>
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between text-sm text-muted-foreground">
@@ -301,7 +299,7 @@ export const SeeAdvert = () => {
                                                 <FormItem>
                                                     <FormControl>
                                                         <Rating
-                                                            value={field.value}
+                                                            {...field}
                                                             changeable={true}
                                                         />
                                                     </FormControl>
@@ -338,8 +336,8 @@ export const SeeAdvert = () => {
                     </div>)
             )}
             {error &&
-                <div className="w-full p-5">
-                    <Alert variant="destructive" className="mt-5">
+                <div className="w-full p-5 -mt-10">
+                    <Alert variant="destructive">
 
                         <AlertCircle className="h-4 w-4"/>
                         <AlertTitle>Error</AlertTitle>

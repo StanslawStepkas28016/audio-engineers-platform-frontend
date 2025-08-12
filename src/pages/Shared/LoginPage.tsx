@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/form.tsx";
 
 export const LoginPage = () => {
-    // const [success, setSuccess] = useState("");
     const {login, error} = userStore();
 
     const formValidationSchema = z.object({
@@ -124,15 +123,6 @@ export const LoginPage = () => {
                                 </AlertDescription>
                             </Alert>
                         )}
-                      {/*  {success && (
-                            <Alert>
-                                <Terminal className="h-4 w-4"/>
-                                <AlertTitle>Heads up!</AlertTitle>
-                                <AlertDescription>
-                                    {success}
-                                </AlertDescription>
-                            </Alert>
-                        )}*/}
                     </div>
                 </div>
             </main>

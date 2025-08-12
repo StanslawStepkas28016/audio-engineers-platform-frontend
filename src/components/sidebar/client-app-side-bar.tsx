@@ -67,10 +67,6 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
                         title: "Change your data",
                         url: "/change-data",
                     },
-                    {
-                        title: "Change your password",
-                        url: "/change-password",
-                    },
                 ],
             },
         ],

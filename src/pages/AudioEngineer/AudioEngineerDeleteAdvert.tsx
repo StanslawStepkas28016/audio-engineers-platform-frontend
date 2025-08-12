@@ -65,9 +65,9 @@ export const AudioEngineerDeleteAdvert = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-10">
-            <h1 className="text-3xl font-bold mb-10">
-                You are about to remove your advert!
+        <div className="flex flex-col h-full justify-center items-center p-10">
+            <h1 className="text-3xl font-bold mb-10 text-center">
+                You are about to deletes your advert!
             </h1>
             {noAdvertPostedError ? (
                 <Alert variant="destructive">
@@ -91,7 +91,7 @@ export const AudioEngineerDeleteAdvert = () => {
                         </p>
                         <p className="text-center">
                             If you want to keep receiving requests, you can simply edit your advert instead of deleting
-                            it.
+                            it!
                         </p>
                     </div>
                     <AlertDialog>

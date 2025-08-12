@@ -82,11 +82,7 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                     {
                         title: "Change your data",
                         url: "/change-data",
-                    },
-                    {
-                        title: "Change your password",
-                        url: "/change-password",
-                    },
+                    }
                 ],
             },
         ],
