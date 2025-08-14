@@ -17,27 +17,31 @@ import {AlertCircle, Terminal} from "lucide-react";
 import {userStore} from "@/lib/userStore.ts";
 import {isAxiosError} from "axios";
 import {useState} from "react";
+import {axiosInstance} from "@/lib/axios.ts";
+import {useNavigate} from "react-router-dom";
 
 export const ResetPhoneNumber = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const navigate = useNavigate();
     const {userData} = userStore();
 
     const resetPhoneNumberFormValidationSchema = z.object({
-        phoneNumber: z.string().min(1).min(9, "Phone number must be at least 9 characters long"),
+        newPhoneNumber: z.string().min(1).min(9, "Phone number must be at least 9 characters long"),
     });
 
     const resetPhoneNumberForm = useForm<z.infer<typeof resetPhoneNumberFormValidationSchema>>({
         resolver: zodResolver(resetPhoneNumberFormValidationSchema),
-        defaultValues: {phoneNumber: userData.phoneNumber},
+        defaultValues: {newPhoneNumber: userData.phoneNumber},
     });
 
     const handleResetPhoneNumberForm = async () => {
         setError("");
         setSuccess("");
         try {
-            // await axiosInstance.patch(`user/${userData.idUser}/change-data`, resetEmailForm.getValues());
+            await axiosInstance.patch(`auth/${userData.idUser}/reset-phone-number`, resetPhoneNumberForm.getValues());
             setSuccess("Successfully changed your data!");
+            setTimeout(() => navigate("/"), 1000);
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 const exceptionMessage = e.response.data.ExceptionMessage;
@@ -64,7 +68,7 @@ export const ResetPhoneNumber = () => {
                   className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                 <FormField
                     control={resetPhoneNumberForm.control}
-                    name="phoneNumber"
+                    name="newPhoneNumber"
                     render={({field}) => (
                         <FormItem>
                             <FormLabel>Phone number</FormLabel>
