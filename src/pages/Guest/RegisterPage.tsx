@@ -17,7 +17,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage
-} from "@/components/ui/form";
+} from "@/components/ui/form.tsx";
 import {useForm} from "react-hook-form";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";

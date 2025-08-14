@@ -5,7 +5,7 @@ import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-reac
 import {isAxiosError} from "axios";
 import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useParams} from "react-router-dom";
 import {formatDistanceToNow} from "date-fns";
 import * as z from "zod";
@@ -41,22 +41,21 @@ export type AdvertData = {
 }
 
 export type SingleReviewData = {
-    idAdvert: string,
+    idReview: string,
     clientFirstName: string,
     clientLastName: string,
     content: string,
     satisfactionLevel: number,
     dateCreated: Date,
-    calculatedMonthsAgo: number,
 }
 
 export type AdvertReviewsData = {
-    items: SingleReviewData[];
-    page: number;
-    pageSize: number;
-    totalCount: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
+    items: SingleReviewData[],
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    hasNextPage: boolean,
+    hasPreviousPage: boolean,
 }
 
 export const SeeAdvert = () => {
@@ -142,15 +141,13 @@ export const SeeAdvert = () => {
         try {
             setIsLoading(true);
 
-            const response = await axiosInstance.post(`/advert/review`, {
+            await axiosInstance.post(`/advert/review`, {
                 idAdvert: idAdvert,
                 content: form.getValues().content,
                 satisfactionLevel: form.getValues().satisfactionLevel,
             });
 
-            console.log(response.data);
-
-            fetchAdvertReviews();
+            await fetchAdvertReviews();
 
             form.reset();
         } catch (e) {
@@ -167,12 +164,11 @@ export const SeeAdvert = () => {
         fetchAdvertReviews();
     }, [idAdvert]);
 
-
     if (isLoading) {
         return <LoadingPage/>;
     }
     return (
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
             {noAdvertPostedError ? (
                 <div className="w-full p-5">
                     <Alert variant="destructive">
@@ -247,7 +243,7 @@ export const SeeAdvert = () => {
                         {
                             (advertReviews?.items && advertReviews.items.length > 0) ?
                                 advertReviews.items?.map((reviewData: SingleReviewData) => (
-                                    <div key={reviewData.idAdvert} className="p-5 flex justify-center">
+                                    <div key={reviewData.idReview} className="p-5 flex justify-center">
                                         <Card className="w-xs md:w-full">
                                             <CardHeader>
                                                 <div className="flex justify-between">
@@ -257,7 +253,9 @@ export const SeeAdvert = () => {
                                                     <span>
                                                         <Rating value={reviewData.satisfactionLevel}
                                                                 changeable={false}
-                                                                onChange={()=>{return;}}/>
+                                                                onChange={() => {
+                                                                    return;
+                                                                }}/>
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between text-sm text-muted-foreground">
@@ -277,8 +275,8 @@ export const SeeAdvert = () => {
                                         </Card>
                                     </div>
                                 )) : (
-                                    <div>
-                                        <p>No reviews yet, be the first one to post!</p>
+                                    <div className="m-10">
+                                        <p>This advert has no reviews.</p>
                                     </div>
                                 )
                         }
@@ -288,8 +286,9 @@ export const SeeAdvert = () => {
                             userData.roleName == AppRoles.Client &&
                             (<div className="flex justify-center p-10">
                                 <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(handleAddReview)} className="w-xs md:w-full ">
-                                        <FormLabel className="mb-3">Share your own experience with this engineer!
+                                    <form onSubmit={form.handleSubmit(handleAddReview)} className="w-xs md:w-full">
+                                        <FormLabel className="mb-3">
+                                            Share your own experience with this engineer!
                                         </FormLabel>
 
                                         <FormField
@@ -333,7 +332,8 @@ export const SeeAdvert = () => {
                                 </Form>
                             </div>)
                         }
-                    </div>)
+                    </div>
+                )
             )}
             {error &&
                 <div className="w-full p-5 -mt-10">

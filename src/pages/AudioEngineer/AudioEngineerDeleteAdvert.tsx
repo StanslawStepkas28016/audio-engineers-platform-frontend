@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {isAxiosError} from "axios";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -28,7 +28,7 @@ export const AudioEngineerDeleteAdvert = () => {
     const getAdvertIdAdvertBasedOnIdUser = async () => {
         setIsLoading(true);
         try {
-            const response = await axiosInstance.get(`/advert/${userData.idUser}/id-advert`);
+            const response = await axiosInstance.get(`/advert/id-advert/${userData.idUser}`);
             setIdAdvertBasedOnIdUser(response.data);
         } catch (e) {
             if (isAxiosError(e) && e.response) {
@@ -48,7 +48,8 @@ export const AudioEngineerDeleteAdvert = () => {
     const sendDeleteRequest = async () => {
         try {
             const response = await axiosInstance.delete(`/advert/${idAdvertBasedOnIdUser}`);
-            console.log(response.data)
+            console.log(response.data);
+            await getAdvertIdAdvertBasedOnIdUser();
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
@@ -65,20 +66,23 @@ export const AudioEngineerDeleteAdvert = () => {
     }
 
     return (
-        <div className="flex flex-col h-full justify-center items-center p-10">
-            <h1 className="text-3xl font-bold mb-10 text-center">
-                You are about to deletes your advert!
-            </h1>
+        <div className="flex flex-col justify-center items-center">
             {noAdvertPostedError ? (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        {noAdvertPostedError}
-                    </AlertDescription>
-                </Alert>
+                <div className="w-full p-5">
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {noAdvertPostedError}
+                        </AlertDescription>
+                    </Alert>
+                </div>
             ) : (
-                <div className="flex flex-col items-center justify-center">
+                <div className="p-10 flex flex-col items-center mt-10">
+                    <h1 className="text-3xl font-bold mb-10 text-center">
+                        You are about to deletes your advert!
+                    </h1>
+
                     <img
                         src="/src/assets/sad_face.jpg"
                         alt="decoration"

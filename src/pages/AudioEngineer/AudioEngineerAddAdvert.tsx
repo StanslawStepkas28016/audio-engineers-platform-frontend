@@ -1,5 +1,6 @@
 "use client"
 import {
+    useEffect,
     useState
 } from "react"
 import {
@@ -33,6 +34,7 @@ import {useNavigate} from "react-router-dom";
 
 export const AudioEngineerAddAdvert = () => {
     const [error, setError] = useState("");
+    const [advertAlreadyPostedError, setAdvertAlreadyPostedError] = useState("");
     const [success, setSuccess] = useState("");
     const {userData} = userStore();
     const navigate = useNavigate();
@@ -118,226 +120,264 @@ export const AudioEngineerAddAdvert = () => {
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 const exceptionMessage = e.response.data.ExceptionMessage;
-                setError(exceptionMessage);
+                setAdvertAlreadyPostedError(exceptionMessage);
             } else {
                 console.log(e);
             }
         }
     }
 
+    const checkIfUserHasAnAdvertAlready = async () => {
+        try {
+            const response = await axiosInstance.get(`advert/id-advert/${userData.idUser}`);
+
+            if (response.data) {
+                setAdvertAlreadyPostedError("You have already posted an advert.");
+            }
+        } catch (e) {
+            if (isAxiosError(e) && e.response) {
+                const exceptionMessage = e.response.data.ExceptionMessage;
+                setError(exceptionMessage);
+            } else {
+                console.log(e);
+            }
+        }
+    };
+
+    useEffect(() => {
+        checkIfUserHasAnAdvertAlready();
+    }, []);
+
     return (
-        <div className="flex flex-col p-10">
-            <div className="text-center">
-                <h1 className="text-3xl font-bold mb-10">
-                    Fill in your advert information!
-                </h1>
-            </div>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleAddAdvert)}
-                      className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
-                    <FormField
-                        control={form.control}
-                        name="title"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Title</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="e.g. I will mix your song for cheap!"
-                                        type="text"
-                                        {...field} />
-                                </FormControl>
-                                <FormDescription>The title of you advert</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="description"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                    <AutosizeTextarea
-                                        placeholder="e.g I have been mixing song for more than 15 years.."
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>This is a description of your advert</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="coverImageFile"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Select a cover image file</FormLabel>
-                                <FormControl>
-                                    <Controller
-                                        control={form.control}
-                                        name="coverImageFile"
-                                        defaultValue={undefined}
-                                        render={({field: {value, onChange}}) => (
-                                            <FileUploader
-                                                value={value ? [value] : []}
-                                                onValueChange={(files) => {
-                                                    // pick first file (or null)
-                                                    onChange(files && files[0] ? files[0] : null);
-                                                }}
-                                                dropzoneOptions={dropZoneConfig}
-                                                className="relative bg-background rounded-lg p-2"
-                                            >
-                                                <FileInput
-                                                    id="fileInput"
-                                                    className="outline-dashed outline-1"
-                                                    {...field}
-                                                >
-                                                    <div
-                                                        className="flex items-center justify-center flex-col p-8 w-full ">
-                                                        <CloudUpload/>
-                                                        <p className="mb-1 text-sm ">
-                                                            <span>Click to upload</span>
-                                                            &nbsp; or drag and drop
-                                                        </p>
-                                                        <p className="text-xs ">
-                                                            SVG, PNG, JPG or GIF
-                                                        </p>
-                                                    </div>
-                                                </FileInput>
-                                                <FileUploaderContent>
-                                                    {value && (
-                                                        <FileUploaderItem index={0}>
-                                                            <Paperclip className="h-4 w-4 stroke-current"/>
-                                                            <span>{value.name}</span>
-                                                        </FileUploaderItem>
-                                                    )}
-                                                </FileUploaderContent>
-                                            </FileUploader>
-                                        )}
-                                    />
-                                </FormControl>
-                                <FormDescription>This image will be visible in your advert</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="portfolioUrl"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Portfolio URL</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="e.g. https://open.spotify.com/playlist/1LBgAu0kv1q7CVzLFRjaUs?si=87c71b8d80d644bc"
-                                        type="text"
-                                        {...field} />
-                                </FormControl>
-                                <FormDescription>This is a link to your spotify/apple music playlist</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="price"
-                        render={({field}) => (
-                            <FormItem>
-                                <FormLabel>Price</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="e.g. 200"
-                                        type="number"
-                                        step="1"
-                                        {...field} />
-                                </FormControl>
-                                <FormDescription>This will be shown as your advert price</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="categoryName"
-                        render={({field}) => (
-                            <FormItem className="space-y-3">
-                                <FormLabel>Category</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                        defaultValue={AdvertCategories.Mixing}
-                                        className="flex flex-col space-y-1"
-                                    >
-                                        <FormItem
-                                            className="flex items-center space-x-3 space-y-0"
-                                        >
-                                            <FormControl>
-                                                <RadioGroupItem value={AdvertCategories.Mixing}/>
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                {AdvertCategories.Mixing}
-                                            </FormLabel>
-                                        </FormItem>
-
-                                        <FormItem
-                                            className="flex items-center space-x-3 space-y-0"
-                                        >
-                                            <FormControl>
-                                                <RadioGroupItem value={AdvertCategories.Mastering}/>
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                {AdvertCategories.Mastering}
-                                            </FormLabel>
-                                        </FormItem>
-
-                                        <FormItem
-                                            className="flex items-center space-x-3 space-y-0"
-                                        >
-                                            <FormControl>
-                                                <RadioGroupItem value={AdvertCategories.Production}/>
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                {AdvertCategories.Production}
-                                            </FormLabel>
-                                        </FormItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormDescription>Pick your advert category</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
-
-                    <Button type="submit">Submit</Button>
-
-                    {error && (
+        <div>
+            {advertAlreadyPostedError ? (
+                    <div className="w-full p-5">
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4"/>
                             <AlertTitle>Error</AlertTitle>
                             <AlertDescription>
-                                {error}
+                                {advertAlreadyPostedError}
                             </AlertDescription>
                         </Alert>
-                    )}
-                    {success && (
-                        <Alert>
-                            <Terminal className="h-4 w-4"/>
-                            <AlertTitle>Heads up!</AlertTitle>
-                            <AlertDescription>
-                                {success}
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                </form>
-            </Form>
+                    </div>
+                ) :
+                (
+                    <div className="flex flex-col p-10">
+                        <div className="text-center">
+                            <h1 className="text-3xl font-bold mb-10">
+                                Fill in your advert information!
+                            </h1>
+                        </div>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(handleAddAdvert)}
+                                  className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Title</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="e.g. I will mix your song for cheap!"
+                                                    type="text"
+                                                    {...field} />
+                                            </FormControl>
+                                            <FormDescription>The title of you advert</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <AutosizeTextarea
+                                                    placeholder="e.g I have been mixing song for more than 15 years.."
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>This is a description of your advert</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="coverImageFile"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Select a cover image file</FormLabel>
+                                            <FormControl>
+                                                <Controller
+                                                    control={form.control}
+                                                    name="coverImageFile"
+                                                    defaultValue={undefined}
+                                                    render={({field: {value, onChange}}) => (
+                                                        <FileUploader
+                                                            value={value ? [value] : []}
+                                                            onValueChange={(files) => {
+                                                                // pick first file (or null)
+                                                                onChange(files && files[0] ? files[0] : null);
+                                                            }}
+                                                            dropzoneOptions={dropZoneConfig}
+                                                            className="relative bg-background rounded-lg p-2"
+                                                        >
+                                                            <FileInput
+                                                                id="fileInput"
+                                                                className="outline-dashed outline-1"
+                                                                {...field}
+                                                            >
+                                                                <div
+                                                                    className="flex items-center justify-center flex-col p-8 w-full ">
+                                                                    <CloudUpload/>
+                                                                    <p className="mb-1 text-sm ">
+                                                                        <span>Click to upload</span>
+                                                                        &nbsp; or drag and drop
+                                                                    </p>
+                                                                    <p className="text-xs ">
+                                                                        SVG, PNG, JPG or GIF
+                                                                    </p>
+                                                                </div>
+                                                            </FileInput>
+                                                            <FileUploaderContent>
+                                                                {value && (
+                                                                    <FileUploaderItem index={0}>
+                                                                        <Paperclip className="h-4 w-4 stroke-current"/>
+                                                                        <span>{value.name}</span>
+                                                                    </FileUploaderItem>
+                                                                )}
+                                                            </FileUploaderContent>
+                                                        </FileUploader>
+                                                    )}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>This image will be visible in your advert</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="portfolioUrl"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Portfolio URL</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="e.g. https://open.spotify.com/playlist/1LBgAu0kv1q7CVzLFRjaUs?si=87c71b8d80d644bc"
+                                                    type="text"
+                                                    {...field} />
+                                            </FormControl>
+                                            <FormDescription>This is a link to your spotify/apple music
+                                                playlist</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Price</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="e.g. 200"
+                                                    type="number"
+                                                    step="1"
+                                                    {...field} />
+                                            </FormControl>
+                                            <FormDescription>This will be shown as your advert price</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="categoryName"
+                                    render={({field}) => (
+                                        <FormItem className="space-y-3">
+                                            <FormLabel>Category</FormLabel>
+                                            <FormControl>
+                                                <RadioGroup
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={AdvertCategories.Mixing}
+                                                    className="flex flex-col space-y-1"
+                                                >
+                                                    <FormItem
+                                                        className="flex items-center space-x-3 space-y-0"
+                                                    >
+                                                        <FormControl>
+                                                            <RadioGroupItem value={AdvertCategories.Mixing}/>
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">
+                                                            {AdvertCategories.Mixing}
+                                                        </FormLabel>
+                                                    </FormItem>
+
+                                                    <FormItem
+                                                        className="flex items-center space-x-3 space-y-0"
+                                                    >
+                                                        <FormControl>
+                                                            <RadioGroupItem value={AdvertCategories.Mastering}/>
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">
+                                                            {AdvertCategories.Mastering}
+                                                        </FormLabel>
+                                                    </FormItem>
+
+                                                    <FormItem
+                                                        className="flex items-center space-x-3 space-y-0"
+                                                    >
+                                                        <FormControl>
+                                                            <RadioGroupItem value={AdvertCategories.Production}/>
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">
+                                                            {AdvertCategories.Production}
+                                                        </FormLabel>
+                                                    </FormItem>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormDescription>Pick your advert category</FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <Button type="submit">Submit</Button>
+
+                                {error && (
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4"/>
+                                        <AlertTitle>Error</AlertTitle>
+                                        <AlertDescription>
+                                            {error}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                                {success && (
+                                    <Alert>
+                                        <Terminal className="h-4 w-4"/>
+                                        <AlertTitle>Heads up!</AlertTitle>
+                                        <AlertDescription>
+                                            {success}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                            </form>
+                        </Form>
+                    </div>
+                )
+            }
         </div>
     );
 }

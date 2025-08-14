@@ -3,7 +3,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, SearchIcon, WalletIcon} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
-import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {transformDate} from "@/hooks/utils.ts";
 import {Button} from "@/components/ui/button.tsx";

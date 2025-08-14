@@ -1,21 +1,24 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {LoginPage} from "@/pages/Shared/LoginPage.tsx";
-import {RegisterPage} from "@/pages/Shared/RegisterPage.tsx";
-import {VerifyAccountPage} from "@/pages/Shared/VerifyAccountPage.tsx";
+import {LoginPage} from "@/pages/Guest/LoginPage.tsx";
+import {RegisterPage} from "@/pages/Guest/RegisterPage.tsx";
+import {VerifyAccountPage} from "@/pages/Guest/VerifyAccountPage.tsx";
 import {useEffect} from "react";
 import {userStore} from "@/lib/userStore.ts";
 import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
-import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
 import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
 import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
 import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
-import {ChangeData} from "@/pages/Shared/ChangeData.tsx";
+import {ResetEmail} from "@/pages/Shared/ResetEmail.tsx";
 import {VerifyResetEmailPage} from "@/pages/Shared/VerifyResetEmailPage.tsx";
 import {OutletSwitcher, ProtectedRoute, RedirectAuthenticatedUser, ScrollToTop} from "@/hooks/routing-hooks.tsx";
 import {GuestOutletWithoutSidebar} from "@/pages/Guest/GuestOutletWithoutSidebar.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
+import {ResetPassword} from "@/pages/Shared/ResetPassword.tsx";
+import {ResetPhoneNumber} from "@/pages/Shared/ResetPhoneNumber.tsx";
+import {VerifyResetPasswordPage} from "@/pages/Shared/VerifyResetPasswordPage.tsx";
 
 
 function App() {
@@ -52,6 +55,7 @@ function App() {
                     <Route path="/register" element={<RegisterPage/>}/>
                     <Route path="/verify-account" element={<VerifyAccountPage/>}/>
                     <Route path="/:resetEmailToken/verify-reset-email" element={<VerifyResetEmailPage/>}/>
+                    <Route path="/:resetPasswordToken/verify-reset-password" element={<VerifyResetPasswordPage/>}/>
                 </Route>
 
                 {/* Shared protected routes */}
@@ -60,7 +64,9 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="change-data" element={<ChangeData/>}/>
+                    <Route path="reset-email" element={<ResetEmail/>}/>
+                    <Route path="reset-password" element={<ResetPassword/>}/>
+                    <Route path="reset-phone-number" element={<ResetPhoneNumber/>}/>
                 </Route>
 
 

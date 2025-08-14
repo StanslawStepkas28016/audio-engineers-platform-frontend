@@ -20,7 +20,7 @@ import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import {Input} from "@/components/ui/input.tsx";
-import {LoadingPage} from "@/pages/Shared/LoadingPage.tsx";
+import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useNavigate} from "react-router-dom";
 
 export const AudioEngineerEditAdvert = () => {
@@ -54,7 +54,7 @@ export const AudioEngineerEditAdvert = () => {
 
     const form = useForm<z.infer<typeof formValidationSchema>>({
         resolver: zodResolver(formValidationSchema),
-        defaultValues: async () => await axiosInstance.get(`/advert/by-id-user/${userData.idUser}`)
+        defaultValues: async () => await axiosInstance.get(`/advert/details/${userData.idUser}`)
             .then(response => {
                 setAdvertData(response.data);
                 return response.data
@@ -90,122 +90,124 @@ export const AudioEngineerEditAdvert = () => {
     }
 
     return (
-        <div className="flex flex-col h-full justify-center items-center p-10">
-            <h1 className="text-3xl font-bold mb-10 text-center">
-                Please enter new information
-            </h1>
+        <div className="flex flex-col justify-center items-center">
             {noAdvertPostedError ? (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        {noAdvertPostedError}
-                    </AlertDescription>
-                </Alert>
+                <div className="flex flex-col justify-center items-center w-full p-5">
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {noAdvertPostedError}
+                        </AlertDescription>
+                    </Alert>
+                </div>
             ) : (
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)}
-                          className="flex flex-col w-full max-w-2xl mx-auto space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Current title</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            {...field} />
-                                    </FormControl>
-                                    <FormDescription>The title of you advert</FormDescription>
-                                    <FormMessage/>
-                                </FormItem>
+                <div className="p-10 md: w-full max-w-2xl mt-5">
+                    <h1 className="text-3xl font-bold mb-10 text-center">
+                        Please enter new information
+                    </h1>
+
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(handleSubmit)}
+                              className="flex flex-col  mx-auto space-y-8">
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Current title</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>The title of you advert</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Current description</FormLabel>
+                                        <FormControl>
+                                            <AutosizeTextarea
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>This is a description of your advert</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="portfolioUrl"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Current Portfolio URL</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="e.g. https://open.spotify.com/playlist/1LBgAu0kv1q7CVzLFRjaUs?si=87c71b8d80d644bc"
+
+                                                type="text"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>This is a link to your spotify/apple music
+                                            playlist</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="price"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Current price</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="e.g. 200"
+                                                type="number"
+                                                step="1"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>This will be shown as your advert
+                                            price</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit">Submit</Button>
+
+                            {editingError && (
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4"/>
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>
+                                        {editingError}
+                                    </AlertDescription>
+                                </Alert>
                             )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Current description</FormLabel>
-                                    <FormControl>
-                                        <AutosizeTextarea
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>This is a description of your advert</FormDescription>
-                                    <FormMessage/>
-                                </FormItem>
+                            {success && (
+                                <Alert>
+                                    <Terminal className="h-4 w-4"/>
+                                    <AlertTitle>Heads up!</AlertTitle>
+                                    <AlertDescription>
+                                        {success}
+                                    </AlertDescription>
+                                </Alert>
                             )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="portfolioUrl"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Current Portfolio URL</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g. https://open.spotify.com/playlist/1LBgAu0kv1q7CVzLFRjaUs?si=87c71b8d80d644bc"
-
-                                            type="text"
-                                            {...field} />
-                                    </FormControl>
-                                    <FormDescription>This is a link to your spotify/apple music
-                                        playlist</FormDescription>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="price"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Current price</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g. 200"
-                                            type="number"
-                                            step="1"
-                                            {...field} />
-                                    </FormControl>
-                                    <FormDescription>This will be shown as your advert
-                                        price</FormDescription>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-                        <Button type="submit">Submit</Button>
-
-                        {editingError && (
-                            <Alert variant="destructive">
-                                <AlertCircle className="h-4 w-4"/>
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>
-                                    {editingError}
-                                </AlertDescription>
-                            </Alert>
-                        )}
-                        {success && (
-                            <Alert>
-                                <Terminal className="h-4 w-4"/>
-                                <AlertTitle>Heads up!</AlertTitle>
-                                <AlertDescription>
-                                    {success}
-                                </AlertDescription>
-                            </Alert>
-                        )}
-                    </form>
-                </Form>
-            )
-            }
-
-
+                        </form>
+                    </Form>
+                </div>
+            )}
         </div>
     );
 }

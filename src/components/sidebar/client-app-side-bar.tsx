@@ -64,9 +64,17 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
                 isActive: true,
                 items: [
                     {
-                        title: "Change your data",
-                        url: "/change-data",
+                        title: "Reset your password",
+                        url: "/reset-password",
                     },
+                    {
+                        title: "Reset your email",
+                        url: "/reset-email",
+                    },
+                    {
+                        title: "Reset your phone number",
+                        url: "/reset-phone-number",
+                    }
                 ],
             },
         ],
