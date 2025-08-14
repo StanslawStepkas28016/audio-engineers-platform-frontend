@@ -173,7 +173,7 @@ export const SeeAdvert = () => {
                 <div className="w-full p-5">
                     <Alert variant="destructive">
                         <AlertCircle className="h-4 w-4"/>
-                        <AlertTitle>Error</AlertTitle>
+                        < AlertTitle>Error</AlertTitle>
                         <AlertDescription>
                             {noAdvertPostedError}
                         </AlertDescription>
