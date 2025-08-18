@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function transformDate(date: Date): string {
+export function transformDateAdvertCreated(date: Date): string {
     const strings = date.toString().split("T");
     const datePart = strings[0].split("-").join(".").split(".").reverse().join(".");
     const timePart = strings[1].split(":");
