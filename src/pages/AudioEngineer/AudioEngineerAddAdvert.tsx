@@ -128,6 +128,7 @@ export const AudioEngineerAddAdvert = () => {
     }
 
     const checkIfUserHasAnAdvertAlready = async () => {
+        setAdvertAlreadyPostedError("");
         try {
             const response = await axiosInstance.get(`advert/id-advert/${userData.idUser}`);
 
@@ -137,7 +138,8 @@ export const AudioEngineerAddAdvert = () => {
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 const exceptionMessage = e.response.data.ExceptionMessage;
-                setError(exceptionMessage);
+                console.log(exceptionMessage);
+                // setError(exceptionMessage);
             } else {
                 console.log(e);
             }
