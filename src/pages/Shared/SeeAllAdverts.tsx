@@ -99,8 +99,12 @@ export const SeeAllAdverts = () => {
 
     useEffect(() => {
         fetchAdverts();
-        window.scrollTo(0, 0);
     }, [currentPage, currentSearchTerm])
+
+    // const {data, isLoading} = useQuery({
+    //     queryFn: () => fetchAdverts(),
+    //     queryKey: ['fetchAdverts', {currentPage, currentSearchTerm}]
+    // });
 
     if (loading) {
         return <LoadingPage/>;

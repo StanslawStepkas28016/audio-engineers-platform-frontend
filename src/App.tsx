@@ -27,7 +27,7 @@ function App() {
 
     useEffect(() => {
         checkAuth();
-    }, [checkAuth]);
+    }, []);
 
     if (isCheckingAuth) {
         return <LoadingPage/>;
@@ -102,7 +102,6 @@ function App() {
                     </ProtectedRoute>
                 }>
                 </Route>
-
             </Routes>
         </BrowserRouter>
     );

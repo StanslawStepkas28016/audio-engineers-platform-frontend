@@ -59,6 +59,7 @@ export type AdvertReviewsData = {
 }
 
 export const SeeAdvert = () => {
+
     const {idAdvert} = useParams<{ idAdvert: string }>();
     const {userData} = userStore();
 
@@ -137,7 +138,6 @@ export const SeeAdvert = () => {
 
     const handleAddReview = async () => {
         setError("");
-
 
         try {
             setIsLoading(true);
