@@ -37,7 +37,7 @@ export const AudioEngineerSeeYourAdvert = () => {
 
     useEffect(() => {
         getAdvertIdAdvertBasedOnIdUser();
-    }, [getAdvertIdAdvertBasedOnIdUser]);
+    }, []);
 
     if (isLoading) {
         return <LoadingPage/>;
