@@ -52,8 +52,10 @@ export const LoginPage = () => {
                     <div className="flex flex-col gap-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="text-2xl center flex justify-center">Good to see you
-                                    again!</CardTitle>
+                                <CardTitle className="text-2xl center flex justify-center">
+                                    Good to see you
+                                    again!
+                                </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <Form {...form}>
@@ -68,7 +70,7 @@ export const LoginPage = () => {
                                                     <FormControl>
                                                         <Input
                                                             placeholder="me@soundbest.pl"
-                                                            type="text"
+                                                            type="email"
                                                             {...field} />
                                                     </FormControl>
                                                     <FormDescription>The mail you provided during singing
@@ -93,10 +95,9 @@ export const LoginPage = () => {
                                                     <FormDescription>Forgot your password? {" "}
                                                         <Link to="/forgot-password"
                                                               className="underline underline-offset-4">
-                                                            Reset it!
+                                                            Click here!
                                                         </Link>
                                                     </FormDescription>
-
                                                     <FormMessage/>
                                                 </FormItem>
                                             )}
