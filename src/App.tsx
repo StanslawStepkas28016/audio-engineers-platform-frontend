@@ -19,6 +19,7 @@ import {AppRoles} from "@/enums/app-roles.tsx";
 import {ResetPassword} from "@/pages/Shared/ResetPassword.tsx";
 import {ResetPhoneNumber} from "@/pages/Shared/ResetPhoneNumber.tsx";
 import {VerifyResetPasswordPage} from "@/pages/Shared/VerifyResetPasswordPage.tsx";
+import {ForgotPasswordPage} from "@/pages/Guest/ForgotPasswordPage.tsx";
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
 
                     <Route path="/login" element={<LoginPage/>}/>
                     <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                     <Route path="/verify-account" element={<VerifyAccountPage/>}/>
                     <Route path="/:resetEmailToken/verify-reset-email" element={<VerifyResetEmailPage/>}/>
                     <Route path="/:resetPasswordToken/verify-reset-password" element={<VerifyResetPasswordPage/>}/>
