@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
 import {isAxiosError} from "axios";
-import {transformDateAdvertCreated, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
+import {transformDateAdvertCreated, transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useParams} from "react-router-dom";

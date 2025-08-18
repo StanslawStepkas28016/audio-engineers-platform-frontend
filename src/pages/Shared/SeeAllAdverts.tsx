@@ -5,7 +5,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {transformDateAdvertCreated} from "@/hooks/utils.ts";
+import {transformDateAdvertCreated} from "@/lib/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {
     Pagination,

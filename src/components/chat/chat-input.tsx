@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/hooks/utils.ts";
+import { cn } from "@/lib/utils.ts";
 
 interface ChatInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement>{}
 

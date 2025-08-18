@@ -1,7 +1,7 @@
 "use client";
 
 import {Input} from "@/components/ui/input";
-import {cn} from "@/hooks/utils.ts";
+import {cn} from "@/lib/utils.ts";
 import {
     Dispatch,
     SetStateAction,
