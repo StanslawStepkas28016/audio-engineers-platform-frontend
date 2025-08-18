@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
 import {isAxiosError} from "axios";
-import {transformDate, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
+import {transformDateAdvertCreated, transformPlaylistUrlToEmbedUrl} from "@/hooks/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useParams} from "react-router-dom";
@@ -138,11 +138,11 @@ export const SeeAdvert = () => {
     const handleAddReview = async () => {
         setError("");
 
+
         try {
             setIsLoading(true);
 
-            await axiosInstance.post(`/advert/review`, {
-                idAdvert: idAdvert,
+            await axiosInstance.post(`/advert/${idAdvert}/review`, {
                 content: form.getValues().content,
                 satisfactionLevel: form.getValues().satisfactionLevel,
             });
@@ -187,7 +187,7 @@ export const SeeAdvert = () => {
                         </h1>
 
                         <p className="mt-5">
-                            {advertData.userFirstName} {advertData.userLastName} | {transformDate(advertData.dateCreated)}
+                            {advertData.userFirstName} {advertData.userLastName} | {transformDateAdvertCreated(advertData.dateCreated)}
                         </p>
 
                         <p className="text-base/7 text-justify p-5">
@@ -263,7 +263,11 @@ export const SeeAdvert = () => {
                                                         {AppRoles.Client}
                                                     </span>
                                                     <span>
-                                                        {formatDistanceToNow(new Date(reviewData.dateCreated), {addSuffix: true})}
+                                                        {
+                                                            formatDistanceToNow(new Date(`${reviewData.dateCreated}Z`), {
+                                                                addSuffix: true,
+                                                            })
+                                                        }
                                                     </span>
                                                 </div>
                                             </CardHeader>

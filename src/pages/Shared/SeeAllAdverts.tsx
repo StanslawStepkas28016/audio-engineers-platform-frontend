@@ -5,7 +5,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {transformDate} from "@/hooks/utils.ts";
+import {transformDateAdvertCreated} from "@/hooks/utils.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {
     Pagination,
@@ -147,7 +147,7 @@ export const SeeAllAdverts = () => {
                             <CardContent className="grid gap-3 md:grid-cols-2">
                                 <div>
                                     <p
-                                        className="text-4l text-muted-foreground">{advert.userFirstName} {advert.userLastName} | {transformDate(advert.dateCreated)}
+                                        className="text-4l text-muted-foreground">{advert.userFirstName} {advert.userLastName} | {transformDateAdvertCreated(advert.dateCreated)}
                                     </p>
 
                                     <Card className="p-10 mt-5">
