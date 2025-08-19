@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {userStore} from "@/lib/userStore.ts";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate, useLocation, useSearchParams} from "react-router-dom";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerOutlet} from "@/pages/AudioEngineer/AudioEngineerOutlet.tsx";
 import {ClientOutlet} from "@/pages/Client/ClientOutlet.tsx";
@@ -45,10 +45,11 @@ export const RedirectAuthenticatedUser = ({children}: { children: React.ReactEle
 
 export function ScrollToTop() {
     const {pathname} = useLocation();
+    const params = useSearchParams();
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, [pathname]);
+    }, [pathname, params]);
 
     return null;
 }

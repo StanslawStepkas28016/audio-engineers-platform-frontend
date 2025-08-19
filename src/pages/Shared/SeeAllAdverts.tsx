@@ -1,5 +1,4 @@
-import {FormEvent, useEffect, useState} from "react";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
+import {FormEvent, useState} from "react";
 import {AlertCircle, SearchIcon, WalletIcon} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
@@ -18,6 +17,9 @@ import {
 } from "@/components/ui/pagination.tsx"
 import {Input} from "@/components/ui/input.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
+import {useQuery} from "react-query";
+import {useErrorBoundary} from "react-error-boundary";
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 
 export type SingleAdvertOverviewData = {
     idAdvert: string,
@@ -46,67 +48,61 @@ export const SeeAllAdverts = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [advertData, setAdvertData] = useState<AdvertsData | null>(null);
-
     const currentPage = searchParams.get("page") ? Number(searchParams.get("page")!) : 1;
     const currentSearchTerm = searchParams.get("searchTerm") ? searchParams.get("searchTerm") : "";
-
     const [currentInputSearchTerm, setCurrentInputSearchTerm] = useState("");
 
+    const [searchError, setLocalError] = useState("");
+
+    const {showBoundary} = useErrorBoundary();
+
     const fetchAdverts = async () => {
-        setError("");
-        setLoading(true);
+        setLocalError("");
+
         try {
             const response = await axiosInstance.get("advert/get-all", {
                 params: {sortOrder: "price_desc", page: currentPage, pageSize: 3, searchTerm: currentSearchTerm},
             });
 
-            setAdvertData(response.data);
-
             if (response.data.items.length === 0) {
-                setError("No adverts found for the given search term.");
+                setLocalError("No adverts found for the given search term.");
             }
+
+            return response.data as AdvertsData;
         } catch (e) {
             if (isAxiosError(e) && e.response) {
-                setError(e.response.data.ExceptionMessage);
+                setLocalError(e.response.data.ExceptionMessage);
             } else {
-                console.log(e)
+                // @ts-ignore
+                showBoundary(e.response);
             }
-        } finally {
-            setLoading(false);
         }
     };
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
+        setLocalError("");
 
         const term = currentInputSearchTerm.trim();
 
         if (!term) {
-            setError("Please enter a valid search query!");
+            setLocalError("Please enter a valid search query!");
             return;
         }
 
-        setError("");
         setSearchParams({searchTerm: term, page: "1"});
     }
 
     const calculateTotalPages = () => {
-        return advertData ? Math.ceil(advertData?.totalCount / advertData?.pageSize) : 0;
+        return advertsData ? Math.ceil(advertsData?.totalCount / advertsData?.pageSize) : 0;
     }
 
-    useEffect(() => {
-        fetchAdverts();
-    }, [currentPage, currentSearchTerm])
+    const {data: advertsData, isLoading} = useQuery({
+        queryFn: () => fetchAdverts(),
+        queryKey: ['fetchAdverts', {currentPage, currentSearchTerm}],
+    });
 
-    // const {data, isLoading} = useQuery({
-    //     queryFn: () => fetchAdverts(),
-    //     queryKey: ['fetchAdverts', {currentPage, currentSearchTerm}]
-    // });
-
-    if (loading) {
+    if (isLoading) {
         return <LoadingPage/>;
     }
 
@@ -124,6 +120,7 @@ export const SeeAllAdverts = () => {
                     type="text"
                     placeholder="Search for specifing engineer"
                     className="pl-8 w-3xs md:w-xl"
+                    defaultValue={currentSearchTerm || ""}
                     onChange={e => setCurrentInputSearchTerm(e.target.value)}
                 />
                 <Button
@@ -133,16 +130,16 @@ export const SeeAllAdverts = () => {
                 </Button>
             </form>
 
-            {error && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
+            {searchError && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
                 <AlertCircle className="h-4 w-4"/>
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
-                    {error}
+                    {searchError}
                 </AlertDescription>
             </Alert>)}
 
             <div className="mt-10">
-                {advertData?.items?.map((advert: SingleAdvertOverviewData) => (
+                {advertsData?.items?.map((advert: SingleAdvertOverviewData) => (
                     <div key={advert.title}>
                         <Card className="w-full max-w-3xl mb-8">
                             <CardHeader>
@@ -168,7 +165,8 @@ export const SeeAllAdverts = () => {
                                 </div>
 
                                 <div className="w-full h-64 md:h-80 overflow-hidden rounded-.lg">
-                                    <img src={advert.coverImageUrl} className="w-full h-full object-cover rounded-xl"
+                                    <img src={advert.coverImageUrl}
+                                         className="w-full h-full object-cover rounded-xl"
                                          alt="img"/>
                                 </div>
                             </CardContent>
@@ -192,7 +190,7 @@ export const SeeAllAdverts = () => {
                     <PaginationItem>
                         <PaginationPrevious
                             onClick={() => {
-                                if (advertData?.hasPreviousPage) {
+                                if (advertsData?.hasPreviousPage) {
                                     setSearchParams({
                                         searchTerm: currentInputSearchTerm || "",
                                         page: (currentPage - 1).toString()
@@ -228,7 +226,7 @@ export const SeeAllAdverts = () => {
                     <PaginationItem>
                         <PaginationNext
                             onClick={() => {
-                                if (advertData?.hasNextPage) {
+                                if (advertsData?.hasNextPage) {
                                     setSearchParams(
                                         {
                                             searchTerm: currentInputSearchTerm ? currentInputSearchTerm : "",

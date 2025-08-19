@@ -6,7 +6,6 @@ import {useEffect} from "react";
 import {userStore} from "@/lib/userStore.ts";
 import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
-import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
 import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
 import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
@@ -20,6 +19,7 @@ import {ResetPassword} from "@/pages/Shared/ResetPassword.tsx";
 import {ResetPhoneNumber} from "@/pages/Shared/ResetPhoneNumber.tsx";
 import {VerifyResetPasswordPage} from "@/pages/Shared/VerifyResetPasswordPage.tsx";
 import {ForgotPasswordPage} from "@/pages/Guest/ForgotPasswordPage.tsx";
+import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 
 
 function App() {
