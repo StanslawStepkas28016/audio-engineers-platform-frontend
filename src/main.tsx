@@ -7,7 +7,7 @@ import {queryClient} from "@/lib/react-query.ts";
 import {QueryClientProvider} from 'react-query';
 import {ReactQueryDevtools} from "react-query/devtools";
 import {ErrorBoundary} from "react-error-boundary";
-import {GeneralFallback} from "@/errorBoundaries/GeneralFallback.tsx";
+import {GeneralFallback} from "@/error-boundaries/GeneralFallback.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
