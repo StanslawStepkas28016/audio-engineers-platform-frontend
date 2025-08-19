@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
-import {AdvertData} from "@/pages/Shared/SeeAdvert.tsx";
+import {Advert} from "@/pages/Shared/SeeAdvert.tsx";
 import {userStore} from "@/lib/userStore.ts";
 import {
     Form,
@@ -25,12 +25,13 @@ import {useNavigate} from "react-router-dom";
 
 export const AudioEngineerEditAdvert = () => {
     const {userData} = userStore();
+
     const navigate = useNavigate();
     const [success, setSuccess] = useState("");
     const [editingError, setEditingError] = useState("");
     const [noAdvertPostedError, setNoAdvertPostedError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
-    const [advertData, setAdvertData] = useState<AdvertData | null>(null);
+    const [advertData, setAdvertData] = useState<Advert | null>(null);
 
     const formValidationSchema = z.object({
         title: z
@@ -60,7 +61,9 @@ export const AudioEngineerEditAdvert = () => {
                 return response.data
             })
             .catch(e => {
-                    if (isAxiosError(e) && e.response) setNoAdvertPostedError(e.response.data.ExceptionMessage)
+                    if (isAxiosError(e) && e.response) {
+                        setNoAdvertPostedError(e.response.data.ExceptionMessage)
+                    }
                 }
             )
             .finally(() => setIsLoading(false))

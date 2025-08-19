@@ -98,7 +98,7 @@ export const SeeAllAdverts = () => {
     }
 
     const {data: advertsData, isLoading} = useQuery({
-        queryFn: () => fetchAdverts(),
+        queryFn: fetchAdverts,
         queryKey: ['fetchAdverts', {currentPage, currentSearchTerm}],
     });
 

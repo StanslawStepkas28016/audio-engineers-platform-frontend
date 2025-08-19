@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/lib/axios.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
 import {isAxiosError} from "axios";
@@ -24,8 +24,10 @@ import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {userStore} from "@/lib/userStore.ts";
 import {Rating} from "@/components/ui/rating.tsx";
+import {useQuery} from "react-query";
+import {useErrorBoundary} from "react-error-boundary";
 
-export type AdvertData = {
+export type Advert = {
     idUser: string,
     idAdvert: string,
     title: string,
@@ -40,7 +42,7 @@ export type AdvertData = {
     dateModified: Date,
 }
 
-export type SingleReviewData = {
+export type Review = {
     idReview: string,
     clientFirstName: string,
     clientLastName: string,
@@ -49,8 +51,8 @@ export type SingleReviewData = {
     dateCreated: Date,
 }
 
-export type AdvertReviewsData = {
-    items: SingleReviewData[],
+export type Reviews = {
+    items: Review[],
     page: number,
     pageSize: number,
     totalCount: number,
@@ -59,40 +61,35 @@ export type AdvertReviewsData = {
 }
 
 export const SeeAdvert = () => {
-
     const {idAdvert} = useParams<{ idAdvert: string }>();
     const {userData} = userStore();
 
+    const {showBoundary} = useErrorBoundary();
     const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
     const [noAdvertPostedError, setNoAdvertPostedError] = useState("");
-    const [advertData, setAdvertData] = useState<AdvertData | null>(null);
-    const [advertReviews, setAdvertReviews] = useState<AdvertReviewsData | null>(null);
 
-    const fetchUserAdvert = async () => {
+    const fetchUserAdvert = async (): Promise<Advert | undefined> => {
+        setNoAdvertPostedError("");
+
         try {
-            setIsLoading(true);
             const response = await axiosInstance.get(`/advert/${idAdvert}`);
-            setAdvertData(response.data);
+            return response.data as Advert;
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 if (e.response.status === 500) {
                     setNoAdvertPostedError(e.response.data.ExceptionMessage);
                     console.log(e)
                 } else {
-                    setError(e.response.data.ExceptionMessage);
+                    showBoundary(e.response.data.ExceptionMessage);
                 }
-            } else {
-                console.log(e)
             }
-        } finally {
-            setIsLoading(false);
         }
     };
 
-    const fetchAdvertReviews = async () => {
+    const fetchAdvertReviews = async (): Promise<Reviews | undefined> => {
+        setNoAdvertPostedError("");
+
         try {
-            setIsLoading(true);
             const response = await axiosInstance.get(`/advert/reviews`, {
                 params: {
                     idAdvert: idAdvert,
@@ -100,22 +97,31 @@ export const SeeAdvert = () => {
                     pageSize: 4
                 }
             });
-            setAdvertReviews(response.data);
+            return response.data as Reviews;
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 if (e.response.status === 500) {
                     setNoAdvertPostedError(e.response.data.ExceptionMessage);
-                    console.log(e)
                 } else {
-                    setError(e.response.data.ExceptionMessage);
+                    showBoundary(e.response.data.ExceptionMessage);
                 }
-            } else {
-                console.log(e)
             }
-        } finally {
-            setIsLoading(false);
         }
     };
+
+    const {data: advert, isLoading: isLoadingAdvert} = useQuery(
+        {
+            queryFn: fetchUserAdvert,
+            queryKey: ['fetchUserAdvert', {idAdvert}]
+        }
+    );
+
+    const {data: reviews, isLoading: isLoadingReviews} = useQuery(
+        {
+            queryFn: fetchAdvertReviews,
+            queryKey: ['fetchAdvertReviews', {idAdvert}]
+        }
+    );
 
     const formValidationSchema = z.object({
         content: z
@@ -140,8 +146,6 @@ export const SeeAdvert = () => {
         setError("");
 
         try {
-            setIsLoading(true);
-
             await axiosInstance.post(`/advert/${idAdvert}/review`, {
                 content: form.getValues().content,
                 satisfactionLevel: form.getValues().satisfactionLevel,
@@ -154,19 +158,13 @@ export const SeeAdvert = () => {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
             }
-        } finally {
-            setIsLoading(false);
         }
     }
 
-    useEffect(() => {
-        fetchUserAdvert();
-        fetchAdvertReviews();
-    }, [idAdvert]);
-
-    if (isLoading) {
+    if (isLoadingAdvert || isLoadingReviews) {
         return <LoadingPage/>;
     }
+
     return (
         <div className="flex flex-col items-center">
             {noAdvertPostedError ? (
@@ -180,18 +178,18 @@ export const SeeAdvert = () => {
                     </Alert>
                 </div>
             ) : (
-                advertData && (
+                advert && (
                     <div className="justify-center text-center">
                         <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 font-bold">
-                            {advertData.title}
+                            {advert.title}
                         </h1>
 
                         <p className="mt-5">
-                            {advertData.userFirstName} {advertData.userLastName} | {transformDateAdvertCreated(advertData.dateCreated)}
+                            {advert.userFirstName} {advert.userLastName} | {transformDateAdvertCreated(advert.dateCreated)}
                         </p>
 
                         <p className="text-base/7 text-justify p-5">
-                            {advertData.description}
+                            {advert.description}
                         </p>
 
                         <div className="p-5">
@@ -202,10 +200,10 @@ export const SeeAdvert = () => {
                                 <CardContent>
                                     <div className="flex flex-row gap-4 items-center justify-center">
                                         <HandCoins size={100} strokeWidth={1}/>
-                                        <p className="text-2xl ">{advertData.price} <b>PLN</b></p>
+                                        <p className="text-2xl ">{advert.price} <b>PLN</b></p>
                                     </div>
                                     <p className="mt-5">
-                                        This is a price for per one <b>{advertData.categoryName}</b> inquiry!
+                                        This is a price for per one <b>{advert.categoryName}</b> inquiry!
                                     </p>
                                 </CardContent>
                             </Card>
@@ -213,7 +211,7 @@ export const SeeAdvert = () => {
 
                         <div className="flex justify-center align-middle">
                             <iframe
-                                src={transformPlaylistUrlToEmbedUrl(advertData.portfolioUrl)}
+                                src={transformPlaylistUrlToEmbedUrl(advert.portfolioUrl)}
                                 className="w-full p-5"
                                 height="400"
                             />
@@ -241,17 +239,17 @@ export const SeeAdvert = () => {
 
                         {/* Displaying all reviews */}
                         {
-                            (advertReviews?.items && advertReviews.items.length > 0) ?
-                                advertReviews.items?.map((reviewData: SingleReviewData) => (
-                                    <div key={reviewData.idReview} className="p-5 flex justify-center">
+                            (reviews?.items && reviews.items.length > 0) ?
+                                reviews.items.map((review: Review) => (
+                                    <div key={review.idReview} className="p-5 flex justify-center">
                                         <Card className="w-xs md:w-full">
                                             <CardHeader>
                                                 <div className="flex justify-between">
                                                     <span>
-                                                        {reviewData.clientFirstName} {reviewData.clientLastName}
+                                                        {review.clientFirstName} {review.clientLastName}
                                                     </span>
                                                     <span>
-                                                        <Rating value={reviewData.satisfactionLevel}
+                                                        <Rating value={review.satisfactionLevel}
                                                                 changeable={false}
                                                                 onChange={() => {
                                                                     return;
@@ -264,7 +262,7 @@ export const SeeAdvert = () => {
                                                     </span>
                                                     <span>
                                                         {
-                                                            formatDistanceToNow(new Date(`${reviewData.dateCreated}Z`), {
+                                                            formatDistanceToNow(new Date(`${review.dateCreated}Z`), {
                                                                 addSuffix: true,
                                                             })
                                                         }
@@ -273,7 +271,7 @@ export const SeeAdvert = () => {
                                             </CardHeader>
                                             <CardContent>
                                                 <p className="text-base text-justify wrap-break-word">
-                                                    {reviewData.content}
+                                                    {review.content}
                                                 </p>
                                             </CardContent>
                                         </Card>

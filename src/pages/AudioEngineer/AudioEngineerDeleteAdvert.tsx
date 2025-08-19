@@ -1,6 +1,6 @@
 import {axiosInstance} from "@/lib/axios.ts";
 import {userStore} from "@/lib/userStore";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {isAxiosError} from "axios";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
@@ -17,19 +17,17 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {Button} from "@/components/ui/button"
+import {useQuery} from "react-query";
 
 export const AudioEngineerDeleteAdvert = () => {
     const {userData} = userStore();
-    const [idAdvertBasedOnIdUser, setIdAdvertBasedOnIdUser] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [noAdvertPostedError, setNoAdvertPostedError] = useState(false);
 
     const getAdvertIdAdvertBasedOnIdUser = async () => {
-        setIsLoading(true);
         try {
             const response = await axiosInstance.get(`/advert/id-advert/${userData.idUser}`);
-            setIdAdvertBasedOnIdUser(response.data);
+            return response.data;
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 if (e.response.status === 500) {
@@ -37,13 +35,16 @@ export const AudioEngineerDeleteAdvert = () => {
                 } else {
                     setError(e.response.data.ExceptionMessage);
                 }
-            } else {
-                console.log(e);
             }
-        } finally {
-            setIsLoading(false);
         }
     }
+
+    const {data: idAdvertBasedOnIdUser, isLoading} = useQuery(
+        {
+            queryFn: getAdvertIdAdvertBasedOnIdUser,
+            queryKey: ['getAdvertIdAdvertBasedOnIdUser', userData.idUser]
+        }
+    );
 
     const sendDeleteRequest = async () => {
         try {
@@ -56,10 +57,6 @@ export const AudioEngineerDeleteAdvert = () => {
             }
         }
     }
-
-    useEffect(() => {
-        getAdvertIdAdvertBasedOnIdUser();
-    }, [])
 
     if (isLoading) {
         return <LoadingPage/>;
