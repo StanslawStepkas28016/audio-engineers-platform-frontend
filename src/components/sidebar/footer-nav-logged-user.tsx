@@ -22,7 +22,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar.tsx"
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 
 export function FooterNavLoggedUser({
                                         user,
@@ -33,7 +33,7 @@ export function FooterNavLoggedUser({
     }
 }) {
     const {isMobile} = useSidebar()
-    const {logout} = userStore();
+    const {logout} = useUserStore();
 
     const getFallbackInitials = () => {
         const strings = user.name.split(" ");

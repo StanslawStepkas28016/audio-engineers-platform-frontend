@@ -10,10 +10,23 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar.tsx"
 import {Navbar} from "@/components/ui/navbar.tsx";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
+import {axiosInstance} from "@/lib/axios"
+import {useQuery} from "react-query"
 
 export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
+
+    const {data: messagedUsers, isLoading} = useQuery(
+        {
+            queryFn: async () => await axiosInstance.get(`message/${userData.idUser}/interacted`).then(r => r.data),
+            queryKey: ['checkMessagedUsers'],
+        }
+    );
+
+    if (isLoading) {
+        return;
+    }
 
     const data = {
         user: {
@@ -40,21 +53,10 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
                 url: "#",
                 icon: MessageCircleDashed,
                 isActive: true,
-                // TODO: To be fetched from the server
-                items: [
-                    {
-                        title: "Marcin Kowalski",
-                        url: "#",
-                    },
-                    {
-                        title: "Jan Nowak",
-                        url: "#",
-                    },
-                    {
-                        title: "Marcin Krasucki",
-                        url: "#",
-                    },
-                ],
+                items: messagedUsers?.map((messagedUser: any) => ({
+                    title: `${messagedUser.firstName} ${messagedUser.lastName}`,
+                    url: `/chat/${messagedUser.idUser}`,
+                })) ?? [],
             },
             {
                 labelTitle: "Manage your account",
@@ -79,6 +81,7 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
             },
         ],
     }
+
 
     return (
         <Sidebar collapsible="offcanvas" {...props}>

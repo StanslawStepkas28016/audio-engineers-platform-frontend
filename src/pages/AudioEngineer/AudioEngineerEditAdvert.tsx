@@ -2,7 +2,7 @@ import {useState} from "react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 import {Advert} from "@/pages/Shared/SeeAdvert.tsx";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {
     Form,
     FormControl,
@@ -24,7 +24,7 @@ import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useNavigate} from "react-router-dom";
 
 export const AudioEngineerEditAdvert = () => {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
 
     const navigate = useNavigate();
     const [success, setSuccess] = useState("");

@@ -47,7 +47,6 @@ export function GuestAppSideBar({...props}: React.ComponentProps<typeof Sidebar>
                         url: "/register",
                     },
                     {
-                        // TODO: Implement forgot password functionality
                         title: "Forgot password?",
                         url: "/forgot-password",
                     }

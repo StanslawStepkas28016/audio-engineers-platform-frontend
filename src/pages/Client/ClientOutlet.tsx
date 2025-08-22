@@ -18,7 +18,7 @@ export const ClientOutlet = () => {
             <SidebarInset>
                 <SidebarSiteContentHeader/>
                 <div className="flex flex-1 flex-col">
-                        <Outlet/>
+                    <Outlet/>
                 </div>
             </SidebarInset>
         </SidebarProvider>

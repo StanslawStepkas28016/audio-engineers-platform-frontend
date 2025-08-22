@@ -28,7 +28,7 @@ import {AdvertCategories} from "@/enums/advert-categories.tsx";
 import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {useNavigate} from "react-router-dom";
 
@@ -36,7 +36,7 @@ export const AudioEngineerAddAdvert = () => {
     const [error, setError] = useState("");
     const [advertAlreadyPostedError, setAdvertAlreadyPostedError] = useState("");
     const [success, setSuccess] = useState("");
-    const {userData} = userStore();
+    const {userData} = useUserStore();
     const navigate = useNavigate();
 
     const dropZoneConfig = {

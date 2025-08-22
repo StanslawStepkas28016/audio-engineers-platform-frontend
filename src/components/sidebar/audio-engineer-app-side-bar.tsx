@@ -10,10 +10,24 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar.tsx"
 import {Navbar} from "@/components/ui/navbar.tsx";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
+import {useQuery} from "react-query";
+import {axiosInstance} from "@/lib/axios.ts";
+import { LoadingPage } from "@/pages/Guest/LoadingPage"
 
 export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
+
+    const {data: messagedUsers, isLoading} = useQuery(
+        {
+            queryFn: async () => await axiosInstance.get(`message/${userData.idUser}/interacted`).then(r => r.data),
+            queryKey: ['checkMessagedUsers'],
+        }
+    );
+
+    if (isLoading) {
+        return <LoadingPage/>;
+    }
 
     const data = {
         user: {
@@ -51,26 +65,15 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 ],
             },
             {
-                labelTitle: "Message your clients",
+                labelTitle: "Message your client",
                 title: "Messages",
                 url: "#",
                 icon: MessageCircleDashed,
                 isActive: true,
-                // TODO: To be fetched from the server
-                items: [
-                    {
-                        title: "Jan Kowalski",
-                        url: "#",
-                    },
-                    {
-                        title: "Anna Niewiadomska",
-                        url: "#",
-                    },
-                    {
-                        title: "John Doe",
-                        url: "#",
-                    },
-                ],
+                items: messagedUsers?.map((messagedUser: any) => ({
+                    title: `${messagedUser.firstName} ${messagedUser.lastName}`,
+                    url: `/chat/${messagedUser.idUser}`,
+                })) ?? [],
             },
             {
                 labelTitle: "Manage your account",

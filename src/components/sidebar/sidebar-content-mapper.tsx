@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/sidebar.tsx"
 
 export function SidebarContentMapper({
-                                            items,
-                                        }: {
+                                         items,
+                                     }: {
     items: {
         labelTitle: string
         title: string
@@ -33,7 +33,7 @@ export function SidebarContentMapper({
         }[]
     }[]
 }) {
-    const {pathname} = useLocation()
+    const {pathname} = useLocation();
 
     return (
         <SidebarGroup>
@@ -63,7 +63,8 @@ export function SidebarContentMapper({
                                             return (
                                                 <SidebarMenuSubItem key={subItem.title} data-selected={isActive}>
                                                     <SidebarMenuSubButton asChild>
-                                                        <Link to={subItem.url} className="flex w-full text-left gap-2">
+                                                        <Link to={subItem.url}
+                                                              className="flex w-full text-left gap-2">
                                                             <span>{subItem.title}</span>
                                                         </Link>
                                                     </SidebarMenuSubButton>

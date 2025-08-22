@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {Navigate, useLocation, useSearchParams} from "react-router-dom";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerOutlet} from "@/pages/AudioEngineer/AudioEngineerOutlet.tsx";
@@ -7,7 +7,7 @@ import {ClientOutlet} from "@/pages/Client/ClientOutlet.tsx";
 import {GuestOutletWithSidebar} from "@/pages/Guest/GuestOutletWithSidebar.tsx";
 
 export function OutletSwitcher() {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
 
     switch (userData.roleName) {
         case AppRoles.AudioEngineer:
@@ -22,7 +22,7 @@ export function OutletSwitcher() {
 }
 
 export const ProtectedRoute = ({allowedRoles, children}: {allowedRoles: AppRoles[], children: React.ReactElement }) => {
-    const {isAuthenticated, userData} = userStore();
+    const {isAuthenticated, userData} = useUserStore();
 
     const userInRole = allowedRoles.includes(userData.roleName as AppRoles);
 
@@ -34,7 +34,7 @@ export const ProtectedRoute = ({allowedRoles, children}: {allowedRoles: AppRoles
 };
 
 export const RedirectAuthenticatedUser = ({children}: { children: React.ReactElement }) => {
-    const {isAuthenticated} = userStore();
+    const {isAuthenticated} = useUserStore();
 
     if (isAuthenticated) {
         return <Navigate to='/' replace/>;

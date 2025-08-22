@@ -2,7 +2,7 @@ import {create} from "zustand/react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 
-export type UserAuthState = {
+export type UserStore = {
     isAuthenticated: boolean;
     isCheckingAuth: boolean;
     error: string;
@@ -30,7 +30,7 @@ const emptyUser = {
     idRole: ""
 }
 
-export const userStore = create<UserAuthState>((set) => ({
+export const useUserStore = create<UserStore>((set) => ({
     isAuthenticated: false,
     isCheckingAuth: true,
     error: "",
@@ -44,6 +44,10 @@ export const userStore = create<UserAuthState>((set) => ({
         idRole: ""
     },
 
+    /*
+    * Method used for logging in the user, the API will send a response with an access token, as well as a refresh token
+    * in a cookie.
+    * */
     login: async (email, password) => {
         try {
             const res = await axiosInstance.post("auth/login",
@@ -52,8 +56,6 @@ export const userStore = create<UserAuthState>((set) => ({
                     password: password
                 }
             );
-
-            console.log(res);
 
             set({
                 isAuthenticated: true,
@@ -86,18 +88,18 @@ export const userStore = create<UserAuthState>((set) => ({
         const refreshInterceptor = axiosInstance.interceptors.response.use(function (response) {
             return response;
         }, async function (error) {
-            // Get the original request that caused the error
+            // Get the original request that caused the error.
             const originalRequest = error.config;
-            // If the check-auth request fails with a 401 error, refresh the token
+            // If the check-auth request fails with a 401 error, refresh the token.
             if (error.response.status === 401 && error.config.url !== "auth/refresh-token") {
-                // Make sure we don't retry the request if it has already been "retried"
+                // Make sure we don't retry the request if it has already been "retried".
                 if (!error.config._retry) {
                     try {
-                        // Try refreshing the token
+                        // Try refreshing the token.
                         await axiosInstance.post("auth/refresh-token");
                         return axiosInstance(originalRequest);
                     } catch (refreshError) {
-                        // If the refresh token request fails, we need to log the user out
+                        // If the refresh token request fails, we need to log the user out.
                         console.log(refreshError);
                         set({
                             isAuthenticated: false,
@@ -110,7 +112,7 @@ export const userStore = create<UserAuthState>((set) => ({
             return await Promise.reject(error);
         });
 
-        // Set the retry flag to prevent infinite loops
+        // Set the retry flag to prevent infinite loops.
         set({isCheckingAuth: true});
 
         try {
@@ -131,7 +133,7 @@ export const userStore = create<UserAuthState>((set) => ({
             });
         }
 
-        // Eject the response interceptor after performing the refresh token logic
+        // Eject the response interceptor after performing the refresh token logic.
         axiosInstance.interceptors.response.eject(refreshInterceptor);
     },
 

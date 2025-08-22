@@ -15,14 +15,14 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useState} from "react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 
 export const ResetEmail = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const {logout, userData} = userStore();
+    const {logout, userData} = useUserStore();
 
     const resetEmailFormValidationSchema = z.object({
         newEmail: z.string().min(10),

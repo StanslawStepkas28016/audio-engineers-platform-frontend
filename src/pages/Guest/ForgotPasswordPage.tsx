@@ -39,6 +39,7 @@ export const ForgotPasswordPage = () => {
         setSuccess("");
 
         try {
+            // TODO: Complete forgot password with API calls.
             // await axiosInstance.patch(`/auth/${userData.idUser}/reset-password`, forgotPasswordForm.getValues());
             alert("You will be logged out, please check your email inbox for instructions.");
         } catch (e) {

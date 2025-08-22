@@ -6,7 +6,7 @@ import {isAxiosError} from "axios";
 import {transformDateAdvertCreated, transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {formatDistanceToNow} from "date-fns";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ import {
 import {Button} from "@/components/ui/button.tsx";
 import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {Rating} from "@/components/ui/rating.tsx";
 import {useQuery} from "react-query";
 import {useErrorBoundary} from "react-error-boundary";
@@ -62,7 +62,8 @@ export type Reviews = {
 
 export const SeeAdvert = () => {
     const {idAdvert} = useParams<{ idAdvert: string }>();
-    const {userData} = userStore();
+    const {userData, isAuthenticated} = useUserStore();
+    const navigate = useNavigate();
 
     const {showBoundary} = useErrorBoundary();
     const [error, setError] = useState("");
@@ -116,7 +117,7 @@ export const SeeAdvert = () => {
         }
     );
 
-    const {data: reviews, isLoading: isLoadingReviews} = useQuery(
+    const {data: reviews, isLoading: isLoadingReviews, refetch: refetchReviews} = useQuery(
         {
             queryFn: fetchAdvertReviews,
             queryKey: ['fetchAdvertReviews', {idAdvert}]
@@ -154,6 +155,7 @@ export const SeeAdvert = () => {
             await fetchAdvertReviews();
 
             form.reset();
+            await refetchReviews();
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 setError(e.response.data.ExceptionMessage);
@@ -232,6 +234,13 @@ export const SeeAdvert = () => {
                                 <Linkedin size={50} strokeWidth={2}/>
                             </a>
                         </div>
+
+                        {
+                            (isAuthenticated && userData.roleName === AppRoles.Client || userData.roleName === AppRoles.Admin)
+                            &&
+                            <Button className="mt-15" onClick={() => navigate(`/chat/${advert?.idUser}`)}>Message
+                                me!</Button>
+                        }
 
                         <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 mb-5 font-bold">
                             See my reviews!

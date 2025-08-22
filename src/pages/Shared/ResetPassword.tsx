@@ -15,12 +15,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
 import {useState} from "react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
 
 export const ResetPassword = () => {
-    const {userData, logout} = userStore();
+    const {userData, logout} = useUserStore();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 

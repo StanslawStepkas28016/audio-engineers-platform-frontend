@@ -3,7 +3,7 @@ import {LoginPage} from "@/pages/Guest/LoginPage.tsx";
 import {RegisterPage} from "@/pages/Guest/RegisterPage.tsx";
 import {VerifyAccountPage} from "@/pages/Guest/VerifyAccountPage.tsx";
 import {useEffect} from "react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
@@ -20,10 +20,10 @@ import {ResetPhoneNumber} from "@/pages/Shared/ResetPhoneNumber.tsx";
 import {VerifyResetPasswordPage} from "@/pages/Shared/VerifyResetPasswordPage.tsx";
 import {ForgotPasswordPage} from "@/pages/Guest/ForgotPasswordPage.tsx";
 import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
-
+import {Chat} from "@/pages/Shared/Chat.tsx";
 
 function App() {
-    const {isCheckingAuth, checkAuth} = userStore();
+    const {isCheckingAuth, checkAuth} = useUserStore();
 
     useEffect(() => {
         checkAuth();
@@ -42,7 +42,7 @@ function App() {
                     <OutletSwitcher/>
                 }>
                     <Route index element={<SeeAllAdverts/>}/>
-                    <Route path="see-advert/:idAdvert" element={<SeeAdvert/>}/>
+                    <Route path="/see-advert/:idAdvert" element={<SeeAdvert/>}/>
                 </Route>
 
                 {/* Guest routes */}
@@ -66,9 +66,10 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="reset-email" element={<ResetEmail/>}/>
-                    <Route path="reset-password" element={<ResetPassword/>}/>
-                    <Route path="reset-phone-number" element={<ResetPhoneNumber/>}/>
+                    <Route path="/reset-email" element={<ResetEmail/>}/>
+                    <Route path="/reset-password" element={<ResetPassword/>}/>
+                    <Route path="/reset-phone-number" element={<ResetPhoneNumber/>}/>
+                    <Route path="/chat/:idUserRecipient" element={<Chat/>}/>
                 </Route>
 
 
@@ -78,10 +79,10 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
-                    <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
-                    <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>
-                    <Route path="delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
+                    <Route path="/my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
+                    <Route path="/add-advert" element={<AudioEngineerAddAdvert/>}/>
+                    <Route path="/edit-advert" element={<AudioEngineerEditAdvert/>}/>
+                    <Route path="/delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
                 </Route>
 
 

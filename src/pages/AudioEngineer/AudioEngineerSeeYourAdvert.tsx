@@ -1,4 +1,4 @@
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {axiosInstance} from "@/lib/axios.ts";
@@ -8,7 +8,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
 
 export const AudioEngineerSeeYourAdvert = () => {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [noAdvertPostedError, setNoAdvertPostedError] = useState(false);

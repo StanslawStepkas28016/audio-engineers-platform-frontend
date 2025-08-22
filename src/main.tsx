@@ -5,7 +5,6 @@ import {ThemeProvider} from "@/components/theme-provider.tsx";
 import {StrictMode} from "react";
 import {queryClient} from "@/lib/react-query.ts";
 import {QueryClientProvider} from 'react-query';
-import {ReactQueryDevtools} from "react-query/devtools";
 import {ErrorBoundary} from "react-error-boundary";
 import {GeneralFallback} from "@/error-boundaries/GeneralFallback.tsx";
 
@@ -16,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
                 <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
                     <App/>
                 </ThemeProvider>
-                <ReactQueryDevtools initialIsOpen={false}/>
+                {/*<ReactQueryDevtools initialIsOpen={true}/>*/}
             </QueryClientProvider>
         </ErrorBoundary>
     </StrictMode>,

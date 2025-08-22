@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/lib/axios.ts";
-import {userStore} from "@/lib/userStore";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {useState} from "react";
 import {isAxiosError} from "axios";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
@@ -20,7 +20,7 @@ import {Button} from "@/components/ui/button"
 import {useQuery} from "react-query";
 
 export const AudioEngineerDeleteAdvert = () => {
-    const {userData} = userStore();
+    const {userData} = useUserStore();
     const [error, setError] = useState("");
     const [noAdvertPostedError, setNoAdvertPostedError] = useState(false);
 

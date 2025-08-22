@@ -4,7 +4,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {Link} from "react-router-dom";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form.tsx";
 
 export const LoginPage = () => {
-    const {login, error} = userStore();
+    const {login, error} = useUserStore();
 
     const formValidationSchema = z.object({
         email: z.string().email("Invalid email address"),

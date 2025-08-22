@@ -14,7 +14,7 @@ import {PhoneInput} from "@/components/ui/phone-input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
-import {userStore} from "@/lib/userStore.ts";
+import {useUserStore} from "@/stores/useUserStore.ts";
 import {isAxiosError} from "axios";
 import {useState} from "react";
 import {axiosInstance} from "@/lib/axios.ts";
@@ -24,7 +24,7 @@ export const ResetPhoneNumber = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
-    const {userData} = userStore();
+    const {userData} = useUserStore();
 
     const resetPhoneNumberFormValidationSchema = z.object({
         newPhoneNumber: z.string().min(1).min(9, "Phone number must be at least 9 characters long"),
