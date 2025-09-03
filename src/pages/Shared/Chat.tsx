@@ -5,8 +5,8 @@ import {
     PromptInputActions,
     PromptInputTextarea
 } from "@/components/ui/prompt-input.tsx";
-import {ArrowUp, Paperclip, X} from "lucide-react";
-import React, {useEffect, useRef, useState} from "react";
+import {ArrowUp, Download, Paperclip, X} from "lucide-react";
+import React, {useEffect, useState} from "react";
 import {Message, MessageContent} from "@/components/ui/message.tsx";
 import {ChatContainerContent, ChatContainerRoot} from "@/components/ui/chat-container";
 import {useParams} from "react-router-dom";
@@ -17,8 +17,7 @@ import {useChatStore} from "@/stores/useChatStore";
 
 export const Chat = () => {
     const [input, setInput] = useState("");
-    const [files, setFiles] = useState<File[]>([]);
-    const uploadInputRef = useRef<HTMLInputElement>(null);
+    const [file, setFile] = useState<File | undefined>(undefined);
 
     const {idUserRecipient} = useParams<{ idUserRecipient: string }>();
     const {userData} = useUserStore();
@@ -26,11 +25,11 @@ export const Chat = () => {
         getSelectedUserData,
         getMessages,
         sendTextMessage,
+        sendFileMessage,
         isLoadingChatData,
         messages,
         subscribeToMessages,
-        unsubscribeFromMessages,
-        clearSelectedUserData
+        clearSelectedUserData,
     } = useChatStore();
 
     useEffect(() => {
@@ -39,28 +38,30 @@ export const Chat = () => {
         subscribeToMessages();
 
         return () => {
-            unsubscribeFromMessages();
+            // unsubscribeFromMessages();
             clearSelectedUserData();
         };
     }, [idUserRecipient]);
 
     const handleSubmit = async () => {
+        if (!input) return;
         await sendTextMessage(idUserRecipient || "", input);
         setInput("");
+
+        if (!file) return;
+        await sendFileMessage(idUserRecipient || "", file);
+        setFile(undefined);
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            const newFiles = Array.from(event.target.files);
-            setFiles((prev) => [...prev, ...newFiles]);
+            const newFiles = event.target.files;
+            setFile(newFiles[0]);
         }
     }
 
-    const handleRemoveFile = (index: number) => {
-        setFiles((prev) => prev.filter((_, i) => i !== index))
-        if (uploadInputRef?.current) {
-            uploadInputRef.current.value = "";
-        }
+    const handleRemoveFile = () => {
+        setFile(undefined);
     }
 
     if (isLoadingChatData) {
@@ -76,15 +77,21 @@ export const Chat = () => {
                             messages?.map((message) => (
                                 <div key={message.idMessage}>
                                     <Message className={
-                                        message.idUserSender === userData.idUser ? "justify-end" : "justify-start"
+                                        message.idUserSender === userData.idUser ? "justify-end" : "justify-start invert"
                                     }>
-                                        <MessageContent
-                                            className={
-                                                message.idUserSender === userData.idUser ? "" : "invert"
-                                            }
-                                        >
-                                            {message.textContent}
-                                        </MessageContent>
+                                        {
+                                            message.textContent ? (
+                                                <MessageContent>
+                                                    {message.textContent}
+                                                </MessageContent>
+                                            ) : (
+                                                <Button className="p-10 invert">
+                                                    <a href={message.fileUrl} download>
+                                                        <Download/> {message.fileName}
+                                                    </a>
+                                                </Button>
+                                            )
+                                        }
                                     </Message>
                                 </div>
                             ))
@@ -98,26 +105,24 @@ export const Chat = () => {
                     onSubmit={handleSubmit}
                     className="static"
                 >
-                    {files.length > 0 && (
+                    {
+                        file &&
                         <div className="flex flex-wrap gap-2 pb-2">
-                            {files.map((file, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                                    onClick={e => e.stopPropagation()}
+                            <div
+                                className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                                onClick={e => e.stopPropagation()}
+                            >
+                                <Paperclip className="size-4"/>
+                                <span className="max-w-[120px] truncate">{file.name}</span>
+                                <Button
+                                    onClick={handleRemoveFile}
+                                    className="hover:bg-secondary/50 rounded-full p-1"
                                 >
-                                    <Paperclip className="size-4"/>
-                                    <span className="max-w-[120px] truncate">{file.name}</span>
-                                    <Button
-                                        onClick={() => handleRemoveFile(index)}
-                                        className="hover:bg-secondary/50 rounded-full p-1"
-                                    >
-                                        <X className="size-4"/>
-                                    </Button>
-                                </div>
-                            ))}
+                                    <X className="size-4"/>
+                                </Button>
+                            </div>
                         </div>
-                    )}
+                    }
 
                     <PromptInputTextarea placeholder="Send a message..."/>
 
@@ -129,7 +134,6 @@ export const Chat = () => {
                             >
                                 <input
                                     type="file"
-                                    multiple
                                     onChange={handleFileChange}
                                     className="hidden"
                                     id="file-upload"

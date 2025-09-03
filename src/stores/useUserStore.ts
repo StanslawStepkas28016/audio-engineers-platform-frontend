@@ -62,6 +62,7 @@ export const useUserStore = create<UserStore>((set) => ({
                 userData: res.data,
                 error: ""
             });
+
         } catch (e) {
             if (isAxiosError(e) && e.response) {
                 const exceptionMessage = e.response.data.ExceptionMessage;

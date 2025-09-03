@@ -21,6 +21,8 @@ import {VerifyResetPasswordPage} from "@/pages/Shared/VerifyResetPasswordPage.ts
 import {ForgotPasswordPage} from "@/pages/Guest/ForgotPasswordPage.tsx";
 import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 import {Chat} from "@/pages/Shared/Chat.tsx";
+import {NotFoundPage} from "./pages/Guest/NotFoundPage";
+import {Toaster} from "react-hot-toast";
 
 function App() {
     const {isCheckingAuth, checkAuth} = useUserStore();
@@ -38,6 +40,8 @@ function App() {
             <ScrollToTop/>
             <Routes>
                 {/* Shared routes */}
+                <Route path="*" element={<NotFoundPage/>}/>
+
                 <Route element={
                     <OutletSwitcher/>
                 }>
@@ -104,6 +108,7 @@ function App() {
                 }>
                 </Route>
             </Routes>
+            <Toaster position={"bottom-right"} />
         </BrowserRouter>
     );
 }

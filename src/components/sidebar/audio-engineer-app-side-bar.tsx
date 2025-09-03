@@ -10,23 +10,20 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar.tsx"
 import {Navbar} from "@/components/ui/navbar.tsx";
+import {useChatStore} from "@/stores/useChatStore.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
-import {useQuery} from "react-query";
-import {axiosInstance} from "@/lib/axios.ts";
-import { LoadingPage } from "@/pages/Guest/LoadingPage"
+import {useEffect} from "react";
 
 export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
+    const {getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
 
-    const {data: messagedUsers, isLoading} = useQuery(
-        {
-            queryFn: async () => await axiosInstance.get(`message/${userData.idUser}/interacted`).then(r => r.data),
-            queryKey: ['checkMessagedUsers'],
-        }
-    );
+    useEffect(() => {
+        getInteractedUsersData();
+    }, []);
 
-    if (isLoading) {
-        return <LoadingPage/>;
+    if (isLoadingChatData) {
+        return;
     }
 
     const data = {
@@ -70,7 +67,7 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 url: "#",
                 icon: MessageCircleDashed,
                 isActive: true,
-                items: messagedUsers?.map((messagedUser: any) => ({
+                items: interactedUsersData?.map((messagedUser) => ({
                     title: `${messagedUser.firstName} ${messagedUser.lastName}`,
                     url: `/chat/${messagedUser.idUser}`,
                 })) ?? [],
@@ -105,7 +102,6 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                 <Navbar/>
             </SidebarHeader>
             <SidebarContent>
-                {/* For all users, displayed data only based on the provided items */}
                 <SidebarContentMapper items={data.options}/>
             </SidebarContent>
             <SidebarFooter>

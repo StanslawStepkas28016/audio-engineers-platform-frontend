@@ -1,12 +1,12 @@
 import {Separator} from "@/components/ui/separator.tsx"
 import {SidebarTrigger} from "@/components/ui/sidebar.tsx"
-import {AvailabilityStatus, useChatStore} from "@/stores/useChatStore";
+import {useChatStore} from "@/stores/useChatStore";
 import {useUserStore} from "@/stores/useUserStore";
 import {MessageCircleMore} from "lucide-react";
 
 export function SidebarSiteContentHeader() {
     const {isAuthenticated} = useUserStore();
-    const {selectedUserData, availabilityStatus} = useChatStore();
+    const {selectedUserData, isOnline} = useChatStore();
 
     return (
         <header
@@ -24,8 +24,7 @@ export function SidebarSiteContentHeader() {
                                 {selectedUserData.firstName} {selectedUserData.lastName}
                             </p>
 
-                            <p className={availabilityStatus === AvailabilityStatus.Online ? "text-green-400" : "text-red-500"}> {
-                                <MessageCircleMore/>}
+                            <p className={isOnline ? "text-green-400" : "text-red-500"}> {<MessageCircleMore/>}
                             </p>
                         </div>
                     )

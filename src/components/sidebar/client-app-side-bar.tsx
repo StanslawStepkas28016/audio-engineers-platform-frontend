@@ -11,20 +11,18 @@ import {
 } from "@/components/ui/sidebar.tsx"
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {useUserStore} from "@/stores/useUserStore.ts";
-import {axiosInstance} from "@/lib/axios"
-import {useQuery} from "react-query"
+import {useChatStore} from "@/stores/useChatStore.ts";
+import {useEffect} from "react";
 
 export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
+    const {getInteractedUsersData: getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
 
-    const {data: messagedUsers, isLoading} = useQuery(
-        {
-            queryFn: async () => await axiosInstance.get(`message/${userData.idUser}/interacted`).then(r => r.data),
-            queryKey: ['checkMessagedUsers'],
-        }
-    );
+    useEffect(() => {
+        getInteractedUsersData();
+    }, []);
 
-    if (isLoading) {
+    if (isLoadingChatData) {
         return;
     }
 
@@ -53,7 +51,7 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
                 url: "#",
                 icon: MessageCircleDashed,
                 isActive: true,
-                items: messagedUsers?.map((messagedUser: any) => ({
+                items: interactedUsersData?.map((messagedUser) => ({
                     title: `${messagedUser.firstName} ${messagedUser.lastName}`,
                     url: `/chat/${messagedUser.idUser}`,
                 })) ?? [],
