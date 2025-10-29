@@ -73,7 +73,7 @@ export const SeeAdvert = () => {
         setNoAdvertPostedError("");
 
         try {
-            const response = await axiosInstance.get(`/advert/${idAdvert}`);
+            const response = await axiosInstance.get(`/advert/${idAdvert}/details`);
             return response.data as Advert;
         } catch (e) {
             if (isAxiosError(e) && e.response) {
@@ -91,9 +91,8 @@ export const SeeAdvert = () => {
         setNoAdvertPostedError("");
 
         try {
-            const response = await axiosInstance.get(`/advert/reviews`, {
+            const response = await axiosInstance.get(`/advert/${idAdvert}/reviews`, {
                 params: {
-                    idAdvert: idAdvert,
                     page: 1,
                     pageSize: 4
                 }
@@ -271,7 +270,7 @@ export const SeeAdvert = () => {
                                                     </span>
                                                     <span>
                                                         {
-                                                            formatDistanceToNow(new Date(`${review.dateCreated}Z`), {
+                                                            formatDistanceToNow(new Date(`${review.dateCreated}`), {
                                                                 addSuffix: true,
                                                             })
                                                         }

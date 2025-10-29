@@ -14,6 +14,17 @@ import {useUserStore} from "@/stores/useUserStore.ts";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useChatStore} from "@/stores/useChatStore";
 
+export type Message = {
+    idMessage: string,
+    idUserSender: string,
+    isRead: boolean,
+    senderFirstName: string,
+    senderLastName: string,
+    textContent: string,
+    fileName: string,
+    fileUrl: string,
+    dateSent: string,
+}
 
 export const Chat = () => {
     const [input, setInput] = useState("");
@@ -74,7 +85,7 @@ export const Chat = () => {
                 <ChatContainerRoot className="flex-1">
                     <ChatContainerContent className="space-y-4 p-4">
                         {
-                            messages?.map((message) => (
+                            messages?.map((message: Message) => (
                                 <div key={message.idMessage}>
                                     <Message className={
                                         message.idUserSender === userData.idUser ? "justify-end" : "justify-start invert"

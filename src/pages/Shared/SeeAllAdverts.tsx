@@ -60,7 +60,7 @@ export const SeeAllAdverts = () => {
         setLocalError("");
 
         try {
-            const response = await axiosInstance.get("advert/get-all", {
+            const response = await axiosInstance.get("advert/summaries", {
                 params: {sortOrder: "price_desc", page: currentPage, pageSize: 3, searchTerm: currentSearchTerm},
             });
 

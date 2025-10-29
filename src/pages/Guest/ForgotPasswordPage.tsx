@@ -18,6 +18,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
+import {axiosInstance} from "@/lib/axios.ts";
 
 export const ForgotPasswordPage = () => {
     const [error, setError] = useState("");
@@ -38,9 +39,12 @@ export const ForgotPasswordPage = () => {
         setError("");
         setSuccess("");
 
+        const payload = new FormData();
+        payload.append("Email", String(forgotPasswordForm.getValues("email")));
+
         try {
             // TODO: Complete forgot password with API calls.
-            // await axiosInstance.patch(`/auth/${userData.idUser}/reset-password`, forgotPasswordForm.getValues());
+            await axiosInstance.post(`auth/forgot-password`, forgotPasswordForm.getValues());
             alert("You will be logged out, please check your email inbox for instructions.");
         } catch (e) {
             if (isAxiosError(e) && e.response) {
@@ -106,18 +110,6 @@ export const ForgotPasswordPage = () => {
                         )}
                     </form>
                 </Form>
-
-                {error &&
-                    <div className="p-10 md:w-xl">
-                        <Alert variant="destructive" className="mt-5">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                {error}
-                            </AlertDescription>
-                        </Alert>
-                    </div>
-                }
             </div>
         </div>
     );
