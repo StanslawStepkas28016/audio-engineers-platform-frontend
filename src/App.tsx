@@ -108,7 +108,7 @@ function App() {
                 }>
                 </Route>
             </Routes>
-            <Toaster position={"bottom-right"} />
+            <Toaster position={"bottom-right"}/>
         </BrowserRouter>
     );
 }

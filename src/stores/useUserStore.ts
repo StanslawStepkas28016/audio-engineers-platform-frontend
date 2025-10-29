@@ -1,6 +1,8 @@
 import {create} from "zustand/react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {isAxiosError} from "axios";
+import {devtools} from 'zustand/middleware'
+import {useChatStore} from "@/stores/useChatStore.ts";
 
 export type UserStore = {
     isAuthenticated: boolean;
@@ -30,7 +32,7 @@ const emptyUser = {
     idRole: ""
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>()(devtools((set) => ({
     isAuthenticated: false,
     isCheckingAuth: true,
     error: "",
@@ -122,6 +124,8 @@ export const useUserStore = create<UserStore>((set) => ({
                 isAuthenticated: true,
                 userData: resp.data
             });
+
+            await useChatStore.getState().startHubConnection();
         } catch (e) {
             console.log(e);
             set({
@@ -155,7 +159,7 @@ export const useUserStore = create<UserStore>((set) => ({
             alert("An error occurred while logging out!");
         }
     }
-}));
+})));
 
 
 

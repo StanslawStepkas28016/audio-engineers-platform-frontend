@@ -3,10 +3,8 @@ import {signalrConnection} from "@/lib/signalr";
 import {create} from "zustand/react";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import axios, {isAxiosError} from "axios";
-import {HubConnectionState} from "@microsoft/signalr";
 import toast from "react-hot-toast";
 import {Message} from "@/pages/Shared/Chat.tsx";
-import {devtools} from 'zustand/middleware'
 
 export type UserData = {
     idUser: string,
@@ -22,18 +20,18 @@ export type UseChatStore = {
     selectedUserData: UserData,
     messages: Message[],
     error: string,
-
     getInteractedUsersData: () => Promise<void>,
     getSelectedUserData: (idUser: string) => Promise<void>,
     clearSelectedUserData: () => Promise<void>,
     getMessages: (idUserRecipient: string) => Promise<void>,
+    startHubConnection: () => Promise<void>,
     subscribeToMessages: () => Promise<void>,
     unsubscribeFromMessages: () => Promise<void>,
     sendTextMessage: (idUserRecipient: string, textContent: string) => Promise<void>,
     sendFileMessage: (idUserRecipient: string, files: File) => Promise<void>,
 };
 
-export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
+export const useChatStore = create<UseChatStore>()((set, get) => ({
     isInChatView: false,
     isLoadingChatData: true,
     isOnline: false,
@@ -88,15 +86,19 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
         })
     },
 
-    subscribeToMessages: async () => {
-        // Start a connection.
-        if (!useUserStore.getState().isAuthenticated || signalrConnection.state !== HubConnectionState.Disconnected) return;
+    startHubConnection: async () => {
+        // Ensure user is authenticated, this method is supposed to be called
+        // from the checkAuth method (only if the check is positive).
+        if (!useUserStore.getState().isAuthenticated) return;
 
+        // Start a connection.
         await signalrConnection.start()
             .catch(err => {
                 console.error(err)
             });
+    },
 
+    subscribeToMessages: async () => {
         // Listening for availability status messages.
         signalrConnection.on("ReceiveIsOnlineMessage", (message) => {
             // Only set the status if the user is equal to the selected user.
@@ -229,5 +231,5 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
             messages: [...get().messages ?? [], fileMessageRes.data]
         })
     }
-})));
+}));
 
