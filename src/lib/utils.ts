@@ -18,5 +18,5 @@ export function transformPlaylistUrlToEmbedUrl(url: string): string {
     if (match) {
         return `https://open.spotify.com/embed/playlist/${match[1]}`;
     }
-    return url; // Return original URL if it doesn't match the pattern
+    return url; // Return original URL if it doesn't match the pattern.
 }

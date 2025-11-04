@@ -1,5 +1,5 @@
 import * as React from "react"
-import {BookOpen, MessageCircleDashed, Settings} from "lucide-react"
+import {BookOpen, Settings, Search} from "lucide-react"
 
 import {SidebarContentMapper} from "@/components/sidebar/sidebar-content-mapper.tsx"
 import {FooterNavLoggedUser} from "@/components/sidebar/footer-nav-logged-user.tsx"
@@ -14,8 +14,9 @@ import {useChatStore} from "@/stores/useChatStore.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {useEffect} from "react";
 
-export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const {getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
+export function AdminAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
+    // TODO:
+    const {getInteractedUsersData, /*interactedUsersData,*/ isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
 
     useEffect(() => {
@@ -34,7 +35,7 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
         },
         options: [
             {
-                labelTitle: "See and manage your adverts",
+                labelTitle: "See engineers adverts",
                 title: "Adverts",
                 url: "#",
                 icon: BookOpen,
@@ -43,35 +44,21 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
                     {
                         title: "See all adverts",
                         url: "/",
-                    },
-                    {
-                        title: "See your advert",
-                        url: "/my-advert",
-                    },
-                    {
-                        title: "Add your advert",
-                        url: "/add-advert",
-                    },
-                    {
-                        title: "Edit your advert",
-                        url: "/edit-advert",
-                    },
-                    {
-                        title: "Delete your advert",
-                        url: "/delete-advert",
-                    },
+                    }
                 ],
             },
             {
-                labelTitle: "Message your client",
-                title: "Messages",
+                labelTitle: "Admin management",
+                title: "Dashboard",
                 url: "#",
-                icon: MessageCircleDashed,
+                icon: Search,
                 isActive: true,
-                items: interactedUsersData?.map((messagedUser) => ({
-                    title: `${messagedUser.firstName} ${messagedUser.lastName}`,
-                    url: `/chat/${messagedUser.idUser}`,
-                })) ?? [],
+                items: [
+                    {
+                        title: "Manage data",
+                        url: "/dashboard",
+                    }
+                ],
             },
             {
                 labelTitle: "Manage your account",

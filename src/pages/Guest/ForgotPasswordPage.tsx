@@ -1,7 +1,6 @@
 import {useState} from "react";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {isAxiosError} from "axios";
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {
     useForm
@@ -19,10 +18,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
+import {useNavigate} from "react-router-dom";
 
 export const ForgotPasswordPage = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const navigate = useNavigate();
 
     const forgotPasswordFormValidationSchema = z.object({
         email: z.string().min(1, "Password must be at least 8 characters long"),
@@ -39,26 +40,21 @@ export const ForgotPasswordPage = () => {
         setError("");
         setSuccess("");
 
-        const payload = new FormData();
-        payload.append("Email", String(forgotPasswordForm.getValues("email")));
-
-        try {
-            // TODO: Complete forgot password with API calls.
-            await axiosInstance.post(`auth/forgot-password`, forgotPasswordForm.getValues());
-            alert("You will be logged out, please check your email inbox for instructions.");
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                setError(e.response.data.ExceptionMessage);
-            } else {
-                console.log(e);
-            }
-        }
+        await axiosInstance
+            .post(`auth/forgot-password`, forgotPasswordForm.getValues())
+            .then(() => {
+                setSuccess("You will be logged out, please check your email inbox for instructions.");
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000);
+            })
+            .catch(e => setError(e.response.data.ExceptionMessage || "Error remidning forgotten password."));
     }
 
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <Navbar/>
-            <div className="p-10 md: flex flex-col min-h-screen  items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold mb-10">
                         Forgot password form

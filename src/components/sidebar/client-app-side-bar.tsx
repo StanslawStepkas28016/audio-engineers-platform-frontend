@@ -15,7 +15,7 @@ import {useChatStore} from "@/stores/useChatStore.ts";
 import {useEffect} from "react";
 
 export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const {getInteractedUsersData: getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
+    const {getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export function ClientAppSideBar({...props}: React.ComponentProps<typeof Sidebar
                 icon: MessageCircleDashed,
                 isActive: true,
                 items: interactedUsersData?.map((messagedUser) => ({
-                    title: `${messagedUser.firstName} ${messagedUser.lastName}`,
+                    title: `${messagedUser.firstName} ${messagedUser.lastName} ${messagedUser.unreadCount === 0 ? '' : messagedUser.unreadCount}`,
                     url: `/chat/${messagedUser.idUser}`,
                 })) ?? [],
             },

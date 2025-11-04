@@ -1,7 +1,6 @@
-import {FormEvent, useState} from "react";
+import {useState} from "react";
 import {AlertCircle, SearchIcon, WalletIcon} from "lucide-react";
 import {axiosInstance} from "@/lib/axios.ts";
-import {isAxiosError} from "axios";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {transformDateAdvertCreated} from "@/lib/utils.ts";
@@ -18,91 +17,67 @@ import {
 import {Input} from "@/components/ui/input.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useQuery} from "react-query";
-import {useErrorBoundary} from "react-error-boundary";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
+import {Form, FormField, FormItem} from "@/components/ui/form.tsx";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import {AdvertOverviewsPaginated, AdvertOverview} from "@/types/types.ts";
 
-export type SingleAdvertOverviewData = {
-    idAdvert: string,
-    title: string,
-    idUser: string,
-    userFirstName: string,
-    userLastName: string,
-    dateCreated: Date,
-    price: string,
-    categoryName: string,
-    coverImageKey: string,
-    coverImageUrl: string,
-    description: string,
-}
-
-export type AdvertsData = {
-    items: SingleAdvertOverviewData[];
-    page: number;
-    pageSize: number;
-    totalCount: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-};
 
 export const SeeAllAdverts = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const currentPageSearchParam = searchParams.get("page") ? Number(searchParams.get("page")!) : 1;
+    const currentSearchTermSearchParam = searchParams.get("searchTerm") ? searchParams.get("searchTerm") : "";
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const currentPage = searchParams.get("page") ? Number(searchParams.get("page")!) : 1;
-    const currentSearchTerm = searchParams.get("searchTerm") ? searchParams.get("searchTerm") : "";
-    const [currentInputSearchTerm, setCurrentInputSearchTerm] = useState("");
-
-    const [searchError, setLocalError] = useState("");
-
-    const {showBoundary} = useErrorBoundary();
-
-    const fetchAdverts = async () => {
-        setLocalError("");
-
-        try {
-            const response = await axiosInstance.get("advert/summaries", {
-                params: {sortOrder: "price_desc", page: currentPage, pageSize: 3, searchTerm: currentSearchTerm},
-            });
-
-            if (response.data.items.length === 0) {
-                setLocalError("No adverts found for the given search term.");
-            }
-
-            return response.data as AdvertsData;
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                setLocalError(e.response.data.ExceptionMessage);
-            } else {
-                // @ts-ignore
-                showBoundary(e.response);
-            }
-        }
-    };
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        setLocalError("");
-
-        const term = currentInputSearchTerm.trim();
-
-        if (!term) {
-            setLocalError("Please enter a valid search query!");
-            return;
-        }
-
-        setSearchParams({searchTerm: term, page: "1"});
-    }
+    const {data: advertsData, isLoading: isLoadingAdverts} = useQuery({
+        queryFn: async () => await axiosInstance
+            .get("advert/summaries", {
+                params: {
+                    sortOrder: "price_desc",
+                    page: currentPageSearchParam,
+                    pageSize: 3,
+                    searchTerm: currentSearchTermSearchParam
+                },
+            }).then(r => {
+                if (r.data.items.length === 0) {
+                    setError("No adverts found for the given search term.");
+                }
+                return r.data as AdvertOverviewsPaginated;
+            })
+            .catch(e => {
+                setError(e.response.data.ExceptionMessage || "Error loading adverts.");
+                return undefined;
+            }),
+        queryKey: ['fetchAdverts', {
+            currentPage: currentPageSearchParam,
+            currentSearchTerm: currentSearchTermSearchParam
+        }],
+    });
 
     const calculateTotalPages = () => {
         return advertsData ? Math.ceil(advertsData?.totalCount / advertsData?.pageSize) : 0;
     }
 
-    const {data: advertsData, isLoading} = useQuery({
-        queryFn: fetchAdverts,
-        queryKey: ['fetchAdverts', {currentPage, currentSearchTerm}],
+    const searchFormValidationSchema = z.object({
+        searchTerm: z.string()
     });
 
-    if (isLoading) {
+    const searchForm = useForm<z.infer<typeof searchFormValidationSchema>>({
+        resolver: zodResolver(searchFormValidationSchema),
+        defaultValues: {
+            searchTerm: "",
+        }
+    });
+
+    const handleSubmit = async () => {
+        setError("");
+        setSearchParams({searchTerm: searchForm.getValues().searchTerm, page: "1"});
+    }
+
+    if (isLoadingAdverts) {
         return <LoadingPage/>;
     }
 
@@ -112,34 +87,41 @@ export const SeeAllAdverts = () => {
                 Find the best audio engineers!
             </h1>
 
-            <form className="relative flex items-center mt-10" onSubmit={handleSearch}>
-                <SearchIcon
-                    className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform"
-                />
-                <Input
-                    type="text"
-                    placeholder="Search for specifing engineer"
-                    className="pl-8 w-3xs md:w-xl"
-                    defaultValue={currentSearchTerm || ""}
-                    onChange={e => setCurrentInputSearchTerm(e.target.value)}
-                />
-                <Button
-                    className="ml-2"
-                >
-                    Search
-                </Button>
-            </form>
+            <Form {...searchForm}>
+                <form className="relative flex items-center mt-10" onSubmit={searchForm.handleSubmit(handleSubmit)}>
+                    <SearchIcon
+                        className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform"
+                    />
 
-            {searchError && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
+                    <FormField
+                        control={searchForm.control}
+                        name="searchTerm"
+                        render={({field}) => (
+                            <FormItem>
+                                <Input
+                                    placeholder="Best mixes..."
+                                    type="text"
+                                    className="pl-8 w-3xs md:w-xl"
+                                    {...field} />
+                            </FormItem>
+                        )}
+                    />
+                    <Button className="ml-2" type="submit">
+                        Search
+                    </Button>
+                </form>
+            </Form>
+
+            {error && (<Alert variant="destructive" className="mt-10 mb-10 w-2/3">
                 <AlertCircle className="h-4 w-4"/>
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
-                    {searchError}
+                    {error}
                 </AlertDescription>
             </Alert>)}
 
             <div className="mt-10">
-                {advertsData?.items?.map((advert: SingleAdvertOverviewData) => (
+                {advertsData?.items?.map((advert: AdvertOverview) => (
                     <div key={advert.title}>
                         <Card className="w-full max-w-3xl mb-8">
                             <CardHeader>
@@ -192,8 +174,8 @@ export const SeeAllAdverts = () => {
                             onClick={() => {
                                 if (advertsData?.hasPreviousPage) {
                                     setSearchParams({
-                                        searchTerm: currentInputSearchTerm || "",
-                                        page: (currentPage - 1).toString()
+                                        searchTerm: searchForm.getValues().searchTerm,
+                                        page: (currentPageSearchParam - 1).toString()
                                     });
                                 }
                             }}
@@ -208,12 +190,12 @@ export const SeeAllAdverts = () => {
                                         onClick={
                                             () => setSearchParams(
                                                 {
-                                                    searchTerm: currentInputSearchTerm || "",
+                                                    searchTerm: searchForm.getValues().searchTerm,
                                                     page: (index + 1).toString()
                                                 }
                                             )
                                         }
-                                        isActive={currentPage == index + 1}
+                                        isActive={currentPageSearchParam == index + 1}
                                     >
                                         {index + 1}
                                     </PaginationLink>
@@ -229,8 +211,8 @@ export const SeeAllAdverts = () => {
                                 if (advertsData?.hasNextPage) {
                                     setSearchParams(
                                         {
-                                            searchTerm: currentInputSearchTerm ? currentInputSearchTerm : "",
-                                            page: (currentPage + 1).toString()
+                                            searchTerm: searchForm.getValues().searchTerm,
+                                            page: (currentPageSearchParam + 1).toString()
                                         }
                                     );
                                 }

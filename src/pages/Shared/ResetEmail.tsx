@@ -17,12 +17,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useState} from "react";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {axiosInstance} from "@/lib/axios.ts";
-import {isAxiosError} from "axios";
 
 export const ResetEmail = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const {logout, userData} = useUserStore();
+    const {userData} = useUserStore();
 
     const resetEmailFormValidationSchema = z.object({
         newEmail: z.string().min(10),
@@ -33,27 +32,22 @@ export const ResetEmail = () => {
         defaultValues: {newEmail: userData.email},
     });
 
-    const handleResetEmailForm = async () => {
+    const handleSubmit = async () => {
         setError("");
         setSuccess("");
 
-        if (!resetEmailForm.formState.isDirty) {
+        if (!resetEmailForm.formState.dirtyFields) {
             setError("Your new email needs to be different!")
             return;
         }
 
-        try {
-            await axiosInstance.patch(`auth/${userData.idUser}/reset-email`, resetEmailForm.getValues());
-            alert("You will be logged out, please check your email inbox for instructions.");
-            await logout();
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                const exceptionMessage = e.response.data.ExceptionMessage;
-                setError(exceptionMessage);
-            } else {
-                console.log(e);
-            }
-        }
+        await axiosInstance
+            .patch(`auth/reset-email`, resetEmailForm.getValues())
+            .then(() => {
+                setSuccess("Successfully reset your email, you will be logged out, please check your email inbox for instructions.");
+                setTimeout(() => window.location.reload(), 1000)
+            })
+            .catch(e => setError(e.response.data.ExceptionMessage || "Error resetting email."))
     }
 
     return (<div className="p-10 md: flex flex-col h-full justify-center">
@@ -68,7 +62,7 @@ export const ResetEmail = () => {
         </div>
 
         <Form {...resetEmailForm}>
-            <form onSubmit={resetEmailForm.handleSubmit(handleResetEmailForm)}
+            <form onSubmit={resetEmailForm.handleSubmit(handleSubmit)}
                   className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                 <FormField
                     control={resetEmailForm.control}

@@ -5,6 +5,7 @@ import {AppRoles} from "@/enums/app-roles.tsx";
 import {AudioEngineerOutlet} from "@/pages/AudioEngineer/AudioEngineerOutlet.tsx";
 import {ClientOutlet} from "@/pages/Client/ClientOutlet.tsx";
 import {GuestOutletWithSidebar} from "@/pages/Guest/GuestOutletWithSidebar.tsx";
+import {AdminOutlet} from "@/pages/Admin/AdminOutlet.tsx";
 
 export function OutletSwitcher() {
     const {userData} = useUserStore();
@@ -14,14 +15,17 @@ export function OutletSwitcher() {
             return <AudioEngineerOutlet/>;
         case AppRoles.Client:
             return <ClientOutlet/>;
-        case AppRoles.Admin:
-            return null;
+        case AppRoles.Administrator:
+            return <AdminOutlet/>;
         default:
             return <GuestOutletWithSidebar/>;
     }
 }
 
-export const ProtectedRoute = ({allowedRoles, children}: {allowedRoles: AppRoles[], children: React.ReactElement }) => {
+export const ProtectedRoute = ({allowedRoles, children}: {
+    allowedRoles: AppRoles[],
+    children: React.ReactElement
+}) => {
     const {isAuthenticated, userData} = useUserStore();
 
     const userInRole = allowedRoles.includes(userData.roleName as AppRoles);
