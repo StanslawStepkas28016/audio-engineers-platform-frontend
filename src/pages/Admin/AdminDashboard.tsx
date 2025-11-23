@@ -2,7 +2,7 @@ import {DataTable} from "@/components/ui/data-table.tsx";
 import {createColumnHelper} from "@tanstack/react-table";
 import {AdvertOverviewsPaginated, AdvertOverview} from "@/types/types.ts";
 import {axiosInstance} from "@/lib/axios.ts";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {useState} from "react";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useUserStore} from "@/stores/useUserStore.ts";

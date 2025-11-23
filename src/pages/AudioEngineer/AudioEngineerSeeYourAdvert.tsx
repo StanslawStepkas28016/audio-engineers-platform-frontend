@@ -5,7 +5,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 
 export const AudioEngineerSeeYourAdvert = () => {
     const navigate = useNavigate();

@@ -15,7 +15,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {Button} from "@/components/ui/button"
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 
 export const AudioEngineerDeleteAdvert = () => {

@@ -29,7 +29,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {useNavigate} from "react-router-dom";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 
 export const AudioEngineerAddAdvert = () => {

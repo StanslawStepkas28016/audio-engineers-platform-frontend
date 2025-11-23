@@ -23,7 +23,7 @@ import {AutosizeTextarea} from "@/components/ui/autosize-textarea.tsx";
 import {AppRoles} from "@/enums/app-roles.tsx";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {Rating} from "@/components/ui/rating.tsx";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {Advert, Review, ReviewsPaginated} from "@/types/types.ts";
 
 export const SeeAdvert = () => {

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/pagination.tsx"
 import {Input} from "@/components/ui/input.tsx";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {Form, FormField, FormItem} from "@/components/ui/form.tsx";
 import {useForm} from "react-hook-form";

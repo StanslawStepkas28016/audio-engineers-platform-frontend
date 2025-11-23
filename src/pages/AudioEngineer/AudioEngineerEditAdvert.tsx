@@ -20,7 +20,7 @@ import {useForm} from "react-hook-form";
 import {Input} from "@/components/ui/input.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useNavigate} from "react-router-dom";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {Advert} from "@/types/types.ts";
 
 export const AudioEngineerEditAdvert = () => {
