@@ -1,7 +1,5 @@
 import {create} from "zustand/react";
 import {axiosInstance} from "@/lib/axios.ts";
-import {isAxiosError} from "axios";
-import {devtools} from 'zustand/middleware'
 import {useChatStore} from "@/stores/useChatStore.ts";
 
 export type UserStore = {
@@ -32,7 +30,7 @@ const emptyUser = {
     idRole: ""
 }
 
-export const useUserStore = create<UserStore>()(devtools((set) => ({
+export const useUserStore = create<UserStore>()((set) => ({
     isAuthenticated: false,
     isCheckingAuth: true,
     error: "",
@@ -51,30 +49,25 @@ export const useUserStore = create<UserStore>()(devtools((set) => ({
     * in a cookie.
     * */
     login: async (email, password) => {
-        try {
-            const res = await axiosInstance.post("auth/login",
-                {
-                    email: email,
-                    password: password
-                }
-            );
-
-            set({
-                isAuthenticated: true,
-                userData: res.data,
-                error: ""
-            });
-
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                const exceptionMessage = e.response.data.ExceptionMessage;
+        await axiosInstance.post("auth/login",
+            {
+                email: email,
+                password: password
+            })
+            .then(r =>
+                set({
+                    isAuthenticated: true,
+                    userData: r.data,
+                    error: ""
+                })
+            )
+            .catch(e =>
                 set({
                     isAuthenticated: false,
-                    error: exceptionMessage,
+                    error: e.response.data.ExceptionMessage || "Error while logging in.",
                     userData: emptyUser
-                });
-            }
-        }
+                })
+            );
     },
 
     /*
@@ -124,8 +117,6 @@ export const useUserStore = create<UserStore>()(devtools((set) => ({
                 isAuthenticated: true,
                 userData: resp.data
             });
-
-            await useChatStore.getState().startHubConnection();
         } catch (e) {
             console.log(e);
             set({
@@ -147,19 +138,16 @@ export const useUserStore = create<UserStore>()(devtools((set) => ({
     * the access and refresh tokens from the cookies and the userStore will be updated.
     * */
     logout: async () => {
-        try {
-            await axiosInstance.post("auth/logout");
-            set({
-                isAuthenticated: false,
-                isCheckingAuth: false,
-                userData: emptyUser
-            });
-        } catch (e) {
-            console.log(e)
-            alert("An error occurred while logging out!");
-        }
+        await axiosInstance
+            .post("auth/logout")
+            .then(async () => {
+                await useChatStore.getState().stopHubConnection();
+                set({
+                    isAuthenticated: false,
+                    isCheckingAuth: false,
+                    userData: emptyUser
+                });
+            })
+            .catch(() => alert("An error occurred while logging out!"));
     }
-})));
-
-
-
+}));

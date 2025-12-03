@@ -13,22 +13,13 @@ import {useParams} from "react-router-dom";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useChatStore} from "@/stores/useChatStore";
-
-export type Message = {
-    idMessage: string,
-    idUserSender: string,
-    isRead: boolean,
-    senderFirstName: string,
-    senderLastName: string,
-    textContent: string,
-    fileName: string,
-    fileUrl: string,
-    dateSent: string,
-}
+import {MessageT} from "@/types/types.ts";
 
 export const Chat = () => {
     const [input, setInput] = useState("");
     const [file, setFile] = useState<File | undefined>(undefined);
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
 
     const {idUserRecipient} = useParams<{ idUserRecipient: string }>();
     const {userData} = useUserStore();
@@ -39,20 +30,35 @@ export const Chat = () => {
         sendFileMessage,
         isLoadingChatData,
         messages,
-        subscribeToMessages,
         clearSelectedUserData,
+        totalCount
     } = useChatStore();
 
     useEffect(() => {
         getSelectedUserData(idUserRecipient || "");
-        getMessages(idUserRecipient || "");
-        subscribeToMessages();
+        getMessages(idUserRecipient || "", page, pageSize);
 
         return () => {
-            // unsubscribeFromMessages();
             clearSelectedUserData();
         };
     }, [idUserRecipient]);
+
+    useEffect(() => {
+        getMessages(idUserRecipient || "", page, pageSize);
+    }, [page]);
+
+    // Remove scrolling from browser.
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.overflow = "scroll"
+        };
+    });
+
+    const handleLoadMoreMessages = async () => {
+        setPage(page => page + 1)
+    }
 
     const handleSubmit = async () => {
         if (!input) return;
@@ -80,94 +86,101 @@ export const Chat = () => {
     }
 
     return (
-        <div>
-            <div className="p-20 md: flex h-[400px] w-full flex-col min-h-screen">
-                <ChatContainerRoot className="flex-1">
-                    <ChatContainerContent className="space-y-4 p-4">
+            <div>
+                <div className="p-20 md: flex h-[400px] w-full flex-col min-h-screen">
+                    <ChatContainerRoot className="flex-1">
+                        <ChatContainerContent className="space-y-4 p-4">
+                            {
+                                    totalCount > messages.length &&
+                                    (<Button variant="outline" onClick={handleLoadMoreMessages}>
+                                        Get older messages
+                                    </Button>)
+                            }
+
+                            {
+                                messages?.map((message: MessageT) => (
+                                        <div key={message.idMessage}>
+                                            <Message className={
+                                                message.idUserSender===userData.idUser ? "justify-end":"justify-start invert"
+                                            }>
+                                                {
+                                                    message.textContent ? (
+                                                            <MessageContent>
+                                                                {message.textContent}
+                                                            </MessageContent>
+                                                    ):(
+                                                            <Button className="p-10 invert">
+                                                                <a href={message.fileUrl} download>
+                                                                    <Download/> {message.fileName}
+                                                                </a>
+                                                            </Button>
+                                                    )
+                                                }
+                                            </Message>
+                                        </div>
+                                ))
+                            }
+                        </ChatContainerContent>
+                    </ChatContainerRoot>
+
+                    <PromptInput
+                            value={input}
+                            onValueChange={setInput}
+                            onSubmit={handleSubmit}
+                            className="static"
+                    >
                         {
-                            messages?.map((message: Message) => (
-                                <div key={message.idMessage}>
-                                    <Message className={
-                                        message.idUserSender === userData.idUser ? "justify-end" : "justify-start invert"
-                                    }>
-                                        {
-                                            message.textContent ? (
-                                                <MessageContent>
-                                                    {message.textContent}
-                                                </MessageContent>
-                                            ) : (
-                                                <Button className="p-10 invert">
-                                                    <a href={message.fileUrl} download>
-                                                        <Download/> {message.fileName}
-                                                    </a>
-                                                </Button>
-                                            )
-                                        }
-                                    </Message>
-                                </div>
-                            ))
-                        }
-                    </ChatContainerContent>
-                </ChatContainerRoot>
-
-                <PromptInput
-                    value={input}
-                    onValueChange={setInput}
-                    onSubmit={handleSubmit}
-                    className="static"
-                >
-                    {
-                        file &&
-                        <div className="flex flex-wrap gap-2 pb-2">
-                            <div
-                                className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                                onClick={e => e.stopPropagation()}
-                            >
-                                <Paperclip className="size-4"/>
-                                <span className="max-w-[120px] truncate">{file.name}</span>
-                                <Button
-                                    onClick={handleRemoveFile}
-                                    className="hover:bg-secondary/50 rounded-full p-1"
+                                file &&
+                            <div className="flex flex-wrap gap-2 pb-2">
+                                <div
+                                    className="bg-secondary flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                                    onClick={e => e.stopPropagation()}
                                 >
-                                    <X className="size-4"/>
-                                </Button>
+                                    <Paperclip className="size-4"/>
+                                    <span className="max-w-[120px] truncate">{file.name}</span>
+                                    <Button
+                                        onClick={handleRemoveFile}
+                                        className="hover:bg-secondary/50 rounded-full p-1"
+                                    >
+                                        <X className="size-4"/>
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
 
-                    <PromptInputTextarea placeholder="Send a message..."/>
+                        <PromptInputTextarea placeholder="Send a message..."/>
 
-                    <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
-                        <PromptInputAction tooltip="Attach files">
-                            <label
-                                htmlFor="file-upload"
-                                className="hover:bg-secondary-foreground/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"
+                        <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
+                            <PromptInputAction tooltip="Attach files">
+                                <label
+                                        htmlFor="file-upload"
+                                        className="hover:bg-secondary-foreground/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"
+                                >
+                                    <input
+                                            type="file"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                            id="file-upload"
+                                    />
+                                    <Paperclip className="text-primary size-5"/>
+                                </label>
+                            </PromptInputAction>
+
+                            <PromptInputAction
+                                    tooltip={"Send message"}
                             >
-                                <input
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                    id="file-upload"
-                                />
-                                <Paperclip className="text-primary size-5"/>
-                            </label>
-                        </PromptInputAction>
-
-                        <PromptInputAction
-                            tooltip={"Send message"}
-                        >
-                            <Button
-                                variant="default"
-                                size="icon"
-                                className="h-8 w-8 rounded-full"
-                                onClick={handleSubmit}
-                            >
-                                <ArrowUp className="size-5"/>
-                            </Button>
-                        </PromptInputAction>
-                    </PromptInputActions>
-                </PromptInput>
+                                <Button
+                                        variant="default"
+                                        size="icon"
+                                        className="h-8 w-8 rounded-full"
+                                        onClick={handleSubmit}
+                                >
+                                    <ArrowUp className="size-5"/>
+                                </Button>
+                            </PromptInputAction>
+                        </PromptInputActions>
+                    </PromptInput>
+                </div>
             </div>
-        </div>
     )
 }

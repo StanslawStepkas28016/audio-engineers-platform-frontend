@@ -24,23 +24,23 @@ import {
 export const LoginPage = () => {
     const {login, error} = useUserStore();
 
-    const formValidationSchema = z.object({
+    const loginFormValidationSchema = z.object({
         email: z.string().email("Invalid email address"),
         password: z.string().min(2, "Password must be at least 6 characters long")
     });
 
-    const form = useForm<z.infer<typeof formValidationSchema>>({
-        resolver: zodResolver(formValidationSchema),
+    const loginForm = useForm<z.infer<typeof loginFormValidationSchema>>({
+        resolver: zodResolver(loginFormValidationSchema),
         defaultValues: {
             email: "",
             password: ""
         }
     });
 
-    const handleLogin = async () => {
+    const handleSubmit = async () => {
         await login(
-            form.getValues().email
-            , form.getValues().password
+            loginForm.getValues().email,
+            loginForm.getValues().password
         );
     }
 
@@ -58,11 +58,11 @@ export const LoginPage = () => {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(handleLogin)}
+                                <Form {...loginForm}>
+                                    <form onSubmit={loginForm.handleSubmit(handleSubmit)}
                                           className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                                         <FormField
-                                            control={form.control}
+                                            control={loginForm.control}
                                             name="email"
                                             render={({field}) => (
                                                 <FormItem>
@@ -81,7 +81,7 @@ export const LoginPage = () => {
                                         />
 
                                         <FormField
-                                            control={form.control}
+                                            control={loginForm.control}
                                             name="password"
                                             render={({field}) => (
                                                 <FormItem>

@@ -1,5 +1,4 @@
 import {axiosInstance} from "@/lib/axios.ts";
-import {isAxiosError} from "axios";
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {useNavigate} from "react-router-dom";
 import {Input} from "@/components/ui/input.tsx";
@@ -53,198 +52,182 @@ export const RegisterPage = () => {
     const handleRegister = async () => {
         setError("");
         setSuccess("");
-        try {
-            await axiosInstance.post("auth/register", form.getValues());
-            setSuccess("Successfully registered!");
-            setTimeout(() => navigate("/verify-account"), 1000);
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                const exceptionMessage = e.response.data.ExceptionMessage;
-                setError(exceptionMessage);
-            } else {
-                console.log(e);
-            }
-        }
+
+        await axiosInstance.post("auth/register", form.getValues())
+            .then(() => {
+                setSuccess("Successfully registered!");
+                setTimeout(() => navigate("/verify-account"), 1000);
+            })
+            .catch(e => setError(e.response.data.ExceptionMessage || "Error while registering."));
     }
 
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <Navbar/>
-            <div className="grid md:grid-cols-2">
-                <div className="flex flex-col gap-4 p-6 md:p-10">
-                    <div className="flex flex-1 items-center justify-center">
-                        <div className="p-5 md:p-0">
-                            <Form {...form}>
-                                <form className="space-y-8"
-                                      onSubmit={form.handleSubmit(handleRegister)}>
-                                    <h1 className="text-2xl md:text-2xl lg:text-3xl mt-10 font-bold text-center">
-                                        Provide us your information!
-                                    </h1>
+            <div className="flex-1 flex flex-col items-center justify-center p-10">
+                <div className="flex flex-1 items-center justify-center">
+                    <Form {...form}>
+                        <form className="space-y-8"
+                              onSubmit={form.handleSubmit(handleRegister)}>
+                            <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold text-center">
+                                Provide us your information!
+                            </h1>
 
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Email</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="email@soundbest.pl"
-                                                        type="text"
-                                                        {...field} />
-                                                </FormControl>
-                                                <FormDescription>This address will be displayed to other
-                                                    users</FormDescription>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="firstName"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>First name</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="John"
-                                                        type="text"
-                                                        {...field} />
-                                                </FormControl>
-                                                <FormDescription>Your first name will be visible to other
-                                                    users</FormDescription>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="lastName"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Last name</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="Doe"
-                                                        type="text"
-                                                        {...field} />
-                                                </FormControl>
-                                                <FormDescription>Your last name will be visible to other
-                                                    users</FormDescription>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="phoneNumber"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Phone number</FormLabel>
-                                                <FormControl>
-                                                    <PhoneInput
-                                                        placeholder="696 784 867"
-                                                        defaultCountry="PL"
-                                                        {...field} />
-                                                </FormControl>
-                                                <FormDescription>This number will be visible to other
-                                                    users</FormDescription>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="password"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Password</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="**********"
-                                                        type="password"
-                                                        {...field} />
-                                                </FormControl>
-                                                <FormDescription>Make sure you go pick a complex
-                                                    password!</FormDescription>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="roleName"
-                                        render={({field}) => (
-                                            <FormItem className="space-y-3">
-                                                <FormLabel>What do you want to do?</FormLabel>
-                                                <FormControl>
-                                                    <RadioGroup
-                                                        onValueChange={field.onChange}
-                                                        defaultValue={AppRoles.Client}
-                                                        className="flex flex-col space-y-1"
-                                                    >
-                                                        <FormItem
-                                                            className="flex items-center space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <RadioGroupItem value={AppRoles.AudioEngineer}/>
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">
-                                                                I am an audio engineer and I want to advertise my
-                                                                services
-                                                            </FormLabel>
-                                                        </FormItem>
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="email@soundbest.pl"
+                                                type="text"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>This address will be displayed to other
+                                            users</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="firstName"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>First name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="John"
+                                                type="text"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>Your first name will be visible to other
+                                            users</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="lastName"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Last name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Doe"
+                                                type="text"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>Your last name will be visible to other
+                                            users</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="phoneNumber"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Phone number</FormLabel>
+                                        <FormControl>
+                                            <PhoneInput
+                                                placeholder="696 784 867"
+                                                defaultCountry="PL"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>This number will be visible to other
+                                            users</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Password</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="**********"
+                                                type="password"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>Make sure you go pick a complex
+                                            password!</FormDescription>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="roleName"
+                                render={({field}) => (
+                                    <FormItem className="space-y-3">
+                                        <FormLabel>What do you want to do?</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={AppRoles.Client}
+                                                className="flex flex-col space-y-1"
+                                            >
+                                                <FormItem
+                                                    className="flex items-center space-x-3 space-y-0"
+                                                >
+                                                    <FormControl>
+                                                        <RadioGroupItem value={AppRoles.AudioEngineer}/>
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">
+                                                        I am an audio engineer and I want to advertise my
+                                                        services
+                                                    </FormLabel>
+                                                </FormItem>
 
-                                                        <FormItem
-                                                            className="flex items-center space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <RadioGroupItem value={AppRoles.Client}/>
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">
-                                                                I am a client and I want to find an audio engineer
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    </RadioGroup>
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <Button type="submit" className="w-full">
-                                        Sign up
-                                    </Button>
-                                </form>
-                                <div className="mt-10">
-                                    {error && (
-                                        <Alert variant="destructive">
-                                            <AlertCircle className="h-4 w-4"/>
-                                            <AlertTitle>Error</AlertTitle>
-                                            <AlertDescription>
-                                                {error}
-                                            </AlertDescription>
-                                        </Alert>
-                                    )}
-                                    {success && (
-                                        <Alert>
-                                            <Terminal className="h-4 w-4"/>
-                                            <AlertTitle>Heads up!</AlertTitle>
-                                            <AlertDescription>
-                                                {success}
-                                            </AlertDescription>
-                                        </Alert>
-                                    )}
-                                </div>
-                            </Form>
+                                                <FormItem
+                                                    className="flex items-center space-x-3 space-y-0"
+                                                >
+                                                    <FormControl>
+                                                        <RadioGroupItem value={AppRoles.Client}/>
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">
+                                                        I am a client and I want to find an audio engineer
+                                                    </FormLabel>
+                                                </FormItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" className="w-full">
+                                Sign up
+                            </Button>
+                        </form>
+                        <div className="mt-10">
+                            {error && (
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4"/>
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>
+                                        {error}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                            {success && (
+                                <Alert>
+                                    <Terminal className="h-4 w-4"/>
+                                    <AlertTitle>Heads up!</AlertTitle>
+                                    <AlertDescription>
+                                        {success}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
                         </div>
-                    </div>
-                </div>
-                <div className="relative hidden md:block">
-                    <img
-                        src="/src/assets/form.jpg"
-                        alt="Image"
-                        className="scale-50 h-full w-full object-scale-down dark:invert"
-                    />
+                    </Form>
                 </div>
             </div>
         </div>

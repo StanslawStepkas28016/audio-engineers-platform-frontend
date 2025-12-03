@@ -23,13 +23,28 @@ import {SeeAllAdverts} from "@/pages/Shared/SeeAllAdverts.tsx";
 import {Chat} from "@/pages/Shared/Chat.tsx";
 import {NotFoundPage} from "./pages/Guest/NotFoundPage";
 import {Toaster} from "react-hot-toast";
+import {VerifyForgotPasswordPage} from "@/pages/Guest/VerifyForgotPasswordPage.tsx";
+import {useChatStore} from "@/stores/useChatStore.ts";
+import {AdminDashboard} from "@/pages/Admin/AdminDashboard.tsx";
 
 function App() {
-    const {isCheckingAuth, checkAuth} = useUserStore();
+    const {checkAuth, isCheckingAuth, isAuthenticated} = useUserStore();
+    const {startHubConnection, subscribeToMessages, stopHubConnection} = useChatStore();
 
     useEffect(() => {
         checkAuth();
     }, []);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            startHubConnection()
+                .then(() => subscribeToMessages());
+        }
+
+        return () => {
+            stopHubConnection()
+        };
+    }, [isAuthenticated]);
 
     if (isCheckingAuth) {
         return <LoadingPage/>;
@@ -56,24 +71,25 @@ function App() {
                     </RedirectAuthenticatedUser>
                 }>
 
-                    <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/register" element={<RegisterPage/>}/>
-                    <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
-                    <Route path="/verify-account" element={<VerifyAccountPage/>}/>
-                    <Route path="/:resetEmailToken/verify-reset-email" element={<VerifyResetEmailPage/>}/>
-                    <Route path="/:resetPasswordToken/verify-reset-password" element={<VerifyResetPasswordPage/>}/>
+                    <Route path="login" element={<LoginPage/>}/>
+                    <Route path="register" element={<RegisterPage/>}/>
+                    <Route path="forgot-password" element={<ForgotPasswordPage/>}/>
+                    <Route path="verify-account" element={<VerifyAccountPage/>}/>
+                    <Route path=":resetEmailToken/verify-reset-email" element={<VerifyResetEmailPage/>}/>
+                    <Route path=":resetPasswordToken/verify-reset-password" element={<VerifyResetPasswordPage/>}/>
+                    <Route path=":forgotPasswordToken/verify-forgot-password" element={<VerifyForgotPasswordPage/>}/>
                 </Route>
 
                 {/* Shared protected routes */}
                 <Route element={
-                    <ProtectedRoute allowedRoles={[AppRoles.Client, AppRoles.Admin, AppRoles.AudioEngineer]}>
+                    <ProtectedRoute allowedRoles={[AppRoles.Client, AppRoles.Administrator, AppRoles.AudioEngineer]}>
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="/reset-email" element={<ResetEmail/>}/>
-                    <Route path="/reset-password" element={<ResetPassword/>}/>
-                    <Route path="/reset-phone-number" element={<ResetPhoneNumber/>}/>
-                    <Route path="/chat/:idUserRecipient" element={<Chat/>}/>
+                    <Route path="reset-email" element={<ResetEmail/>}/>
+                    <Route path="reset-password" element={<ResetPassword/>}/>
+                    <Route path="reset-phone-number" element={<ResetPhoneNumber/>}/>
+                    <Route path="chat/:idUserRecipient" element={<Chat/>}/>
                 </Route>
 
 
@@ -83,29 +99,19 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="/my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
-                    <Route path="/add-advert" element={<AudioEngineerAddAdvert/>}/>
-                    <Route path="/edit-advert" element={<AudioEngineerEditAdvert/>}/>
-                    <Route path="/delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
+                    <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
+                    <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
+                    <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>
+                    <Route path="delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
                 </Route>
-
-
-                {/* Client routes */}
-                <Route element={
-                    <ProtectedRoute allowedRoles={[AppRoles.Client]}>
-                        <OutletSwitcher/>
-                    </ProtectedRoute>
-                }>
-                </Route>
-
 
                 {/* Admin routes */}
-                // TODO: Add admin routes
                 <Route element={
-                    <ProtectedRoute allowedRoles={[AppRoles.Admin]}>
+                    <ProtectedRoute allowedRoles={[AppRoles.Administrator]}>
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
+                    <Route path="dashboard" element={<AdminDashboard/>}/>
                 </Route>
             </Routes>
             <Toaster position={"bottom-right"}/>

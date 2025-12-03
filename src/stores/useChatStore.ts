@@ -4,34 +4,32 @@ import {create} from "zustand/react";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import axios, {isAxiosError} from "axios";
 import toast from "react-hot-toast";
-import {Message} from "@/pages/Shared/Chat.tsx";
-
-export type UserData = {
-    idUser: string,
-    firstName: string,
-    lastName: string,
-}
+import {devtools} from 'zustand/middleware'
+import {MessageT, UserChatData} from "@/types/types.ts";
 
 export type UseChatStore = {
+    totalCount: number,
     isInChatView: boolean,
     isLoadingChatData: boolean,
     isOnline: boolean,
-    interactedUsersData: UserData[]
-    selectedUserData: UserData,
-    messages: Message[],
+    interactedUsersData: UserChatData[]
+    selectedUserData: UserChatData,
+    messages: MessageT[],
     error: string,
     getInteractedUsersData: () => Promise<void>,
     getSelectedUserData: (idUser: string) => Promise<void>,
     clearSelectedUserData: () => Promise<void>,
-    getMessages: (idUserRecipient: string) => Promise<void>,
+    getMessages: (idUserRecipient: string, page: number, pageSize: number) => Promise<void>,
     startHubConnection: () => Promise<void>,
+    stopHubConnection: () => Promise<void>,
     subscribeToMessages: () => Promise<void>,
     unsubscribeFromMessages: () => Promise<void>,
     sendTextMessage: (idUserRecipient: string, textContent: string) => Promise<void>,
     sendFileMessage: (idUserRecipient: string, files: File) => Promise<void>,
 };
 
-export const useChatStore = create<UseChatStore>()((set, get) => ({
+export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
+    totalCount: 0,
     isInChatView: false,
     isLoadingChatData: true,
     isOnline: false,
@@ -47,7 +45,7 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
     getInteractedUsersData: async () => {
         set({
             interactedUsersData: await axiosInstance
-                .get(`chat/${useUserStore.getState().userData.idUser}/interacted`).then(r => r.data.interactedUsersList),
+                    .get(`chat/${useUserStore.getState().userData.idUser}/interacted`).then(r => r.data.interactedUsersList),
             isLoadingChatData: false,
         })
     },
@@ -62,24 +60,32 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
 
     clearSelectedUserData: async () => {
         set({
+            messages: [],
             selectedUserData: {
                 idUser: "",
                 firstName: "",
-                lastName: ""
+                lastName: "",
+                unreadCount: 0
             },
             isInChatView: false,
         })
     },
 
-    getMessages: async (idUserRecipient) => {
-        set({
-            messages: await axiosInstance.get(
+    getMessages: async (idUserRecipient, page, pageSize) => {
+        const newMessages = await axiosInstance.get(
                 `chat/${useUserStore.getState().userData.idUser}/${idUserRecipient}`, {
                     params: {
-                        page: 1,
-                        pageSize: 100
+                        page: page,
+                        pageSize: pageSize
                     }
-                }).then(r => r.data.items).catch(e => set({error: e})),
+                }).then(r => r.data).catch(e => set({error: e}));
+
+        set({
+            totalCount: newMessages.totalCount ?? 0
+        })
+
+        set({
+            messages: page===1 ? newMessages.items:[...newMessages.items, ...get().messages],
             isOnline: await axiosInstance.get(`chat/${idUserRecipient}/status`).then(r => r.data.isOnline).catch(e => set({error: e})),
             isLoadingChatData: false,
             isInChatView: true
@@ -93,16 +99,20 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
 
         // Start a connection.
         await signalrConnection.start()
-            .catch(err => {
-                console.error(err)
-            });
+                .catch(err => {
+                    console.error(err)
+                });
+    },
+
+    stopHubConnection: async () => {
+        await signalrConnection.stop();
     },
 
     subscribeToMessages: async () => {
         // Listening for availability status messages.
         signalrConnection.on("ReceiveIsOnlineMessage", (message) => {
             // Only set the status if the user is equal to the selected user.
-            if (get().selectedUserData.idUser !== message.idUser) return;
+            if (get().selectedUserData.idUser!==message.idUser) return;
 
             set({
                 isOnline: message.isOnline,
@@ -110,24 +120,26 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
         })
 
         // Listening for normal chat messages.
-        signalrConnection.on("ReceiveMessageFromSender", (message: Message) => {
-            if (get().interactedUsersData.find(m => m.idUser === message.idUserSender)
-                && !get().isInChatView) {
-
+        signalrConnection.on("ReceiveMessageFromSender", (message: MessageT) => {
+            if (!get().isInChatView) {
                 toast.success(`New message from ${message.senderFirstName} ${message.senderLastName}.`, {
-                    icon: '!',
+                    icon: '❗️',
                     style: {
                         borderRadius: '10px',
                         background: '#333',
                         color: '#fff',
                     },
                 });
+
+                get().getInteractedUsersData();
+
+                return;
             }
 
             // Only add a message if it comes from the currently selected user.
-            if (get().selectedUserData.idUser !== message.idUserSender) return;
+            if (get().selectedUserData.idUser!==message.idUserSender) return;
 
-            const msg: Message = {
+            const msg: MessageT = {
                 idMessage: message.idMessage,
                 idUserSender: message.idUserSender,
                 senderFirstName: message.senderFirstName,
@@ -182,7 +194,7 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
         // Obtain a presigned URL for uploading on the client side.
         let getPreSignedUrlRes;
         try {
-            getPreSignedUrlRes = await axiosInstance.get(`chat/presigned-upload`, {
+            getPreSignedUrlRes = await axiosInstance.get(`chat/presigned-url-for-upload`, {
                 params: {folder: "files", fileName: encodeURIComponent(file.name)}
             });
         } catch (e) {
@@ -214,7 +226,8 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
         // Persist the file related data in the API.
         let fileMessageRes;
         try {
-            fileMessageRes = await axiosInstance.post(`chat/${useUserStore.getState().userData.idUser}/file`, {
+            fileMessageRes = await axiosInstance.post(`chat/file-message`, {
+                idUserSender: useUserStore.getState().userData.idUser,
                 idUserRecipient: idUserRecipient,
                 fileName: file.name,
                 fileKey: fileKey,
@@ -231,5 +244,5 @@ export const useChatStore = create<UseChatStore>()((set, get) => ({
             messages: [...get().messages ?? [], fileMessageRes.data]
         })
     }
-}));
+})));
 

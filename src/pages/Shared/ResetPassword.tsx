@@ -15,19 +15,16 @@ import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
 import {useState} from "react";
-import {useUserStore} from "@/stores/useUserStore.ts";
 import {axiosInstance} from "@/lib/axios.ts";
-import {isAxiosError} from "axios";
 
 export const ResetPassword = () => {
-    const {userData, logout} = useUserStore();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
     const passwordFormValidationSchema = z.object({
-        currentPassword: z.string().min(1, "Password must be at least 8 characters long"),
-        newPassword: z.string().min(8, "Password must be at least 8 characters long"),
-        newPasswordRepeated: z.string().min(8, "Password must be at least 8 characters long"),
+        currentPassword: z.string().min(1, "Password must be at least 8 characters long."),
+        newPassword: z.string().min(8, "Password must be at least 8 characters long."),
+        newPasswordRepeated: z.string().min(8, "Password repeated must be at least 8 characters long."),
     });
 
     const resetPasswordForm = useForm<z.infer<typeof passwordFormValidationSchema>>({
@@ -49,17 +46,13 @@ export const ResetPassword = () => {
             setError("Passwords must be identical");
         }
 
-        try {
-            await axiosInstance.patch(`/auth/${userData.idUser}/reset-password`, resetPasswordForm.getValues());
-            alert("You will be logged out, please check your email inbox for instructions.");
-            await logout();
-        } catch (e) {
-            if (isAxiosError(e) && e.response) {
-                setError(e.response.data.ExceptionMessage);
-            } else {
-                console.log(e);
-            }
-        }
+        await axiosInstance
+            .patch(`/auth/reset-password`, resetPasswordForm.getValues())
+            .then(() => {
+                setSuccess("You will be logged out, please check your email inbox for instructions.");
+                setTimeout(() => window.location.reload(), 1000);
+            })
+            .catch(e => setError(e.response.data.ExceptionMessage || "Error resetting password."));
     }
 
     return (
@@ -70,12 +63,12 @@ export const ResetPassword = () => {
                 </h1>
                 <p className="my-10 text-muted-foreground text-xl">
                     Changing your password will require you to verify your new password <br/>
-                    by inputting a code sent to your new email! You will also be <br/>
+                    by clicking a link sent to your email! You will also be <br/>
                     logged out and will need to log in again!
                 </p>
             </div>
 
-            <Form {...resetPasswordForm}>
+        <Form {...resetPasswordForm}>
                 <form onSubmit={resetPasswordForm.handleSubmit(handleResetPasswordFormSubmit)}
                       className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
                     <FormField
