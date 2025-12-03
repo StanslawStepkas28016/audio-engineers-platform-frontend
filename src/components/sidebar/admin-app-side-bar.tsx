@@ -13,9 +13,11 @@ import {Navbar} from "@/components/ui/navbar.tsx";
 import {useChatStore} from "@/stores/useChatStore.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {useEffect} from "react";
+import {useTranslation} from "react-i18next";
 
 export function AdminAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    // TODO:
+    const {t} = useTranslation();
+
     const {getInteractedUsersData, /*interactedUsersData,*/ isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
 
@@ -35,48 +37,52 @@ export function AdminAppSideBar({...props}: React.ComponentProps<typeof Sidebar>
         },
         options: [
             {
-                labelTitle: "See engineers adverts",
-                title: "Adverts",
+                labelTitle: t("Sidebar.Shared.see-engineers-adverts-label-title"),
+                title: t("Sidebar.Shared.adverts-title"),
                 url: "#",
                 icon: BookOpen,
                 isActive: true,
                 items: [
                     {
-                        title: "See all adverts",
+                        title: t("Sidebar.Shared.see-all-adverts-label"),
                         url: "/",
                     }
                 ],
             },
             {
-                labelTitle: "Admin management",
-                title: "Dashboard",
+                labelTitle: (t("Sidebar.Admin.admin-management-title")),
+                title: (t("Sidebar.Admin.data-management-label")),
                 url: "#",
                 icon: Search,
                 isActive: true,
                 items: [
                     {
-                        title: "Manage data",
-                        url: "/dashboard",
+                        title: (t("Sidebar.Admin.user-data-label")),
+                        url: "/user-data",
+                    },
+                    {
+                        title: (t("Sidebar.Admin.advert-data-label")),
+                        url: "/advert-data",
                     }
                 ],
             },
             {
-                labelTitle: "Manage your account",
-                title: "Account settings",
+                labelTitle: t("Sidebar.Shared.manage-your-account-label"),
+                title: t("Sidebar.Shared.manage-your-account-title"),
                 url: "#",
                 icon: Settings,
                 isActive: true,
                 items: [
                     {
-                        title: "Reset your password",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-password"),
                         url: "/reset-password",
                     },
                     {
-                        title: "Reset your email",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-email"),
                         url: "/reset-email",
                     },
                     {
-                        title: "Reset your phone number",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-phone-number"),
                         url: "/reset-phone-number",
                     }
                 ],
@@ -85,16 +91,16 @@ export function AdminAppSideBar({...props}: React.ComponentProps<typeof Sidebar>
     }
 
     return (
-        <Sidebar collapsible="offcanvas" {...props}>
-            <SidebarHeader>
-                <Navbar/>
-            </SidebarHeader>
-            <SidebarContent>
-                <SidebarContentMapper items={data.options}/>
-            </SidebarContent>
-            <SidebarFooter>
-                <FooterNavLoggedUser user={data.user}/>
-            </SidebarFooter>
-        </Sidebar>
+            <Sidebar collapsible="offcanvas" {...props}>
+                <SidebarHeader>
+                    <Navbar/>
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarContentMapper items={data.options}/>
+                </SidebarContent>
+                <SidebarFooter>
+                    <FooterNavLoggedUser user={data.user}/>
+                </SidebarFooter>
+            </Sidebar>
     )
 }

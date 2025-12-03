@@ -6,13 +6,14 @@ import axios, {isAxiosError} from "axios";
 import toast from "react-hot-toast";
 import {devtools} from 'zustand/middleware'
 import {MessageT, UserChatData} from "@/types/types.ts";
+import i18n from "@/lib/i18n/i18n.ts";
 
 export type UseChatStore = {
     totalCount: number,
     isInChatView: boolean,
     isLoadingChatData: boolean,
     isOnline: boolean,
-    interactedUsersData: UserChatData[]
+    interactedUsersList: UserChatData[]
     selectedUserData: UserChatData,
     messages: MessageT[],
     error: string,
@@ -44,7 +45,7 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
 
     getInteractedUsersData: async () => {
         set({
-            interactedUsersData: await axiosInstance
+            interactedUsersList: await axiosInstance
                     .get(`chat/${useUserStore.getState().userData.idUser}/interacted`).then(r => r.data.interactedUsersList),
             isLoadingChatData: false,
         })
@@ -122,7 +123,7 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
         // Listening for normal chat messages.
         signalrConnection.on("ReceiveMessageFromSender", (message: MessageT) => {
             if (!get().isInChatView) {
-                toast.success(`New message from ${message.senderFirstName} ${message.senderLastName}.`, {
+                toast.success(`${i18n.t("Shared.Chat.new-message-from")} ${message.senderFirstName} ${message.senderLastName}.`, {
                     icon: '❗️',
                     style: {
                         borderRadius: '10px',

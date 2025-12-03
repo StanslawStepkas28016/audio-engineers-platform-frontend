@@ -1,4 +1,4 @@
-export type AdvertOverview = {
+export type AdvertSummary = {
     idAdvert: string,
     title: string,
     idUser: string,
@@ -6,14 +6,15 @@ export type AdvertOverview = {
     userLastName: string,
     dateCreated: Date,
     price: string,
+    descriptionShort: string,
     categoryName: string,
     coverImageKey: string,
     coverImageUrl: string,
     description: string,
 }
 
-export type AdvertOverviewsPaginated = {
-    items: AdvertOverview[];
+export type AdvertSummariesPaginated = {
+    items: AdvertSummary[];
     page: number;
     pageSize: number;
     totalCount: number;

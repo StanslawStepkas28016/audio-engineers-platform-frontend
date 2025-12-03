@@ -6,10 +6,12 @@ import {queryClient} from "@/lib/react-query.ts";
 import {QueryClientProvider} from '@tanstack/react-query';
 import {ErrorBoundary} from "react-error-boundary";
 import {GeneralFallback} from "@/fallbacks/GeneralFallback.tsx";
+import "./lib/i18n/i18n.ts";
 // import {StrictMode} from "react";
 
+
 createRoot(document.getElementById('root')!).render(
-    // <StrictMode>
+        // <StrictMode>
         <ErrorBoundary FallbackComponent={GeneralFallback}>
             <QueryClientProvider client={queryClient}>
                 <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
@@ -18,5 +20,5 @@ createRoot(document.getElementById('root')!).render(
                 {/*<ReactQueryDevtools initialIsOpen={true}/>*/}
             </QueryClientProvider>
         </ErrorBoundary>
-    // </StrictMode>,
+        // </StrictMode>,
 )

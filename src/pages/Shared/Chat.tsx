@@ -14,8 +14,11 @@ import {useUserStore} from "@/stores/useUserStore.ts";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useChatStore} from "@/stores/useChatStore";
 import {MessageT} from "@/types/types.ts";
+import {useTranslation} from "react-i18next";
 
 export const Chat = () => {
+    const {t} = useTranslation();
+
     const [input, setInput] = useState("");
     const [file, setFile] = useState<File | undefined>(undefined);
     const [page, setPage] = useState(1);
@@ -61,6 +64,7 @@ export const Chat = () => {
     }
 
     const handleSubmit = async () => {
+        // TODO: Add handling for longer uploads, like a loader.
         if (!input) return;
         await sendTextMessage(idUserRecipient || "", input);
         setInput("");
@@ -93,7 +97,7 @@ export const Chat = () => {
                             {
                                     totalCount > messages.length &&
                                     (<Button variant="outline" onClick={handleLoadMoreMessages}>
-                                        Get older messages
+                                        {t("Shared.Chat.get-older-messages")}
                                     </Button>)
                             }
 
@@ -109,7 +113,7 @@ export const Chat = () => {
                                                                 {message.textContent}
                                                             </MessageContent>
                                                     ):(
-                                                            <Button className="p-10 invert">
+                                                            <Button className="p-10" variant="secondary">
                                                                 <a href={message.fileUrl} download>
                                                                     <Download/> {message.fileName}
                                                                 </a>
@@ -148,10 +152,10 @@ export const Chat = () => {
                             </div>
                         }
 
-                        <PromptInputTextarea placeholder="Send a message..."/>
+                        <PromptInputTextarea placeholder={t("Shared.Chat.send-a-message")}/>
 
                         <PromptInputActions className="flex items-center justify-between gap-2 pt-2">
-                            <PromptInputAction tooltip="Attach files">
+                            <PromptInputAction tooltip={t("Shared.Chat.attach-files")}>
                                 <label
                                         htmlFor="file-upload"
                                         className="hover:bg-secondary-foreground/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-2xl"

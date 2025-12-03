@@ -12,11 +12,23 @@ import {
 import {Navbar} from "@/components/ui/navbar.tsx";
 import {useChatStore} from "@/stores/useChatStore.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {
+    AlertDialog, AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog.tsx";
 
 export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof Sidebar>) {
-    const {getInteractedUsersData, interactedUsersData, isLoadingChatData} = useChatStore();
+    const {t} = useTranslation();
+
+    const {getInteractedUsersData, interactedUsersList, isLoadingChatData} = useChatStore();
     const {userData} = useUserStore();
+
+    const [showMessageDialog, setShowMessageDialog] = useState(false);
 
     useEffect(() => {
         getInteractedUsersData();
@@ -34,62 +46,68 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
         },
         options: [
             {
-                labelTitle: "See and manage your adverts",
-                title: "Adverts",
+                labelTitle: t("Sidebar.AudioEngineer.see-and-manage-advert-label"),
+                title: t("Sidebar.Shared.adverts-title"),
                 url: "#",
                 icon: BookOpen,
                 isActive: true,
                 items: [
                     {
-                        title: "See all adverts",
+                        title: t("Sidebar.Shared.see-all-adverts-label"),
                         url: "/",
                     },
                     {
-                        title: "See your advert",
+                        title: t("Sidebar.AudioEngineer.see-your-advert-label"),
                         url: "/my-advert",
                     },
                     {
-                        title: "Add your advert",
+                        title: t("Sidebar.AudioEngineer.add-your-advert-label"),
                         url: "/add-advert",
                     },
                     {
-                        title: "Edit your advert",
+                        title: t("Sidebar.AudioEngineer.edit-your-advert-label"),
                         url: "/edit-advert",
                     },
                     {
-                        title: "Delete your advert",
+                        title: t("Sidebar.AudioEngineer.delete-your-advert-label"),
                         url: "/delete-advert",
                     },
                 ],
             },
             {
-                labelTitle: "Message your client",
-                title: "Messages",
+                labelTitle: t("Sidebar.AudioEngineer.message-your-clients-label"),
+                title: t("Sidebar.Shared.messages"),
                 url: "#",
                 icon: MessageCircleDashed,
                 isActive: true,
-                items: interactedUsersData?.map((messagedUser) => ({
-                    title: `${messagedUser.firstName} ${messagedUser.lastName}`,
+                items: interactedUsersList?.length > 0 ? interactedUsersList.map((messagedUser) => ({
+                    title: `${messagedUser.firstName} ${messagedUser.lastName} ${messagedUser.unreadCount===0 ? '':`(${messagedUser.unreadCount})`}`,
                     url: `/chat/${messagedUser.idUser}`,
-                })) ?? [],
+                })):[
+                    {
+                        title: t("Sidebar.AudioEngineer.where-are-messages"),
+                        url: "#",
+                        onClick: () => setShowMessageDialog(true),
+                    }
+                ],
             },
             {
-                labelTitle: "Manage your account",
-                title: "Account settings",
+                labelTitle: t("Sidebar.Shared.manage-your-account-label"),
+                title: t("Sidebar.Shared.manage-your-account-title"),
                 url: "#",
                 icon: Settings,
                 isActive: true,
                 items: [
                     {
-                        title: "Reset your password",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-password"),
                         url: "/reset-password",
                     },
                     {
-                        title: "Reset your email",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-email"),
                         url: "/reset-email",
                     },
                     {
-                        title: "Reset your phone number",
+                        title: t("Sidebar.Shared.manage-your-account-items-reset-phone-number"),
                         url: "/reset-phone-number",
                     }
                 ],
@@ -98,16 +116,34 @@ export function AudioEngineerAppSideBar({...props}: React.ComponentProps<typeof 
     }
 
     return (
-        <Sidebar collapsible="offcanvas" {...props}>
-            <SidebarHeader>
-                <Navbar/>
-            </SidebarHeader>
-            <SidebarContent>
-                <SidebarContentMapper items={data.options}/>
-            </SidebarContent>
-            <SidebarFooter>
-                <FooterNavLoggedUser user={data.user}/>
-            </SidebarFooter>
-        </Sidebar>
+            <>
+                <Sidebar collapsible="offcanvas" {...props}>
+                    <SidebarHeader>
+                        <Navbar/>
+                    </SidebarHeader>
+                    <SidebarContent>
+                        <SidebarContentMapper items={data.options}/>
+                    </SidebarContent>
+                    <SidebarFooter>
+                        <FooterNavLoggedUser user={data.user}/>
+                    </SidebarFooter>
+                </Sidebar>
+
+                <AlertDialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>{t("Sidebar.AudioEngineer.where-are-messages")}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                {t("Sidebar.AudioEngineer.where-are-messages-description")}
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogAction>
+                                {t("Common.close")}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </>
     )
 }

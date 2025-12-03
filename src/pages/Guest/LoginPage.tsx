@@ -20,13 +20,16 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form.tsx";
+import {useTranslation} from "react-i18next";
 
 export const LoginPage = () => {
+    const {t} = useTranslation();
+
     const {login, error} = useUserStore();
 
     const loginFormValidationSchema = z.object({
-        email: z.string().email("Invalid email address"),
-        password: z.string().min(2, "Password must be at least 6 characters long")
+        email: z.string().email(t("Guest.Login.error-invalid-email")),
+        password: z.string().min(2, t("Guest.Login.error-password-len"))
     });
 
     const loginForm = useForm<z.infer<typeof loginFormValidationSchema>>({
@@ -53,8 +56,7 @@ export const LoginPage = () => {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-2xl center flex justify-center">
-                                    Good to see you
-                                    again!
+                                    {t("Guest.Login.good-to-see")}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -73,8 +75,7 @@ export const LoginPage = () => {
                                                             type="email"
                                                             {...field} />
                                                     </FormControl>
-                                                    <FormDescription>The mail you provided during singing
-                                                        up.</FormDescription>
+                                                    <FormDescription>{t("Guest.Login.email-description")}</FormDescription>
                                                     <FormMessage/>
                                                 </FormItem>
                                             )}
@@ -85,17 +86,17 @@ export const LoginPage = () => {
                                             name="password"
                                             render={({field}) => (
                                                 <FormItem>
-                                                    <FormLabel>Password</FormLabel>
+                                                    <FormLabel>{t("Guest.Login.password-label")}</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             placeholder="*********"
                                                             type="password"
                                                             {...field} />
                                                     </FormControl>
-                                                    <FormDescription>Forgot your password? {" "}
+                                                    <FormDescription>{t("Guest.Login.password-description-pt-1")} {" "}
                                                         <Link to="/forgot-password"
                                                               className="underline underline-offset-4">
-                                                            Click here!
+                                                            {t("Guest.Login.password-description-pt-2")}
                                                         </Link>
                                                     </FormDescription>
                                                     <FormMessage/>
@@ -103,13 +104,13 @@ export const LoginPage = () => {
                                             )}
                                         />
 
-                                        <Button type="submit"> Submit</Button>
+                                        <Button type="submit">{t("Common.submit")}</Button>
                                     </form>
                                     <div className="mt-4 text-center text-sm">
-                                        Don't have an account? {" "}
+                                        {t("Guest.Login.dont-have-account-pt-1")} {" "}
                                         <Link to="/register"
                                               className="underline underline-offset-4">
-                                            Sign up
+                                            {t("Guest.Login.dont-have-account-pt-2")}
                                         </Link>
                                     </div>
                                 </Form>
@@ -118,9 +119,9 @@ export const LoginPage = () => {
                         {error && (
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4"/>
-                                <AlertTitle>Error</AlertTitle>
+                                <AlertTitle>{t("Common.error")}</AlertTitle>
                                 <AlertDescription>
-                                    {error}
+                                    {t("Guest.Login.error-invalid-credentials")}
                                 </AlertDescription>
                             </Alert>
                         )}
