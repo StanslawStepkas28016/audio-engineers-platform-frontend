@@ -4,11 +4,11 @@ import {RegisterPage} from "@/pages/Guest/RegisterPage.tsx";
 import {VerifyAccountPage} from "@/pages/Guest/VerifyAccountPage.tsx";
 import {useEffect} from "react";
 import {useUserStore} from "@/stores/useUserStore.ts";
-import {AudioEngineerAddAdvert} from "@/pages/AudioEngineer/AudioEngineerAddAdvert.tsx";
+import {AddAdvert} from "@/pages/AudioEngineer/AddAdvert.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
-import {AudioEngineerSeeYourAdvert} from "@/pages/AudioEngineer/AudioEngineerSeeYourAdvert.tsx";
-import {AudioEngineerDeleteAdvert} from "@/pages/AudioEngineer/AudioEngineerDeleteAdvert.tsx";
-import {AudioEngineerEditAdvert} from "@/pages/AudioEngineer/AudioEngineerEditAdvert.tsx";
+import {SeeYourAdvert} from "@/pages/AudioEngineer/SeeYourAdvert.tsx";
+import {DeleteAdvert} from "@/pages/AudioEngineer/DeleteAdvert.tsx";
+import {EditAdvert} from "@/pages/AudioEngineer/EditAdvert.tsx";
 import {SeeAdvert} from "@/pages/Shared/SeeAdvert.tsx";
 import {ResetEmail} from "@/pages/Shared/ResetEmail.tsx";
 import {VerifyResetEmailPage} from "@/pages/Shared/VerifyResetEmailPage.tsx";
@@ -25,7 +25,9 @@ import {NotFoundPage} from "./pages/Guest/NotFoundPage";
 import {Toaster} from "react-hot-toast";
 import {VerifyForgotPasswordPage} from "@/pages/Guest/VerifyForgotPasswordPage.tsx";
 import {useChatStore} from "@/stores/useChatStore.ts";
-import {AdminDashboard} from "@/pages/Admin/AdminDashboard.tsx";
+import {AdvertData} from "@/pages/Admin/AdvertData.tsx";
+import {SeeGuide} from "@/pages/Shared/SeeGuide.tsx";
+import {UserData} from "@/pages/Admin/UserData.tsx";
 
 function App() {
     const {checkAuth, isCheckingAuth, isAuthenticated} = useUserStore();
@@ -61,7 +63,8 @@ function App() {
                     <OutletSwitcher/>
                 }>
                     <Route index element={<SeeAllAdverts/>}/>
-                    <Route path="/see-advert/:idAdvert" element={<SeeAdvert/>}/>
+                    <Route path="see-guide" element={<SeeGuide/>}/>
+                    <Route path="see-advert/:idAdvert" element={<SeeAdvert/>}/>
                 </Route>
 
                 {/* Guest routes */}
@@ -70,7 +73,6 @@ function App() {
                         <GuestOutletWithoutSidebar/>
                     </RedirectAuthenticatedUser>
                 }>
-
                     <Route path="login" element={<LoginPage/>}/>
                     <Route path="register" element={<RegisterPage/>}/>
                     <Route path="forgot-password" element={<ForgotPasswordPage/>}/>
@@ -99,10 +101,10 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="my-advert" element={<AudioEngineerSeeYourAdvert/>}/>
-                    <Route path="add-advert" element={<AudioEngineerAddAdvert/>}/>
-                    <Route path="edit-advert" element={<AudioEngineerEditAdvert/>}/>
-                    <Route path="delete-advert" element={<AudioEngineerDeleteAdvert/>}/>
+                    <Route path="my-advert" element={<SeeYourAdvert/>}/>
+                    <Route path="add-advert" element={<AddAdvert/>}/>
+                    <Route path="edit-advert" element={<EditAdvert/>}/>
+                    <Route path="delete-advert" element={<DeleteAdvert/>}/>
                 </Route>
 
                 {/* Admin routes */}
@@ -111,7 +113,8 @@ function App() {
                         <OutletSwitcher/>
                     </ProtectedRoute>
                 }>
-                    <Route path="dashboard" element={<AdminDashboard/>}/>
+                    <Route path="user-data" element={<UserData/>}/>
+                    <Route path="advert-data" element={<AdvertData/>}/>
                 </Route>
             </Routes>
             <Toaster position={"bottom-right"}/>

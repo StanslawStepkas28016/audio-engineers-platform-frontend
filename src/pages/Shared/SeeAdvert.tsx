@@ -2,7 +2,7 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
-import {transformDateAdvertCreated, transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
+import {transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
 import {useNavigate, useParams} from "react-router-dom";
@@ -25,8 +25,14 @@ import {useUserStore} from "@/stores/useUserStore.ts";
 import {Rating} from "@/components/ui/rating.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {Advert, Review, ReviewsPaginated} from "@/types/types.ts";
+import {useTranslation} from "react-i18next";
+import {enUS, pl} from "date-fns/locale";
+import {AvailableLanguages} from "@/lib/i18n/i18n.ts";
+import {format} from 'date-fns';
 
 export const SeeAdvert = () => {
+    const {t} = useTranslation();
+
     const {idAdvert} = useParams<{ idAdvert: string }>();
     const {userData, isAuthenticated} = useUserStore();
     const navigate = useNavigate();
@@ -39,9 +45,8 @@ export const SeeAdvert = () => {
                 queryFn: async () => await axiosInstance
                         .get(`/advert/${idAdvert}/details`)
                         .then(r => r.data as Advert)
-                        .catch(e => {
-                            setError(e.response.data.ExceptionMessage || "Error loading adverts.");
-                            return undefined;
+                        .catch(() => {
+                            setError(t("Shared.SeeAdvert.error-not-found"));
                         }),
                 queryKey: ['fetchUserAdvert', {idAdvert}]
             }
@@ -57,7 +62,7 @@ export const SeeAdvert = () => {
                             }
                         })
                         .then(r => r.data as ReviewsPaginated)
-                        .catch(e => setError(e.response.data.ExceptionMessage || "Error loading reviews.")),
+                        .catch(() => setError(t("Shared.SeeAdvert.error-loading-reviews"))),
                 queryKey: ['fetchAdvertReviews', {idAdvert}]
             }
     );
@@ -67,12 +72,12 @@ export const SeeAdvert = () => {
                 .string(),
         content: z
                 .string()
-                .min(35, {message: "Content must be at least 35 characters"})
-                .max(1500, {message: "Content must be less than 1500 characters"}),
+                .min(35, t("Shared.SeeAdvert.error-content-len-min"))
+                .max(1500, t("Shared.SeeAdvert.error-content-len-max")),
         satisfactionLevel: z
                 .number()
-                .min(1, {message: "SatisfactionLevel must be at least 1"})
-                .max(5, {message: "SatisfactionLevel must be at most 5"}),
+                .min(1)
+                .max(5),
     });
 
     const addReviewForm = useForm<z.infer<typeof addReviewFormValidationSchema>>({
@@ -93,7 +98,7 @@ export const SeeAdvert = () => {
                             await refetchReviews();
                         }
                 )
-                .catch(e => setInputError(e.response.data.ExceptionMessage || "Error adding review"));
+                .catch(() => setInputError(t("Shared.SeeAdvert.error-posting-review")));
     }
 
     if (isLoadingAdvert || isLoadingReviews) {
@@ -106,7 +111,7 @@ export const SeeAdvert = () => {
                         <div className="w-full p-5">
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4"/>
-                                < AlertTitle>Error</AlertTitle>
+                                <AlertTitle>{t("Common.error")}</AlertTitle>
                                 <AlertDescription>
                                     {error}
                                 </AlertDescription>
@@ -121,7 +126,7 @@ export const SeeAdvert = () => {
                                         </h1>
 
                                         <p className="mt-5">
-                                            {advert.userFirstName} {advert.userLastName} | {transformDateAdvertCreated(advert.dateCreated)}
+                                            {advert.userFirstName} {advert.userLastName} | {format(new Date(advert.dateCreated), 'PPp', {locale: localStorage.getItem("lang")===AvailableLanguages.en ? enUS:pl})}
                                         </p>
 
                                         <p className="text-base/7 text-justify p-5">
@@ -131,8 +136,9 @@ export const SeeAdvert = () => {
                                         <div className="p-5">
                                             <Card>
                                                 <CardHeader>
-                                                    <CardTitle className="text-xl font-bold">Prices starting
-                                                        from:</CardTitle>
+                                                    <CardTitle className="text-xl font-bold">
+                                                        {t("Shared.SeeAdvert.prices-from")}:
+                                                    </CardTitle>
                                                 </CardHeader>
                                                 <CardContent>
                                                     <div className="flex flex-row gap-4 items-center justify-center">
@@ -140,14 +146,13 @@ export const SeeAdvert = () => {
                                                         <p className="text-2xl ">{advert.price} <b>PLN</b></p>
                                                     </div>
                                                     <p className="mt-5">
-                                                        This is a price for per
-                                                        one <b>{advert.categoryName}</b> inquiry!
+                                                        {t("Shared.SeeAdvert.price-inquiry")}&nbsp;<b>{advert.categoryName}</b>!
                                                     </p>
                                                 </CardContent>
                                             </Card>
                                         </div>
 
-                                        <div className="flex justify-center align-middle">
+                                        <div className="mb-50 md:mb-0 flex justify-center align-middle">
                                             <iframe
                                                     src={transformPlaylistUrlToEmbedUrl(advert.portfolioUrl)}
                                                     className="w-full p-5 mb-[-180px] sm:mb-0"
@@ -156,7 +161,7 @@ export const SeeAdvert = () => {
                                         </div>
 
                                         <h1 className="text-xl md:text-2xl lg:text-3xl m-10 font-bold">
-                                            Want to collaborate?
+                                            {t("Shared.SeeAdvert.want-to-collaborate")}
                                         </h1>
 
                                         <div className="flex flex-row gap-4 items-center justify-center">
@@ -172,15 +177,35 @@ export const SeeAdvert = () => {
                                         </div>
 
                                         {
-                                                (isAuthenticated && userData.roleName===AppRoles.Client || userData.roleName===AppRoles.Administrator)
-                                                &&
-                                            <Button className="mt-15"
-                                                    onClick={() => navigate(`/chat/${advert?.idUser}`)}>Message
-                                                me!</Button>
+
+                                            ((() => {
+                                                if (isAuthenticated
+                                                        && userData.roleName===AppRoles.Client
+                                                        || userData.roleName===AppRoles.Administrator
+                                                )
+                                                    return (
+                                                            <Button
+                                                                    className="mt-15"
+                                                                    onClick={() => navigate(`/chat/${advert?.idUser}`)}>
+                                                                {t("Shared.SeeAdvert.message-me")}
+                                                            </Button>
+                                                    )
+                                                else if (
+                                                        isAuthenticated
+                                                        && userData.roleName===AppRoles.AudioEngineer
+                                                )
+                                                    return (<></>)
+                                                else
+                                                    return (
+                                                            <div className="text-muted-foreground m-10">
+                                                                <p>{t("Shared.SeeAdvert.login-to-message")}</p>
+                                                            </div>
+                                                    )
+                                            })())
                                         }
 
                                         <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 mb-5 font-bold">
-                                            See my reviews!
+                                            {t("Shared.SeeAdvert.see-my-reviews")}
                                         </h1>
 
                                         {/* Displaying all reviews */}
@@ -205,12 +230,13 @@ export const SeeAdvert = () => {
                                                                         </div>
                                                                         <div className="flex justify-between text-sm text-muted-foreground">
                                                     <span>
-                                                        {AppRoles.Client}
+                                                        {t("Common.client-role")}
                                                     </span>
                                                                             <span>
                                                         {
                                                             formatDistanceToNow(new Date(`${review.dateCreated}`), {
                                                                 addSuffix: true,
+                                                                locale: localStorage.getItem("lang")===AvailableLanguages.en ? enUS:pl
                                                             })
                                                         }
                                                     </span>
@@ -224,8 +250,8 @@ export const SeeAdvert = () => {
                                                                 </Card>
                                                             </div>
                                                     )):(
-                                                            <div className="m-10">
-                                                                <p>This advert has no reviews.</p>
+                                                            <div className="text-muted-foreground m-10">
+                                                                <p>{t("Shared.SeeAdvert.has-no-reviews")}</p>
                                                             </div>
                                                     )
                                         }
@@ -238,7 +264,7 @@ export const SeeAdvert = () => {
                                                         <form onSubmit={addReviewForm.handleSubmit(handleSubmit)}
                                                               className="w-xs md:w-full">
                                                             <FormLabel className="mb-3">
-                                                                Share your own experience with this engineer!
+                                                                {t("Shared.SeeAdvert.share-own-experience")}
                                                             </FormLabel>
 
                                                             <FormField
@@ -266,7 +292,7 @@ export const SeeAdvert = () => {
                                                                             <FormItem>
                                                                                 <FormControl>
                                                                                     <AutosizeTextarea
-                                                                                            placeholder="e.g Working with this engineer was great.."
+                                                                                            placeholder={t("Shared.SeeAdvert.review-placeholder")}
                                                                                             {...field}
                                                                                     />
                                                                                 </FormControl>
@@ -276,7 +302,7 @@ export const SeeAdvert = () => {
                                                             />
 
                                                             <Button type="submit" className="w-full max-w-1xl mt-5">
-                                                                Submit
+                                                                {t("Common.submit")}
                                                             </Button>
                                                         </form>
                                                     </Form>
@@ -292,7 +318,7 @@ export const SeeAdvert = () => {
                         <Alert variant="destructive">
 
                             <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Error</AlertTitle>
+                            <AlertTitle>{t("Common.error")}</AlertTitle>
                             <AlertDescription>
                                 {inputError}
                             </AlertDescription>
