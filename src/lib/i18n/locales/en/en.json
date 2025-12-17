@@ -273,7 +273,10 @@
       "new-message-from": "New message from",
       "get-older-messages": "Get older messages",
       "send-a-message": "Send a message...",
-      "attach-files": "Attach files"
+      "attach-files": "Attach files",
+      "wait-for-upload" : "Wait until the file finishes uploading!",
+      "error-no-data-provided-title" : "Remember...",
+      "error-no-data-provided-description" : "You need to attach 1 file or write a text message in order to send it!"
     },
     "ResetPassword": {
       "title": "Password reset form",

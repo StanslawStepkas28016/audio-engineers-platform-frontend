@@ -272,7 +272,10 @@
       "new-message-from": "Nowa wiadomość od",
       "get-older-messages": "Załaduj starsze wiadomości",
       "send-a-message": "Prześlij wiadomość...",
-      "attach-files": "Załącz pliki"
+      "attach-files": "Załącz pliki",
+      "wait-for-upload" : "Poczekaj aż plik się prześle!",
+      "error-no-data-provided-title" : "Pamiętaj, że...",
+      "error-no-data-provided-description" : "Musisz załączyć jeden plik lub napisać wiadomość tekstową, aby móc ja przesłać!"
     },
     "ResetPassword": {
       "title": "Formularz zmiany hasła",

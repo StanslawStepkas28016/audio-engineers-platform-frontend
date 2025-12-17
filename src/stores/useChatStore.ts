@@ -13,6 +13,7 @@ export type UseChatStore = {
     isInChatView: boolean,
     isLoadingChatData: boolean,
     isOnline: boolean,
+    isSendingFileMessage: boolean,
     interactedUsersList: UserChatData[]
     selectedUserData: UserChatData,
     messages: MessageT[],
@@ -34,6 +35,7 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
     isInChatView: false,
     isLoadingChatData: true,
     isOnline: false,
+    isSendingFile: false,
     interactedUsersData: [],
     selectedUserData: {
         idUser: "",
@@ -192,6 +194,11 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
     },
 
     sendFileMessage: async (idUserRecipient, file) => {
+        // Set appropriate status for the client.
+        set({
+            isSendingFileMessage: true
+        });
+
         // Obtain a presigned URL for uploading on the client side.
         let getPreSignedUrlRes;
         try {
@@ -239,6 +246,10 @@ export const useChatStore = create<UseChatStore>()(devtools((set, get) => ({
                 alert(get().error);
             }
             return;
+        } finally {
+            set({
+                isSendingFileMessage: false
+            });
         }
 
         set({
