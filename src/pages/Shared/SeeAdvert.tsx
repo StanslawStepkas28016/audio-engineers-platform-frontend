@@ -1,7 +1,7 @@
 import {axiosInstance} from "@/lib/axios.ts";
 import {useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle, Facebook, HandCoins, Instagram, Linkedin} from "lucide-react";
+import {AlertCircle, ArrowLeftCircle, HandCoins} from "lucide-react";
 import {transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {LoadingPage} from "@/pages/Guest/LoadingPage.tsx";
@@ -121,7 +121,15 @@ export const SeeAdvert = () => {
                         advert && (
                                 <div className="flex flex-col items-center">
                                     <div className="justify-center text-center">
-                                        <h1 className="text-xl md:text-2xl lg:text-3xl mt-10 font-bold">
+                                        <Button
+                                                variant="outline"
+                                                onClick={() => navigate(-1)}
+                                                className="mt-5"
+                                        >
+                                            <ArrowLeftCircle/>
+                                        </Button>
+
+                                        <h1 className="text-xl md:text-2xl lg:text-3xl mt-3 font-bold">
                                             {advert.title}
                                         </h1>
 
@@ -146,7 +154,8 @@ export const SeeAdvert = () => {
                                                         <p className="text-2xl ">{advert.price} <b>PLN</b></p>
                                                     </div>
                                                     <p className="mt-5">
-                                                        {t("Shared.SeeAdvert.price-inquiry")}&nbsp;<b>{advert.categoryName}</b>!
+                                                        {t("Shared.SeeAdvert.price-inquiry")}&nbsp;
+                                                        <b>{advert.categoryName}</b>!
                                                     </p>
                                                 </CardContent>
                                             </Card>
@@ -164,18 +173,6 @@ export const SeeAdvert = () => {
                                             {t("Shared.SeeAdvert.want-to-collaborate")}
                                         </h1>
 
-                                        <div className="flex flex-row gap-4 items-center justify-center">
-                                            <a href="https://www.instagram.com" target="_blank">
-                                                <Instagram size={50} strokeWidth={2}/>
-                                            </a>
-                                            <a href="https://www.instagram.com" target="_blank">
-                                                <Facebook size={50} strokeWidth={2}/>
-                                            </a>
-                                            <a href="https://www.instagram.com" target="_blank">
-                                                <Linkedin size={50} strokeWidth={2}/>
-                                            </a>
-                                        </div>
-
                                         {
 
                                             ((() => {
@@ -185,7 +182,7 @@ export const SeeAdvert = () => {
                                                 )
                                                     return (
                                                             <Button
-                                                                    className="mt-15"
+                                                                    className="mt-3"
                                                                     onClick={() => navigate(`/chat/${advert?.idUser}`)}>
                                                                 {t("Shared.SeeAdvert.message-me")}
                                                             </Button>
@@ -194,7 +191,9 @@ export const SeeAdvert = () => {
                                                         isAuthenticated
                                                         && userData.roleName===AppRoles.AudioEngineer
                                                 )
-                                                    return (<></>)
+                                                    return (<div className="text-muted-foreground m-10">
+                                                        <p>{t("Shared.SeeAdvert.engineer-cant-message")}</p>
+                                                    </div>)
                                                 else
                                                     return (
                                                             <div className="text-muted-foreground m-10">
