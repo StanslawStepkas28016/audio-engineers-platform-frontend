@@ -52,7 +52,6 @@ export const RegisterPage = () => {
         },
     });
 
-    // TODO: Make placeholder have John Doe, and Jan Kowalski!
     const handleRegister = async () => {
         setError("");
         setSuccess("");

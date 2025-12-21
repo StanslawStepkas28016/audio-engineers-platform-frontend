@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sidebar.tsx"
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {useTranslation} from "react-i18next";
+import {useNavigate} from "react-router-dom";
 
 export function FooterNavLoggedUser({
                                         user,
@@ -37,6 +38,7 @@ export function FooterNavLoggedUser({
 
     const {isMobile} = useSidebar()
     const {logout} = useUserStore();
+    const navigate = useNavigate();
 
     const getFallbackInitials = () => {
         const strings = user.name.split(" ");
@@ -87,7 +89,7 @@ export function FooterNavLoggedUser({
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator/>
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate("see-guide")}>
                                     <IconHelpCircle/>
                                     {t("Footer.need-help-label")}
                                 </DropdownMenuItem>

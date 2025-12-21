@@ -20,6 +20,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar.tsx"
 import {useTranslation} from "react-i18next";
+import {useNavigate} from "react-router-dom";
 
 export function FooterNavGuestUser({
                                        user,
@@ -30,6 +31,7 @@ export function FooterNavGuestUser({
     }
 }) {
     const {isMobile} = useSidebar()
+    const navigate = useNavigate();
 
     const {t} = useTranslation();
 
@@ -61,7 +63,7 @@ export function FooterNavGuestUser({
                                 sideOffset={4}
                         >
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate("see-guide")}>
                                     <IconHelpCircle/>
                                     {t("Footer.need-help-label")}
                                 </DropdownMenuItem>

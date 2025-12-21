@@ -89,7 +89,6 @@ export const AddAdvert = () => {
                 .string()
                 .min(20, t("AudioEngineer.AddAdvert.error-portfolio-min"))
                 .url(t("AudioEngineer.AddAdvert.error-portfolio-url")),
-        // Fix for coerce, not being able to work with zod's schema.
         price: z
                 .string()
                 .refine((val) => !isNaN(Number(val)) && Number(val) >= 10, {
@@ -146,7 +145,7 @@ export const AddAdvert = () => {
                                 <div className="w-full p-5">
                                     <Alert variant="default">
                                         <AlertCircle className="h-4 w-4"/>
-                                        <AlertTitle>Info</AlertTitle>
+                                        <AlertTitle>{t("Common.info")}</AlertTitle>
                                         <AlertDescription>
                                             {advertAlreadyPostedInfo}
                                         </AlertDescription>
