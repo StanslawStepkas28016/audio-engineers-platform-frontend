@@ -61,8 +61,9 @@
     "Admin": {
       "admin-management-title": "Panel administracyjny",
       "data-management-label": "Zarządzanie danymi",
-      "user-data-label": "Dane użytkownika",
-      "advert-data-label": "Dane ogłoszeń"
+      "message-engineers" : "Wyślij wiadomość do inżyniera",
+      "advert-data-label": "Dane ogłoszeń",
+      "review-data-label": "Dane recenzji"
     }
   },
   "Footer": {
@@ -240,7 +241,7 @@
       "prices-from": "Ceny od:",
       "pagination-prev": "Cofnij",
       "pagination-next": "Dalej",
-      "error-no-adverts" : "Brak ogłoszeń.",
+      "error-no-adverts": "Brak ogłoszeń.",
       "error-no-adverts-for-term": "Brak ogłoszeń z takim tytułem lub/i zawartością.",
       "category-mixing": "Miks",
       "category-mixing-description": "Chcesz zobaczyć ogłoszenia związane z miksowaniem utworów? Pracuj z samymi profesjonalistami w branży.",
@@ -262,6 +263,7 @@
       "review-placeholder": "np. Ten inżynier ma bardzo duże doświadczenie...",
       "has-no-reviews": "Te ogłoszenie, nie ma żadnych recenzji.",
       "login-to-message": "Aby wysłać wiadomość do inżyniera, musisz się najpierw zalogować.",
+      "engineer-cant-message": "Jesteś inżynierem dźwięku, nie możesz współpracować wysyłać wiadomości.",
       "error-loading-reviews": "Błąd podczas ładowania recenzji.",
       "error-not-found": "Nie znaleziono ogłoszenia.",
       "error-content-len-min": "Zawartość recenzji musi mieć co najmniej 35 znaków.",
@@ -273,9 +275,9 @@
       "get-older-messages": "Załaduj starsze wiadomości",
       "send-a-message": "Prześlij wiadomość...",
       "attach-files": "Załącz pliki",
-      "wait-for-upload" : "Poczekaj aż plik się prześle!",
-      "error-no-data-provided-title" : "Pamiętaj, że...",
-      "error-no-data-provided-description" : "Musisz załączyć jeden plik lub napisać wiadomość tekstową, aby móc ja przesłać!"
+      "wait-for-upload": "Poczekaj aż plik się prześle!",
+      "error-no-data-provided-title": "Pamiętaj, że...",
+      "error-no-data-provided-description": "Musisz załączyć jeden plik lub napisać wiadomość tekstową, aby móc ja przesłać!"
     },
     "ResetPassword": {
       "title": "Formularz zmiany hasła",
@@ -318,17 +320,25 @@
     }
   },
   "Admin": {
-    "pagination-prev" : "Poprzednia strona",
-    "pagination-next" : "Następna strona",
+    "pagination-prev": "Poprzednia strona",
+    "pagination-next": "Następna strona",
     "AdvertData": {
-      "title" : "Zarządzanie danymi ogłoszeń",
-      "advert-category" : "Kategoria",
-      "advert-title" : "Tytuł",
-      "advert-description" : "Opis",
-      "advert-date-created" : "Data utworzenia",
-      "actions" : "Akcje",
-      "edit" : "Edytuj",
-      "delete" : "Usuń",
+      "title": "Zarządzanie danymi ogłoszeń",
+      "advert-category": "Kategoria",
+      "advert-title": "Tytuł",
+      "advert-price" : "Cena",
+      "advert-description": "Opis",
+      "advert-date-created": "Data utworzenia",
+      "filter-by-title" : "Filtruj po tytule...",
+      "actions": "Akcje",
+      "edit": "Edytuj",
+      "delete": "Usuń",
+      "edit-advert-title" : "Edycja danych ogłoszenia",
+      "edit-advert-title-description" : "Tytuł ogłoszenia inżyniera.",
+      "edit-advert-description-description" : "Opis ogłoszenia inżyniera.",
+      "edit-advert-price-description" : "Cena ogłoszenia inżyniera.",
+      "edit-advert-success-message" : "Pomyślnie zmieniono dane ogłószenia.",
+      "error-fallback" : "Bład podczas edycji danych ogłoszenia.",
       "error-loading-advert-data": "Błąd podczas wczytywania danych ogłoszeń."
     }
   }
