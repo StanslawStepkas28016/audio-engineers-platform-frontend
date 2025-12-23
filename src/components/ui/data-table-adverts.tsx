@@ -5,7 +5,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
-    getPaginationRowModel
+    getPaginationRowModel, SortingState, getSortedRowModel, ColumnFiltersState, getFilteredRowModel
 } from "@tanstack/react-table"
 
 import {
@@ -17,7 +17,9 @@ import {
     TableRow,
 } from "@/components/ui/table.tsx"
 import {Button} from "@/components/ui/button.tsx";
+import {Input} from "@/components/ui/input";
 import {useTranslation} from "react-i18next";
+import {useState} from "react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -28,19 +30,41 @@ export function DataTable<TData, TValue>({
                                              columns,
                                              data,
                                          }: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+            []
+    )
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            sorting,
+            columnFilters,
+        },
     })
 
     const {t} = useTranslation();
 
     return (
             <div>
-
-                <div className="overflow-hidden rounded-md border">
+                <div className="flex items-center ml-2 mt-2 mb-2">
+                    <Input
+                            placeholder={t("Admin.AdvertData.filter-by-title")}
+                            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                            onChange={(event) =>
+                                    table.getColumn("title")?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm"
+                    />
+                </div>
+                <div className="overflow-hidden rounded-md border p-3">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (

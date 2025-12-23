@@ -62,8 +62,9 @@
     "Admin": {
       "admin-management-title": "Admin management",
       "data-management-label": "Data management",
-      "user-data-label": "User data",
-      "advert-data-label": "Advert data"
+      "message-engineers" : "Wyślij wiadomość do inżyniera",
+      "advert-data-label": "Advert data",
+      "review-data-label": "Review data"
     }
   },
   "Footer": {
@@ -161,10 +162,10 @@
       "email-description": "This address will be displayed to other users.",
       "first-name-label": "First name",
       "first-name-description": "Your first name will be visible to other users.",
-      "first-name-placeholder" : "John",
+      "first-name-placeholder": "John",
       "last-name-label": "Last name",
       "last-name-description": "Your last name will be visible to other users.",
-      "last-name-placeholder" : "Doe",
+      "last-name-placeholder": "Doe",
       "phone-number-label": "Phone number",
       "phone-number-description": "This number will be visible to other users.",
       "password-label": "Password",
@@ -241,7 +242,7 @@
       "prices-from": "Prices from:",
       "pagination-prev": "Previous",
       "pagination-next": "Next",
-      "error-no-adverts" : "No adverts posted.",
+      "error-no-adverts": "No adverts posted.",
       "error-no-adverts-for-term": "No adverts found for the given search term.",
       "category-mixing": "Mixing",
       "category-mixing-description": "Want to see adverts related to mixing your songs? Work only with professionals and make sure your songs sound the best.",
@@ -258,11 +259,12 @@
       "price-inquiry": "This is a price per one inquiry of category",
       "want-to-collaborate": "Want to collaborate?",
       "message-me": "Message me!",
-      "see-my-reviews": "See my reviews",
+      "see-my-reviews": "See my reviews!",
       "share-own-experience": "Share your own experience with this engineer!",
       "review-placeholder": "e.g Working with this engineer was great...",
       "has-no-reviews": "This advert has no reviews.",
       "login-to-message": "To message this engineer, you need to login first.",
+      "engineer-cant-message": "You are an engineer yourself, you cannot send messages.",
       "error-loading-reviews": "Error loading reviews.",
       "error-not-found": "Advert not found.",
       "error-content-len-min": "Review content has to be 35 characters minimum.",
@@ -274,9 +276,9 @@
       "get-older-messages": "Get older messages",
       "send-a-message": "Send a message...",
       "attach-files": "Attach files",
-      "wait-for-upload" : "Wait until the file finishes uploading!",
-      "error-no-data-provided-title" : "Remember...",
-      "error-no-data-provided-description" : "You need to attach 1 file or write a text message in order to send it!"
+      "wait-for-upload": "Wait until the file finishes uploading!",
+      "error-no-data-provided-title": "Remember...",
+      "error-no-data-provided-description": "You need to attach 1 file or write a text message in order to send it!"
     },
     "ResetPassword": {
       "title": "Password reset form",
@@ -318,19 +320,25 @@
       "min-length": "Phone number must be at least 9 characters long."
     }
   },
-  "Admin" : {
-    "pagination-prev" : "Previous",
-    "pagination-next" : "Next",
-    "AdvertData" : {
-      "title" : "Advert data management",
-      "advert-category" : "Category",
-      "advert-title" : "Title",
-      "advert-description" : "Description",
-      "advert-date-created" : "Date created",
-      "actions" : "Actions",
-      "edit" : "Edit",
-      "delete" : "Delete",
-      "error-loading-advert-data" : "Error loading advert data."
+  "Admin": {
+    "pagination-prev": "Previous",
+    "pagination-next": "Next",
+    "AdvertData": {
+      "title": "Advert data management",
+      "advert-category": "Category",
+      "advert-price" : "Price",
+      "advert-title": "Title",
+      "advert-description": "Description",
+      "advert-date-created": "Date created",
+      "filter-by-title" : "Filter by title...",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "edit-advert-title" : "Edit advert data",
+      "edit-advert-title-description" : "Title of engineer's advert.",
+      "edit-advert-description-description" : "Description of engineer's advert.",
+      "edit-advert-price-description" : "Price of engineer's advert.",
+      "error-loading-advert-data": "Error loading advert data."
     }
   }
 }
