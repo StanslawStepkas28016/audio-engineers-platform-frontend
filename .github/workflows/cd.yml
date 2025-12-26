@@ -1,0 +1,6 @@
+name: cd.yml
+on:
+  push:
+    branches: [ main ]
+
+jobs:

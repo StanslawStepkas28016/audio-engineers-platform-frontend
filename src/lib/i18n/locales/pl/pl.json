@@ -61,7 +61,7 @@
     "Admin": {
       "admin-management-title": "Panel administracyjny",
       "data-management-label": "Zarządzanie danymi",
-      "message-engineers" : "Wyślij wiadomość do inżyniera",
+      "message-engineers": "Wyślij wiadomość do inżyniera",
       "advert-data-label": "Dane ogłoszeń",
       "review-data-label": "Dane recenzji"
     }
@@ -152,6 +152,7 @@
       "password-description-pt-2": "Kliknij tutaj!",
       "dont-have-account-pt-1": "Nie masz jeszcze konta?",
       "dont-have-account-pt-2": "Zarejestruj się",
+      "success" : "Dane poprawne, poczekaj chwilę!",
       "error-invalid-email": "Niepoprawny email.",
       "error-password-len": "Hasło musi mieć co najmniej 6 znaków.",
       "error-invalid-credentials": "Niepoprawne dane logowania."
@@ -221,16 +222,16 @@
       "short-description": "Platforma pozwala pracować klientom i inżynierom dźwięku, którzy specjalizują się w: Miksowaniu, Masteringu oraz Produkcji. \nAby zacząć, przeczytaj poniższy poradnik.",
       "description": "W czasie rejestracji, musisz wybrać swoją rolę, możesz być Inżynierem dźwięku lub Klientem.\n Na podstawie swojego wyboru, możesz ogłaszać swoją usługę, lub szukać inżyniera, z którym chcesz pracować.",
       "client-description-pt-1": "Q: Jak napisać wiadomość do inżyniera?\n A: Przejdź do sekcji \"Zobacz wszystkie ogłoszenia\", wybierz ogłoszenie inżyniera,\nzjedź do dołu i naduś przycisk \"Wyślij mi wiadomość\".",
-      "message-engineer-path": "src/assets/guide/pl/napisz-do-inzyniera.png",
+      "message-engineer-path": "guide/pl/napisz-do-inzyniera.png",
       "client-description-pt-2": "Q: Jak wysyłać pliki inżynierowi?\n A: Po wejściu w widok chatu z wybranym inżynierem, naduś ikonę \"Załącznik\", \nnastępnie wybierz pliki do załączenia.",
-      "attach-file-path": "src/assets/guide/pl/zalacz-plik.png",
+      "attach-file-path": "guide/pl/zalacz-plik.png",
       "client-description-pt-3": "Q: W jakim formacie mogę wysyłać pliki?\n A: Możesz wysyłać pliki w następującym formacie: WAV, MP3, FLAC, JPG, PNG oraz ZIP.",
       "audio-engineer-description-pt-1": "Q: Jak opublikować ogłoszenie?\n A: Przejdź do sekcji \"Dodaj ogłoszenie\", a następnie wypełnij formularz.",
-      "add-advert-path": "src/assets/guide/pl/dodaj-ogłoszenie.png",
+      "add-advert-path": "guide/pl/dodaj-ogłoszenie.png",
       "audio-engineer-description-pt-2": "Q: W jaki sposób zmienić dane ogłoszenia? A: Przejdź do sekcji \"Edytuj ogłoszenie\", następnie wprowadź swoje zmiany,\n możesz edytować sugerowaną cenę swojej usługi oraz jej opis.",
-      "edit-advert-path": "src/assets/guide/pl/edytuj-ogłoszenie.png",
+      "edit-advert-path": "guide/pl/edytuj-ogłoszenie.png",
       "audio-engineer-description-pt-3": "Q: Skąd będę wiedział, że napisał do mnie klient?\n A: Zobacz imię i nazwisko swojego klienta w pasku bocznym.\n Jeśli przeglądasz platformę, zobaczysz również plakietkę z powiadomieniem.",
-      "notification-path": "src/assets/guide/pl/powiadomienie.png"
+      "notification-path": "guide/pl/powiadomienie.png"
     },
     "SeeAllAdverts": {
       "slogan": "Znajdź najlepszych inżynierów dźwięku!",
@@ -326,19 +327,19 @@
       "title": "Zarządzanie danymi ogłoszeń",
       "advert-category": "Kategoria",
       "advert-title": "Tytuł",
-      "advert-price" : "Cena",
+      "advert-price": "Cena",
       "advert-description": "Opis",
       "advert-date-created": "Data utworzenia",
-      "filter-by-title" : "Filtruj po tytule...",
+      "filter-by-title": "Filtruj po tytule...",
       "actions": "Akcje",
       "edit": "Edytuj",
       "delete": "Usuń",
-      "edit-advert-title" : "Edycja danych ogłoszenia",
-      "edit-advert-title-description" : "Tytuł ogłoszenia inżyniera.",
-      "edit-advert-description-description" : "Opis ogłoszenia inżyniera.",
-      "edit-advert-price-description" : "Cena ogłoszenia inżyniera.",
-      "edit-advert-success-message" : "Pomyślnie zmieniono dane ogłószenia.",
-      "error-fallback" : "Bład podczas edycji danych ogłoszenia.",
+      "edit-advert-title": "Edycja danych ogłoszenia",
+      "edit-advert-title-description": "Tytuł ogłoszenia inżyniera.",
+      "edit-advert-description-description": "Opis ogłoszenia inżyniera.",
+      "edit-advert-price-description": "Cena ogłoszenia inżyniera.",
+      "edit-advert-success-message": "Pomyślnie zmieniono dane ogłószenia.",
+      "error-fallback": "Bład podczas edycji danych ogłoszenia.",
       "error-loading-advert-data": "Błąd podczas wczytywania danych ogłoszeń."
     }
   }

@@ -159,7 +159,7 @@ export const Chat = () => {
                                         value={input}
                                         onValueChange={setInput}
                                         onSubmit={handleSubmit}
-                                        className="static"
+                                        className="mb-5"
                                 >
                                     {
                                             file &&

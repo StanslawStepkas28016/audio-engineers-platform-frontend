@@ -47,8 +47,7 @@ export const VerifyAccountPage = () => {
 
                     if (exceptionMessage.includes("invalid")) {
                         key = "Guest.VerifyAccount.error-invalid-code";
-                    }
-                    else if (exceptionMessage.includes("phone")) {
+                    } else if (exceptionMessage.includes("phone")) {
                         key = "Guest.VerifyAccount.error-expired-code";
                     }
 
@@ -67,9 +66,10 @@ export const VerifyAccountPage = () => {
                                     onSubmit={verifyAccountForm.handleSubmit(handleSubmit)}
                             >
                                 <div
-                                        className="hidden lg:flex h-full justify-end items-center overflow-hidden -mt-30 -mb-10">
+                                        // className="hidden lg:flex h-full justify-end items-center overflow-hidden -mt-30 -mb-10">
+                                    >
                                     <img
-                                            src="/src/assets/coding.png"
+                                            src="/general/coding.png"
                                             alt="decoration"
                                             className="object-contain filter dark:invert"
                                     />
