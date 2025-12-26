@@ -62,7 +62,7 @@
     "Admin": {
       "admin-management-title": "Admin management",
       "data-management-label": "Data management",
-      "message-engineers" : "Wyślij wiadomość do inżyniera",
+      "message-engineers": "Wyślij wiadomość do inżyniera",
       "advert-data-label": "Advert data",
       "review-data-label": "Review data"
     }
@@ -222,16 +222,16 @@
       "short-description": "Platform allows collaboration with audio engineers, who specialize in: Mixing, Mastering or Production. \nTo get started read the following guide.",
       "description": "When you register, you are required to pick a role, either Audio Engineer or Client.\n Based on your role you are able to post and manage your advert or chat with engineers.",
       "client-description-pt-1": "Q: How to chat with an engineer?\n A: Navigate to the \"See all adverts\", pick an engineers advert, scroll down and press the \"Message me\" button.",
-      "message-engineer-path": "src/assets/guide/en/message-engineer.png",
+      "message-engineer-path": "guide/en/message-engineer.png",
       "client-description-pt-2": "Q: How to send files to the engineer?\n A: After entering the Chat view with your desired engineer, press the \"Attachment\" icon and attach your files.",
-      "attach-file-path": "src/assets/guide/en/attach-file.png",
+      "attach-file-path": "guide/en/attach-file.png",
       "client-description-pt-3": "Q: What kind of files can I send?\n A: You are able to send files with the following formats: WAV, MP3, FLAC, JPG, PNG and ZIP.",
       "audio-engineer-description-pt-1": "Q: How to post an advert?\n A: Simply navigate to the \"Add advert\" section and fill in the form data.\n\n",
-      "add-advert-path": "src/assets/guide/en/add-advert.png",
+      "add-advert-path": "guide/en/add-advert.png",
       "audio-engineer-description-pt-2": "Q: How to edit my advert?\n A: Navigate to the \"Edit my advert\" section and perform any necessary changes,\n you can edit the suggested price of your service and its description.",
-      "edit-advert-path": "src/assets/guide/en/edit-advert.png",
+      "edit-advert-path": "guide/en/edit-advert.png",
       "audio-engineer-description-pt-3": "Q: How do I know if a client has messaged me?\n A: You will see client names on the left side sidebar whenever someone messages you.\n You will also see a notification whenever you are not in the chat view and you are just browsing the platform.",
-      "notification-path": "src/assets/guide/en/notification.png"
+      "notification-path": "guide/en/notification.png"
     },
     "SeeAllAdverts": {
       "slogan": "Find the best audio engineers!",
@@ -326,18 +326,18 @@
     "AdvertData": {
       "title": "Advert data management",
       "advert-category": "Category",
-      "advert-price" : "Price",
+      "advert-price": "Price",
       "advert-title": "Title",
       "advert-description": "Description",
       "advert-date-created": "Date created",
-      "filter-by-title" : "Filter by title...",
+      "filter-by-title": "Filter by title...",
       "actions": "Actions",
       "edit": "Edit",
       "delete": "Delete",
-      "edit-advert-title" : "Edit advert data",
-      "edit-advert-title-description" : "Title of engineer's advert.",
-      "edit-advert-description-description" : "Description of engineer's advert.",
-      "edit-advert-price-description" : "Price of engineer's advert.",
+      "edit-advert-title": "Edit advert data",
+      "edit-advert-title-description": "Title of engineer's advert.",
+      "edit-advert-description-description": "Description of engineer's advert.",
+      "edit-advert-price-description": "Price of engineer's advert.",
       "error-loading-advert-data": "Error loading advert data."
     }
   }

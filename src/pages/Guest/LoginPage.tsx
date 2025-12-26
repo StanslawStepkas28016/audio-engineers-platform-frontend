@@ -42,93 +42,93 @@ export const LoginPage = () => {
 
     const handleSubmit = async () => {
         await login(
-            loginForm.getValues().email,
-            loginForm.getValues().password
+                loginForm.getValues().email,
+                loginForm.getValues().password
         );
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <Navbar/>
-            <main className="flex-1 flex w-full items-center justify-center p-6 md:p-10">
-                <div className="w-full max-w-sm">
-                    <div className="flex flex-col gap-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-2xl center flex justify-center">
-                                    {t("Guest.Login.good-to-see")}
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <Form {...loginForm}>
-                                    <form onSubmit={loginForm.handleSubmit(handleSubmit)}
-                                          className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
-                                        <FormField
-                                            control={loginForm.control}
-                                            name="email"
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>E-mail</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            placeholder="me@soundbest.pl"
-                                                            type="email"
-                                                            {...field} />
-                                                    </FormControl>
-                                                    <FormDescription>{t("Guest.Login.email-description")}</FormDescription>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )}
-                                        />
+            <div className="flex flex-col min-h-screen">
+                <Navbar/>
+                <main className="flex-1 flex w-full items-center justify-center p-6 md:p-10">
+                    <div className="w-full max-w-sm">
+                        <div className="flex flex-col gap-6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-2xl center flex justify-center">
+                                        {t("Guest.Login.good-to-see")}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <Form {...loginForm}>
+                                        <form onSubmit={loginForm.handleSubmit(handleSubmit)}
+                                              className="w-full max-w-2xl mx-auto space-y-8 flex flex-col">
+                                            <FormField
+                                                    control={loginForm.control}
+                                                    name="email"
+                                                    render={({field}) => (
+                                                            <FormItem>
+                                                                <FormLabel>E-mail</FormLabel>
+                                                                <FormControl>
+                                                                    <Input
+                                                                            placeholder="me@soundbest.pl"
+                                                                            type="email"
+                                                                            {...field} />
+                                                                </FormControl>
+                                                                <FormDescription>{t("Guest.Login.email-description")}</FormDescription>
+                                                                <FormMessage/>
+                                                            </FormItem>
+                                                    )}
+                                            />
 
-                                        <FormField
-                                            control={loginForm.control}
-                                            name="password"
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>{t("Guest.Login.password-label")}</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            placeholder="*********"
-                                                            type="password"
-                                                            {...field} />
-                                                    </FormControl>
-                                                    <FormDescription>{t("Guest.Login.password-description-pt-1")} {" "}
-                                                        <Link to="/forgot-password"
-                                                              className="underline underline-offset-4">
-                                                            {t("Guest.Login.password-description-pt-2")}
-                                                        </Link>
-                                                    </FormDescription>
-                                                    <FormMessage/>
-                                                </FormItem>
-                                            )}
-                                        />
+                                            <FormField
+                                                    control={loginForm.control}
+                                                    name="password"
+                                                    render={({field}) => (
+                                                            <FormItem>
+                                                                <FormLabel>{t("Guest.Login.password-label")}</FormLabel>
+                                                                <FormControl>
+                                                                    <Input
+                                                                            placeholder="*********"
+                                                                            type="password"
+                                                                            {...field} />
+                                                                </FormControl>
+                                                                <FormDescription>{t("Guest.Login.password-description-pt-1")} {" "}
+                                                                    <Link to="/forgot-password"
+                                                                          className="underline underline-offset-4">
+                                                                        {t("Guest.Login.password-description-pt-2")}
+                                                                    </Link>
+                                                                </FormDescription>
+                                                                <FormMessage/>
+                                                            </FormItem>
+                                                    )}
+                                            />
 
-                                        <Button type="submit">{t("Common.submit")}</Button>
-                                    </form>
-                                    <div className="mt-4 text-center text-sm">
-                                        {t("Guest.Login.dont-have-account-pt-1")} {" "}
-                                        <Link to="/register"
-                                              className="underline underline-offset-4">
-                                            {t("Guest.Login.dont-have-account-pt-2")}
-                                        </Link>
-                                    </div>
-                                </Form>
-                            </CardContent>
-                        </Card>
-                        {error && (
-                            <Alert variant="destructive">
-                                <AlertCircle className="h-4 w-4"/>
-                                <AlertTitle>{t("Common.error")}</AlertTitle>
-                                <AlertDescription>
-                                    {t("Guest.Login.error-invalid-credentials")}
-                                </AlertDescription>
-                            </Alert>
-                        )}
+                                            <Button type="submit">{t("Common.submit")}</Button>
+                                        </form>
+                                        <div className="mt-4 text-center text-sm">
+                                            {t("Guest.Login.dont-have-account-pt-1")} {" "}
+                                            <Link to="/register"
+                                                  className="underline underline-offset-4">
+                                                {t("Guest.Login.dont-have-account-pt-2")}
+                                            </Link>
+                                        </div>
+                                    </Form>
+                                </CardContent>
+                            </Card>
+                            // TODO: Add info of success.
+                            {error && (
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4"/>
+                                        <AlertTitle>{t("Common.error")}</AlertTitle>
+                                        <AlertDescription>
+                                            {t("Guest.Login.error-invalid-credentials")}
+                                        </AlertDescription>
+                                    </Alert>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </main>
-        </div>
-    )
-        ;
+                </main>
+            </div>
+    );
 }

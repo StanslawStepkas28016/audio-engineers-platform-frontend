@@ -4,22 +4,18 @@ import tailwindcss from '@tailwindcss/vite'
 import path from "path";
 
 export default defineConfig({
-/*    server: {
-        host: true,
-        proxy: {
-            '/api': {
-                target: 'http://127.0.0.1:5181', // your Mac’s IP + API port
-                changeOrigin: true,
-                secure: false,
-            },
-        },
-    },*/
-
+    base: "/",
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "src"),
+            "@": path.resolve(__dirname, "./src"),
         },
     },
     plugins: [react(),
         tailwindcss()],
+    server: {
+        port: 5173,
+        strictPort: true,
+        host: true,
+        origin: "http://0.0.0.0:5173",
+    },
 })

@@ -1,14 +1,17 @@
-FROM node:lts-alpine3.23
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json .
-COPY tsconfig*.json .
+COPY package.json .
 
 RUN npm install
 
+RUN npm i -g serve
+
 COPY . .
 
-EXPOSE 5173
+RUN npm run build
 
-CMD ["npm" ,"run", "prod"]
+EXPOSE 3000
+
+CMD [ "serve", "-s", "dist" ]

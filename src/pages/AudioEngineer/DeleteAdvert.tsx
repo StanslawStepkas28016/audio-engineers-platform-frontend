@@ -78,7 +78,7 @@ export const DeleteAdvert = () => {
                                 </h1>
 
                                 <img
-                                        src="/src/assets/sad_face.png"
+                                        src="/general/sad_face.png"
                                         alt="decoration"
                                         width={200} height={200}
                                         className="object-contain filter dark:invert mb-10"
