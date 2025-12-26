@@ -152,6 +152,7 @@
       "password-description-pt-2": "Kliknij tutaj!",
       "dont-have-account-pt-1": "Nie masz jeszcze konta?",
       "dont-have-account-pt-2": "Zarejestruj się",
+      "success" : "Dane poprawne, poczekaj chwilę!",
       "error-invalid-email": "Niepoprawny email.",
       "error-password-len": "Hasło musi mieć co najmniej 6 znaków.",
       "error-invalid-credentials": "Niepoprawne dane logowania."

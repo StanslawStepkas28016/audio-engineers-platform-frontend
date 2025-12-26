@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
+import {AlertCircle, Loader} from "lucide-react";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {Link} from "react-router-dom";
 import {z} from "zod";
@@ -21,11 +21,13 @@ import {
     FormMessage
 } from "@/components/ui/form.tsx";
 import {useTranslation} from "react-i18next";
+import {useState} from "react";
 
 export const LoginPage = () => {
     const {t} = useTranslation();
 
     const {login, error} = useUserStore();
+    const [loader, setLoader] = useState(false);
 
     const loginFormValidationSchema = z.object({
         email: z.string().email(t("Guest.Login.error-invalid-email")),
@@ -41,10 +43,12 @@ export const LoginPage = () => {
     });
 
     const handleSubmit = async () => {
+        setLoader(true);
         await login(
                 loginForm.getValues().email,
                 loginForm.getValues().password
         );
+        setLoader(false);
     }
 
     return (
@@ -116,7 +120,11 @@ export const LoginPage = () => {
                                     </Form>
                                 </CardContent>
                             </Card>
-                            // TODO: Add info of success.
+                            {loader && (
+                                    <div className="flex justify-center">
+                                        <Loader/>
+                                    </div>
+                            )}
                             {error && (
                                     <Alert variant="destructive">
                                         <AlertCircle className="h-4 w-4"/>

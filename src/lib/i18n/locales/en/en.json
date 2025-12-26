@@ -153,6 +153,7 @@
       "password-description-pt-2": "Click here!",
       "dont-have-account-pt-1": "Don't have an account?",
       "dont-have-account-pt-2": "Sign up",
+      "success" : "Successfully logged in, wait a second!",
       "error-invalid-email": "Invalid email address.",
       "error-password-len": "Password must be at least 6 characters long.",
       "error-invalid-credentials": "Invalid credentials."
