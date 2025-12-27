@@ -1,0 +1,59 @@
+import React, {useEffect} from "react";
+import {useUserStore} from "@/stores/useUserStore.ts";
+import {Navigate, useLocation, useSearchParams} from "react-router-dom";
+import {AppRoles} from "@/enums/app-roles.tsx";
+import {AudioEngineerOutlet} from "@/pages/AudioEngineer/AudioEngineerOutlet.tsx";
+import {ClientOutlet} from "@/pages/Client/ClientOutlet.tsx";
+import {GuestOutletWithSidebar} from "@/pages/Guest/GuestOutletWithSidebar.tsx";
+import {AdminOutlet} from "@/pages/Admin/AdminOutlet.tsx";
+
+export function OutletSwitcher() {
+    const {userData} = useUserStore();
+
+    switch (userData.roleName) {
+        case AppRoles.AudioEngineer:
+            return <AudioEngineerOutlet/>;
+        case AppRoles.Client:
+            return <ClientOutlet/>;
+        case AppRoles.Administrator:
+            return <AdminOutlet/>;
+        default:
+            return <GuestOutletWithSidebar/>;
+    }
+}
+
+export const ProtectedRoute = ({allowedRoles, children}: {
+    allowedRoles: AppRoles[],
+    children: React.ReactElement
+}) => {
+    const {isAuthenticated, userData} = useUserStore();
+
+    const userInRole = allowedRoles.includes(userData.roleName as AppRoles);
+
+    if (!userInRole && !isAuthenticated) {
+        return <Navigate to='/' replace/>;
+    }
+
+    return children;
+};
+
+export const RedirectAuthenticatedUser = ({children}: { children: React.ReactElement }) => {
+    const {isAuthenticated} = useUserStore();
+
+    if (isAuthenticated) {
+        return <Navigate to='/' replace/>;
+    }
+
+    return children;
+};
+
+export function ScrollToTop() {
+    const {pathname} = useLocation();
+    const params = useSearchParams();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname, params]);
+
+    return null;
+}
