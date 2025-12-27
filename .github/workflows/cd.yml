@@ -1,0 +1,21 @@
+name: cd.yml
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  re-run-docker-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Connect via SSH and re-run docker-compose
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script:
+            sudo -i
+            docker-compose down
+            docker-compose up
