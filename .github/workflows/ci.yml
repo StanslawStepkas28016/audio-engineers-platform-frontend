@@ -23,7 +23,7 @@ jobs:
         run: docker build -f Dockerfile -t soundbest-frontend:latest .
 
       - name: Tag Docker image
-        run: docker tag soundbest-frontend:latest stanislawstepkas28016/soundbest-frontend:latest
+        run: docker tag soundbest-frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/soundbest-frontend:latest
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
