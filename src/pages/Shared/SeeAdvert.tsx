@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/lib/axios.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, ArrowLeftCircle, HandCoins} from "lucide-react";
 import {transformPlaylistUrlToEmbedUrl} from "@/lib/utils.ts";
@@ -34,7 +34,7 @@ export const SeeAdvert = () => {
     const {t} = useTranslation();
 
     const {idAdvert} = useParams<{ idAdvert: string }>();
-    const {userData, isAuthenticated} = useUserStore();
+    const {userData, isAuthenticated, isViewingOwnAdvert, setIsViewingOwnAdvert} = useUserStore();
     const navigate = useNavigate();
 
     const [inputError, setInputError] = useState("");
@@ -101,6 +101,14 @@ export const SeeAdvert = () => {
                 .catch(() => setInputError(t("Shared.SeeAdvert.error-posting-review")));
     }
 
+    useEffect(() => {
+        return () => {
+            if (isViewingOwnAdvert) {
+                setIsViewingOwnAdvert(false);
+            }
+        }
+    }, [isViewingOwnAdvert, setIsViewingOwnAdvert]);
+
     if (isLoadingAdvert || isLoadingReviews) {
         return <LoadingPage/>;
     }
@@ -121,13 +129,17 @@ export const SeeAdvert = () => {
                         advert && (
                                 <div className="flex flex-col items-center">
                                     <div className="justify-center text-center">
-                                        <Button
+                                        {!isViewingOwnAdvert &&
+                                            <Button
                                                 variant="outline"
-                                                onClick={() => navigate(-1)}
+                                                onClick={() => {
+                                                    navigate(-1)
+                                                }}
                                                 className="mt-5"
-                                        >
-                                            <ArrowLeftCircle/>
-                                        </Button>
+                                            >
+                                                <ArrowLeftCircle/>
+                                            </Button>
+                                        }
 
                                         <h1 className="text-xl md:text-2xl lg:text-3xl mt-3 font-bold">
                                             {advert.title}

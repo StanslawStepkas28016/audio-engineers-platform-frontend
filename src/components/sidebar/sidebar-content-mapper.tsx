@@ -18,6 +18,7 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar.tsx"
+import {useUserStore} from "@/stores/useUserStore.ts";
 
 export function SidebarContentMapper({
                                          items,
@@ -35,6 +36,7 @@ export function SidebarContentMapper({
     }[]
 }) {
     const {pathname} = useLocation();
+    const {isViewingOwnAdvert} = useUserStore();
 
     return (
             <SidebarGroup>
@@ -59,7 +61,13 @@ export function SidebarContentMapper({
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
                                                 {item.items?.map((subItem) => {
-                                                    const isActive = subItem.url===pathname;
+                                                    let isActive = subItem.url===pathname;
+
+                                                    if (
+                                                            subItem.url==='/my-advert' &&
+                                                            pathname.includes('/see-advert') &&
+                                                            isViewingOwnAdvert
+                                                    ) isActive = true;
 
                                                     return (
                                                             <SidebarMenuSubItem key={subItem.title}
