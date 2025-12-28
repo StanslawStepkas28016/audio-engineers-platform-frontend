@@ -5,6 +5,7 @@ import {useChatStore} from "@/stores/useChatStore.ts";
 export type UserStore = {
     isAuthenticated: boolean;
     isCheckingAuth: boolean;
+    isViewingOwnAdvert: boolean;
     error: string;
     userData: {
         idUser: string;
@@ -18,6 +19,7 @@ export type UserStore = {
     checkAuth: () => Promise<void>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    setIsViewingOwnAdvert: (state: boolean) => Promise<void>;
 }
 
 const emptyUser = {
@@ -33,6 +35,7 @@ const emptyUser = {
 export const useUserStore = create<UserStore>()((set) => ({
     isAuthenticated: false,
     isCheckingAuth: true,
+    isViewingOwnAdvert: false,
     error: "",
     userData: {
         idUser: "",
@@ -50,24 +53,24 @@ export const useUserStore = create<UserStore>()((set) => ({
     * */
     login: async (email, password) => {
         await axiosInstance.post("auth/login",
-            {
-                email: email,
-                password: password
-            })
-            .then(r =>
-                set({
-                    isAuthenticated: true,
-                    userData: r.data,
-                    error: ""
+                {
+                    email: email,
+                    password: password
                 })
-            )
-            .catch(e =>
-                set({
-                    isAuthenticated: false,
-                    error: e.response.data.ExceptionMessage || "Error while logging in.",
-                    userData: emptyUser
-                })
-            );
+                .then(r =>
+                        set({
+                            isAuthenticated: true,
+                            userData: r.data,
+                            error: ""
+                        })
+                )
+                .catch(e =>
+                        set({
+                            isAuthenticated: false,
+                            error: e.response.data.ExceptionMessage || "Error while logging in.",
+                            userData: emptyUser
+                        })
+                );
     },
 
     /*
@@ -87,7 +90,7 @@ export const useUserStore = create<UserStore>()((set) => ({
             // Get the original request that caused the error.
             const originalRequest = error.config;
             // If the check-auth request fails with a 401 error, refresh the token.
-            if (error.response.status === 401 && error.config.url !== "auth/refresh-token") {
+            if (error.response.status===401 && error.config.url!=="auth/refresh-token") {
                 // Make sure we don't retry the request if it has already been "retried".
                 if (!error.config._retry) {
                     try {
@@ -139,15 +142,21 @@ export const useUserStore = create<UserStore>()((set) => ({
     * */
     logout: async () => {
         await axiosInstance
-            .post("auth/logout")
-            .then(async () => {
-                await useChatStore.getState().stopHubConnection();
-                set({
-                    isAuthenticated: false,
-                    isCheckingAuth: false,
-                    userData: emptyUser
-                });
-            })
-            .catch(() => alert("An error occurred while logging out!"));
+                .post("auth/logout")
+                .then(async () => {
+                    await useChatStore.getState().stopHubConnection();
+                    set({
+                        isAuthenticated: false,
+                        isCheckingAuth: false,
+                        userData: emptyUser
+                    });
+                })
+                .catch(() => alert("An error occurred while logging out!"));
+    },
+
+    setIsViewingOwnAdvert: async (state) => {
+        set({
+            isViewingOwnAdvert: state
+        })
     }
 }));
