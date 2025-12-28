@@ -12,13 +12,15 @@ export const SeeYourAdvert = () => {
     const {t} = useTranslation();
 
     const navigate = useNavigate();
-    const {userData} = useUserStore();
+    const {userData, setIsViewingOwnAdvert} = useUserStore();
     const [error, setError] = useState("");
+
 
     const {isLoading: isLoadingIdAdvert} = useQuery({
         queryFn: async () => await axiosInstance
                 .get(`/advert/${userData.idUser}/id-advert`)
                 .then(r => {
+                    setIsViewingOwnAdvert(true);
                     navigate(`/see-advert/${r.data.idAdvert}`);
                 })
                 .catch(e => {
