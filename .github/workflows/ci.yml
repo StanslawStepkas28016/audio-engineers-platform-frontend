@@ -20,7 +20,12 @@ jobs:
         run: npm install
 
       - name: Build and Docker image
-        run: docker build -f Dockerfile -t soundbest-frontend:latest .
+        run: |
+          docker build \
+          --build-arg VITE_BACKEND_API=${{ secrets.VITE_BACKEND_API }} \
+          --build-arg VITE_BACKEND_HUB=${{ secrets.VITE_BACKEND_HUB }} \
+          -f Dockerfile \
+          -t soundbest-frontend:latest .
 
       - name: Tag Docker image
         run: docker tag soundbest-frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/soundbest-frontend:latest
