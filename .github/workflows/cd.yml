@@ -8,14 +8,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Connect via SSH and re-run docker-compose
+      - name: Re run docker compose orchestration
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script:
-            sudo -i
-            docker-compose down
-            docker-compose up
+          script: |
+            sudo bash -c '
+            cd /root
+            docker compose down
+            docker compose up -d
+            '
