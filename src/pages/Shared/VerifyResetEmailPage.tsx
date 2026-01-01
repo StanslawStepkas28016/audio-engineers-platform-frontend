@@ -5,8 +5,11 @@ import {axiosInstance} from "@/lib/axios.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle, Terminal} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
+import {useTranslation} from "react-i18next";
 
 export const VerifyResetEmailPage = () => {
+    const {t} = useTranslation();
+
     const {resetEmailToken} = useParams<{ resetEmailToken: string }>();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -19,28 +22,28 @@ export const VerifyResetEmailPage = () => {
         await axiosInstance
                 .post(`/auth/${resetEmailToken}/verify-reset-email`)
                 .then(() => {
-                    setSuccess("Successfully reset your email. Please log in again.");
+                    setSuccess((t("Shared.VerifyResetEmail.success")));
                     setTimeout(() => navigate("/login"), 1000);
                 })
-                .catch(e => setError(e.response.data.ExceptionMessage || "Error verifying email reset."));
+                .catch(() => setError(t("Shared.VerifyResetEmail.error")));
     };
 
     return (
             <div>
                 <Navbar/>
-                <div className="p-10 md: h-screen flex flex-col items-center justify-center">
-                    <h1 className="m-5">
-                        Please click the button bellow in order to reset your email.
+                <div className="p-10 md: h-screen flex flex-col items-center justify-center align-middle ">
+                    <h1 className="md:text-2xl sm:text-xl whitespace-pre-line m-5 text-center">
+                        {t("Shared.VerifyResetEmail.info")}
                     </h1>
                     <Button onClick={handleSubmit}>
-                        Click here
+                        {t("Common.click")}
                     </Button>
 
                     {error &&
-                        <div className="p-10 md:w-xl">
+                        <div>
                             <Alert variant="destructive" className="mt-5">
                                 <AlertCircle className="h-4 w-4"/>
-                                <AlertTitle>Error</AlertTitle>
+                                <AlertTitle>{t("Common.error")}</AlertTitle>
                                 <AlertDescription>
                                     {error}
                                 </AlertDescription>
@@ -49,11 +52,11 @@ export const VerifyResetEmailPage = () => {
                     }
 
                     {success && (
-                            <div className="p-10 md:w-xl">
+                            <div>
                                 <Alert className="mt-5">
                                     <Terminal className="h-4 w-4"/>
-                                    <AlertTitle>Heads up!</AlertTitle>
-                                    <AlertDescription>
+                                    <AlertTitle>{t("Common.success")}</AlertTitle>
+                                    <AlertDescription className="whitespace-pre-line">
                                         {success}
                                     </AlertDescription>
                                 </Alert>
