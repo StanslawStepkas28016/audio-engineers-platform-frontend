@@ -45,7 +45,7 @@ export const ResetPhoneNumber = () => {
         setError("");
         setSuccess("");
 
-        if (!resetPhoneNumberForm.formState.isDirty) {
+        if (userData.phoneNumber===resetPhoneNumberForm.getValues().newPhoneNumber) {
             setError(t("Shared.ResetPhoneNumber.not-different-error"));
             return;
         }

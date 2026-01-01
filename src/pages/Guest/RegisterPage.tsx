@@ -68,8 +68,7 @@ export const RegisterPage = () => {
 
                     if (exceptionMessage.includes("email")) {
                         key = "Guest.Register.error-email-taken";
-                    }
-                    else if (exceptionMessage.includes("phone")) {
+                    } else if (exceptionMessage.includes("phone")) {
                         key = "Guest.Register.error-phone-number-taken";
                     }
 
@@ -216,29 +215,26 @@ export const RegisterPage = () => {
                                 <Button type="submit" className="w-full">
                                     {t("Guest.Register.sign-up")}
                                 </Button>
+                                {error && (
+                                        <Alert variant="destructive">
+                                            <AlertCircle className="h-4 w-4"/>
+                                            <AlertTitle>{t("Common.error")}</AlertTitle>
+                                            <AlertDescription>
+                                                {error}
+                                            </AlertDescription>
+                                        </Alert>
+                                )}
+                                {success && (
+                                        <Alert>
+                                            <Terminal className="h-4 w-4"/>
+                                            <AlertTitle>{t("Common.success")}</AlertTitle>
+                                            <AlertDescription>
+                                                {success}
+                                            </AlertDescription>
+                                        </Alert>
+                                )}
                             </form>
-
                         </Form>
-                    </div>
-                    <div className="mt-10">
-                        {error && (
-                                <Alert variant="destructive">
-                                    <AlertCircle className="h-4 w-4"/>
-                                    <AlertTitle>{t("Common.error")}</AlertTitle>
-                                    <AlertDescription>
-                                        {error}
-                                    </AlertDescription>
-                                </Alert>
-                        )}
-                        {success && (
-                                <Alert>
-                                    <Terminal className="h-4 w-4"/>
-                                    <AlertTitle>{t("Common.success")}</AlertTitle>
-                                    <AlertDescription>
-                                        {success}
-                                    </AlertDescription>
-                                </Alert>
-                        )}
                     </div>
                 </div>
             </div>

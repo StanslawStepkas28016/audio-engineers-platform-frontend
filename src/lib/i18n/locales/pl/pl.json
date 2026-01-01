@@ -15,7 +15,8 @@
     "ok": "Ok",
     "close": "Zamknij",
     "continue": "Kontynuuj",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "click": "Kliknij tutaj"
   },
   "Sidebar": {
     "Shared": {
@@ -152,7 +153,7 @@
       "password-description-pt-2": "Kliknij tutaj!",
       "dont-have-account-pt-1": "Nie masz jeszcze konta?",
       "dont-have-account-pt-2": "Zarejestruj się",
-      "success" : "Dane poprawne, poczekaj chwilę!",
+      "success": "Dane poprawne, poczekaj chwilę!",
       "error-invalid-email": "Niepoprawny email.",
       "error-password-len": "Hasło musi mieć co najmniej 6 znaków.",
       "error-invalid-credentials": "Niepoprawne dane logowania."
@@ -295,6 +296,11 @@
       "success-title": "Uwaga!",
       "success-message": "Zostaniesz wylogowany, sprawdź skrzynkę e-mail w celu uzyskania dalszych instrukcji."
     },
+    "VerifyResetPassword": {
+      "info": "Aby zatwierdzić zmianę hasła, \nskorzystaj z poniższego przycisku.",
+      "success": "Udało się zatwierdzić zmianę hasła, \nzaraz zostaniesz przeniesiony do okna logowania.",
+      "error": "Wystąpił błąd podczas zatwierdzania zmiany hasła."
+    },
     "ResetEmail": {
       "title": "Formularz zmiany adresu e-mail",
       "description": "Po wysłaniu formularza, na Twój nowy adres e-mail zostanie wysłana wiadomość z linkiem potwierdzającym. \n Twój aktualny adres e-mail jest wyświetlony poniżej.",
@@ -306,6 +312,11 @@
       "success-title": "Uwaga!",
       "success-message": "Pomyślnie zmieniono adres e-mail. Zostaniesz wylogowany – sprawdź swoją skrzynkę w celu uzyskania dalszych instrukcji.",
       "new-email-min-length": "Adres e-mail musi mieć co najmniej 10 znaków."
+    },
+    "VerifyResetEmail": {
+      "info": "Aby zatwierdzić zmianę adresu e-mail, \nskorzystaj z poniższego przycisku.",
+      "success": "Udało się zweryfikować twój nowy adres e-mail, \nzaraz zostaniesz przeniesiony do okna logowania.",
+      "error": "Wystąpił błąd podczas weryfikacji nowego adresu e-mail."
     },
     "ResetPhoneNumber": {
       "title": "Formularz zmiany numeru telefonu",

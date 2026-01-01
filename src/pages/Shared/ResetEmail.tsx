@@ -41,7 +41,7 @@ export const ResetEmail = () => {
         setError("");
         setSuccess("");
 
-        if (!resetEmailForm.formState.isDirty) {
+        if (userData.email===resetEmailForm.getValues().newEmail) {
             setError(t("Shared.ResetEmail.not-different-error"));
             return;
         }
