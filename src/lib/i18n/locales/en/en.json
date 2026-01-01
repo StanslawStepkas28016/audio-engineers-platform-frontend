@@ -15,7 +15,8 @@
     "ok": "Ok",
     "close": "Close",
     "continue": "Continue",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "click": "Click me"
   },
   "Sidebar": {
     "Shared": {
@@ -153,7 +154,7 @@
       "password-description-pt-2": "Click here!",
       "dont-have-account-pt-1": "Don't have an account?",
       "dont-have-account-pt-2": "Sign up",
-      "success" : "Successfully logged in, wait a second!",
+      "success": "Successfully logged in, wait a second!",
       "error-invalid-email": "Invalid email address.",
       "error-password-len": "Password must be at least 6 characters long.",
       "error-invalid-credentials": "Invalid credentials."
@@ -296,6 +297,9 @@
       "success-title": "Heads up!",
       "success-message": "You will be logged out, please check your email inbox for instructions."
     },
+    "VerifyResetPassword": {
+      "info": "In order to verify your password reset,\n press the button below."
+    },
     "ResetEmail": {
       "title": "Email address reset form",
       "description": "After submitting the form, an email containing a confirmation link will be sent to your new email address. \n Your current email address is displayed below.",
@@ -307,6 +311,11 @@
       "success-title": "Heads up!",
       "success-message": "Successfully reset your email, you will be logged out, please check your email inbox for instructions.",
       "new-email-min-length": "Email address must be at least 10 characters long."
+    },
+    "VerifyResetEmail": {
+      "info": "In order to verify your new e-mail,\n press the button below.",
+      "success": "Successfully verified your new e-mail.\n You will have to login in a moment.",
+      "error": "An error has occurred while trying to verify your new e-mail address."
     },
     "ResetPhoneNumber": {
       "title": "Phone number reset form",
