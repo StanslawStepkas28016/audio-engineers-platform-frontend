@@ -104,7 +104,7 @@ export const ResetPhoneNumber = () => {
                                 )}
                         />
 
-                        <Button type="submit">
+                        <Button type="submit" disabled={!resetPhoneNumberForm.formState.isDirty}>
                             {t("Common.submit")}
                         </Button>
 
