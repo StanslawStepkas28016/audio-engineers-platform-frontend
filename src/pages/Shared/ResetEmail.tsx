@@ -94,7 +94,7 @@ export const ResetEmail = () => {
                                 )}
                         />
 
-                        <Button type="submit">
+                        <Button type="submit" disabled={!resetEmailForm.formState.isDirty}>
                             {t("Common.submit")}
                         </Button>
 

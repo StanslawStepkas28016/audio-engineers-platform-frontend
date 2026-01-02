@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {axiosInstance} from "@/lib/axios.ts";
 import {useUserStore} from "@/stores/useUserStore.ts";
 import {
@@ -43,22 +43,12 @@ export const EditAdvert = () => {
             }
     );
 
-    const {isLoading: isLoadingAdvertData} = useQuery(
+    const {data: advertData, isLoading: isLoadingAdvertData} = useQuery(
             {
                 queryFn:
                         async () => await axiosInstance
                                 .get(`/advert/${idAdvert}/details`)
-                                .then(response => {
-                                    const advertData = response.data as Advert;
-
-                                    editAdvertForm.reset({
-                                        idUser: userData.idUser,
-                                        title: advertData.title,
-                                        description: advertData.description,
-                                        portfolioUrl: advertData.portfolioUrl,
-                                        price: String(advertData.price)
-                                    });
-                                })
+                                .then(r => r.data as Advert)
                                 .catch(() => setError(t("AudioEngineer.EditAdvert.error-loading"))),
                 queryKey: ['advertDetails', idAdvert],
                 enabled: !!idAdvert
@@ -91,7 +81,7 @@ export const EditAdvert = () => {
     const editAdvertForm = useForm<z.infer<typeof editAdvertFormValidationSchema>>({
         resolver: zodResolver(editAdvertFormValidationSchema),
         defaultValues: {
-            idUser: "",
+            idUser: userData.idUser,
             title: "",
             description: "",
             portfolioUrl: "",
@@ -122,6 +112,16 @@ export const EditAdvert = () => {
                         }
                 );
     }
+
+    useEffect(() => {
+        editAdvertForm.reset({
+            idUser: userData.idUser,
+            title: advertData?.title,
+            description: advertData?.description,
+            portfolioUrl: advertData?.portfolioUrl,
+            price: String(advertData?.price)
+        });
+    }, [advertData]);
 
     if (isLoadingIdAdvert || isLoadingAdvertData) {
         return <LoadingPage/>;
@@ -220,7 +220,8 @@ export const EditAdvert = () => {
                                             )}
                                     />
 
-                                    <Button type="submit">{t("Common.submit")}</Button>
+                                    <Button type="submit"
+                                            disabled={!editAdvertForm.formState.isDirty}>{t("Common.submit")}</Button>
 
                                     {editingError && (
                                             <Alert variant="destructive">

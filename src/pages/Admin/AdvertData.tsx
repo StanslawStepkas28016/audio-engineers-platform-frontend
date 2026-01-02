@@ -338,7 +338,8 @@ export const AdvertData = () => {
                                                                 )}
                                                         />
 
-                                                        <Button type="submit">{t("Common.submit")}</Button>
+                                                        <Button type="submit"
+                                                                disabled={!editAdvertDataForm.formState.isDirty}>{t("Common.submit")}</Button>
 
                                                         {editAdvertError && (
                                                                 <Alert variant="destructive">
